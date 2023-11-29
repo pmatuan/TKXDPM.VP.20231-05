@@ -14,6 +14,10 @@ public class CartService {
     this.cart = new Cart();
   }
 
+  public Long getCartId(){
+    return cart.getId();
+  }
+
   public void addCartMedia(CartMedia cartMedia) {
     cart.getCartMediaList().add(cartMedia);
   }
