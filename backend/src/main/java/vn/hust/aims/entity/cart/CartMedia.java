@@ -1,6 +1,5 @@
-package vn.hust.aims.entity;
+package vn.hust.aims.entity.cart;
 
-import java.time.Instant;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -13,24 +12,23 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.UpdateTimestamp;
+import vn.hust.aims.entity.media.Media;
 
 @Entity
-@Table(name = "order_item")
+@Table(name = "cart_media")
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @SuperBuilder
-public class OrderMedia {
+public class CartMedia {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
 
   @ManyToOne
-  @JoinColumn(name = "order_id")
-  private Order order;
+  @JoinColumn(name = "cart_id")
+  private Cart cart;
 
   @ManyToOne
   @JoinColumn(name = "media_id")
@@ -38,16 +36,4 @@ public class OrderMedia {
 
   @Column(name = "quantity")
   private Integer quantity;
-
-  @Column(name = "is_order_for_rush_delivery")
-  private Boolean isOrderForRushDelivery;
-
-  @CreationTimestamp
-  @Column(name = "created_at")
-  private Instant createdAt;
-
-  @UpdateTimestamp
-  @Column(name = "updated_at")
-  private Instant updatedAt;
-
 }

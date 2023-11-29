@@ -1,4 +1,4 @@
-package vn.hust.aims.entity;
+package vn.hust.aims.entity.media;
 
 import java.time.Instant;
 import javax.persistence.Column;
