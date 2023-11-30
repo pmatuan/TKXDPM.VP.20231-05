@@ -3,8 +3,6 @@ package vn.hust.aims.entity.cart;
 import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
@@ -24,6 +22,6 @@ public class Cart {
   @Id
   private String id;
 
-  @OneToMany(mappedBy = "cart", cascade = CascadeType.ALL, orphanRemoval = true)
+  @OneToMany(mappedBy = "cart", cascade = CascadeType.REMOVE, orphanRemoval = true)
   private List<CartMedia> cartMediaList;
 }

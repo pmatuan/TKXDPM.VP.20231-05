@@ -1,5 +1,6 @@
 package vn.hust.aims.entity.cart;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -26,6 +27,7 @@ public class CartMedia {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
 
+  @JsonIgnore
   @ManyToOne
   @JoinColumn(name = "cart_id")
   private Cart cart;
