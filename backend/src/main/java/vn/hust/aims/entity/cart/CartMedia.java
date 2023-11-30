@@ -1,6 +1,7 @@
 package vn.hust.aims.entity.cart;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import java.time.Instant;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -13,6 +14,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 import vn.hust.aims.entity.media.Media;
 
 @Entity
@@ -38,4 +41,12 @@ public class CartMedia {
 
   @Column(name = "quantity")
   private Integer quantity;
+
+  @CreationTimestamp
+  @Column(name = "created_at")
+  private Instant createdAt;
+
+  @UpdateTimestamp
+  @Column(name = "updated_at")
+  private Instant updatedAt;
 }

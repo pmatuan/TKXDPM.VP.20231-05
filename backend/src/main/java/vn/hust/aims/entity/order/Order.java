@@ -31,8 +31,7 @@ import org.hibernate.annotations.UpdateTimestamp;
 public class Order {
 
   @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
-  private Long id;
+  private String id;
 
   @OneToOne
   @JoinColumn(name = "transaction_id")

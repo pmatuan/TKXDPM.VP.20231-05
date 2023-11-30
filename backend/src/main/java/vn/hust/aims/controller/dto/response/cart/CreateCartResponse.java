@@ -8,11 +8,11 @@ import vn.hust.aims.service.dto.output.cart.CreateCartOutput;
 @SuperBuilder
 public class CreateCartResponse {
 
-  private String cardId;
+  private String cartId;
 
   public static CreateCartResponse from(CreateCartOutput output) {
     return CreateCartResponse.builder()
-        .cardId(output.getCartId())
+        .cartId(output.getCartId())
         .build();
   }
 }

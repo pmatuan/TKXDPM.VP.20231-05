@@ -5,6 +5,6 @@ import org.springframework.stereotype.Repository;
 import vn.hust.aims.entity.order.Order;
 
 @Repository
-public interface OrderRepository extends JpaRepository<Order, Long> {
+public interface OrderRepository extends JpaRepository<Order, String> {
 
 }

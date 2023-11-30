@@ -16,6 +16,7 @@ import lombok.experimental.SuperBuilder;
 import org.aspectj.weaver.ast.Or;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
+import vn.hust.aims.entity.cart.CartMedia;
 import vn.hust.aims.entity.media.Media;
 
 @Entity
@@ -51,5 +52,13 @@ public class OrderMedia {
   @UpdateTimestamp
   @Column(name = "updated_at")
   private Instant updatedAt;
+
+  public static OrderMedia from(CartMedia cartMedia) {
+    return OrderMedia.builder()
+        .media(cartMedia.getMedia())
+        .quantity(cartMedia.getQuantity())
+        .isOrderForRushDelivery(false)
+        .build();
+  }
 
 }
