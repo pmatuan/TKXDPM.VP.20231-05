@@ -17,11 +17,13 @@ import vn.hust.aims.repository.cart.CartRepository;
 import vn.hust.aims.repository.media.MediaRepository;
 import vn.hust.aims.service.dto.input.cart.AddMediaToCartInput;
 import vn.hust.aims.service.dto.input.cart.DeleteCartInput;
+import vn.hust.aims.service.dto.input.cart.DeleteMediaInCartInput;
 import vn.hust.aims.service.dto.input.cart.GetCartInput;
 import vn.hust.aims.service.dto.input.cart.UpdateMediaInCartInput;
 import vn.hust.aims.service.dto.output.cart.AddMediaToCartOutput;
 import vn.hust.aims.service.dto.output.cart.CreateCartOutput;
 import vn.hust.aims.service.dto.output.cart.DeleteCartOutput;
+import vn.hust.aims.service.dto.output.cart.DeleteMediaInCartOutput;
 import vn.hust.aims.service.dto.output.cart.GetCartOutput;
 import vn.hust.aims.service.dto.output.cart.UpdateMediaInCartOutput;
 
@@ -112,5 +114,19 @@ public class CartService {
         "Update quantity media " + input.getCartMediaId() + " to " + input.getQuantity()
             + " successfully");
   }
+
+  public DeleteMediaInCartOutput deleteMediaInCart(DeleteMediaInCartInput input) {
+
+    CartMedia cartMedia = cartMediaRepository.findById(input.getCartMediaId())
+        .orElseThrow(() -> new AimsException(null, ErrorCodeList.CART_MEDIA_NOT_FOUND,
+            HttpStatus.BAD_REQUEST));
+
+    cartMediaRepository.delete(cartMedia);
+    // TODO: có thể sẽ có lỗi vì chưa bỏ cartMedia bị xoá ra khỏi cart
+
+    return DeleteMediaInCartOutput.from(
+        "Deleted media " + input.getCartMediaId() + " successfully");
+  }
+
 
 }

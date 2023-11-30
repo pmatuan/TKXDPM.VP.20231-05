@@ -11,10 +11,12 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import vn.hust.aims.controller.dto.request.cart.AddMediaToCartRequest;
+import vn.hust.aims.controller.dto.request.cart.DeleteMediaInCartRequest;
 import vn.hust.aims.controller.dto.request.cart.UpdateMediaInCartRequest;
 import vn.hust.aims.controller.dto.response.cart.AddMediaToCartResponse;
 import vn.hust.aims.controller.dto.response.cart.CreateCartResponse;
 import vn.hust.aims.controller.dto.response.cart.DeleteCartResponse;
+import vn.hust.aims.controller.dto.response.cart.DeleteMediaInCartResponse;
 import vn.hust.aims.controller.dto.response.cart.GetCartResponse;
 import vn.hust.aims.controller.dto.response.cart.UpdateMediaInCartResponse;
 import vn.hust.aims.response.AimsCommonResponse;
@@ -24,6 +26,7 @@ import vn.hust.aims.service.dto.input.cart.GetCartInput;
 import vn.hust.aims.service.dto.output.cart.AddMediaToCartOutput;
 import vn.hust.aims.service.dto.output.cart.CreateCartOutput;
 import vn.hust.aims.service.dto.output.cart.DeleteCartOutput;
+import vn.hust.aims.service.dto.output.cart.DeleteMediaInCartOutput;
 import vn.hust.aims.service.dto.output.cart.GetCartOutput;
 import vn.hust.aims.service.dto.output.cart.UpdateMediaInCartOutput;
 import vn.hust.aims.utils.ResponseUtil;
@@ -93,6 +96,18 @@ public class CartController {
 
     return ResponseUtil.toSuccessCommonResponse(
         UpdateMediaInCartResponse.from(output)
+    );
+  }
+
+  @DeleteMapping("/{cartId}/cart-media/{cartMediaId}")
+  public ResponseEntity<AimsCommonResponse<Object>> deleteMediaInCart(
+      @PathVariable Long cartMediaId, @RequestBody DeleteMediaInCartRequest request
+  ) {
+
+    DeleteMediaInCartOutput output = cartService.deleteMediaInCart(request.toInput(cartMediaId));
+
+    return ResponseUtil.toSuccessCommonResponse(
+        DeleteMediaInCartResponse.from(output)
     );
   }
 
