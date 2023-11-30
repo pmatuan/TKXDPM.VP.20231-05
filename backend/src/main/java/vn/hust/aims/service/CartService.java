@@ -1,51 +1,60 @@
 package vn.hust.aims.service;
 
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.UUID;
+import lombok.AllArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import vn.hust.aims.entity.cart.Cart;
 import vn.hust.aims.entity.cart.CartMedia;
+import vn.hust.aims.exception.AimsException;
+import vn.hust.aims.exception.ErrorCodeList;
 import vn.hust.aims.exception.MediaNotAvailableException;
+import vn.hust.aims.repository.cart.CartRepository;
+import vn.hust.aims.service.dto.input.cart.DeleteCartInput;
+import vn.hust.aims.service.dto.input.cart.GetCartInput;
+import vn.hust.aims.service.dto.output.cart.CreateCartOutput;
+import vn.hust.aims.service.dto.output.cart.DeleteCartOutput;
+import vn.hust.aims.service.dto.output.cart.GetCartOutput;
 
 @Service
+@AllArgsConstructor
 public class CartService {
 
-  private Cart cart;
+  private final CartRepository cartRepository;
 
-  public CartService() {
-    this.cart = new Cart();
+  public CreateCartOutput createCart() {
+
+    String cartId = UUID.randomUUID().toString();
+
+    Cart cart = Cart.builder()
+        .id(cartId)
+        .cartMediaList(new ArrayList<>())
+        .build();
+    cartRepository.save(cart);
+
+    return CreateCartOutput.from(cartId);
   }
 
-  public Long getCartId(){
-    return cart.getId();
+  public GetCartOutput getCart(GetCartInput input) {
+
+    Cart cart = cartRepository.findById(input.getCartId())
+        .orElseThrow(
+            () -> new AimsException(null, ErrorCodeList.CART_NOT_FOUND, HttpStatus.BAD_REQUEST));
+
+    return GetCartOutput.from(cart);
   }
 
-  public void addCartMedia(CartMedia cartMedia) {
-    cart.getCartMediaList().add(cartMedia);
-  }
+  public DeleteCartOutput deleteCart(DeleteCartInput input) {
 
-  public void removeCartMedia(CartMedia cartMedia) {
-    cart.getCartMediaList().remove(cartMedia);
-  }
-
-  public void emptyCart() {
-    cart.getCartMediaList().clear();
-  }
-
-  public Double calculateSubtotal() {
-    Double subtotal = 0.0;
-    for (CartMedia cartMedia : cart.getCartMediaList()) {
-      subtotal += cartMedia.getMedia().getPrice() * cartMedia.getQuantity();
+    if (!cartRepository.existsById(input.getCartId())) {
+      throw new AimsException(null, ErrorCodeList.CART_NOT_FOUND, HttpStatus.BAD_REQUEST);
     }
-    return subtotal;
+
+    cartRepository.deleteById(input.getCartId());
+
+    return DeleteCartOutput.from("Cart " + input.getCartId() + " deleted successfully");
   }
 
-  public void checkAvailabilityOfMedia() {
-    for (CartMedia cartMedia : cart.getCartMediaList()) {
-      Integer requiredQuantity = cartMedia.getQuantity();
-      Integer availableQuantity = cartMedia.getMedia().getQuantityInStock();
-      if (requiredQuantity > availableQuantity) {
-        throw new MediaNotAvailableException(
-            "Media " + cartMedia.getMedia().getTitle() + " is not available");
-      }
-    }
-  }
 }

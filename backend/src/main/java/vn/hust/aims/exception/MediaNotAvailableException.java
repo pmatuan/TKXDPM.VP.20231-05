@@ -1,6 +1,6 @@
 package vn.hust.aims.exception;
 
-public class MediaNotAvailableException extends AimsException {
+public class MediaNotAvailableException extends RuntimeException {
 
 	private static final long serialVersionUID = 1091337136123906298L;
 
