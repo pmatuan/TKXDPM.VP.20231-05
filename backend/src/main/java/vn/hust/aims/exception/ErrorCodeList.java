@@ -3,8 +3,9 @@ package vn.hust.aims.exception;
 public enum ErrorCodeList {
   InternalServerError("500", "Internal Server Error", true),
   InvalidParameter("PARAM_4001", "Invalid Parameter"),
-  CART_NOT_FOUND("CART_001", "Cart not found");
-
+  CART_NOT_FOUND("CART_001", "Cart not found"),
+  MEDIA_NOT_FOUND("MEDIA_001", "Media not found"),
+  QUANTITY_NOT_ENOUGH("QUANTITY_001", "Quantity of media not enough");
 
   private final String code;
   private final String message;
