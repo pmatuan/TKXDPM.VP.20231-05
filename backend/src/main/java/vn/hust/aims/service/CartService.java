@@ -18,10 +18,12 @@ import vn.hust.aims.repository.media.MediaRepository;
 import vn.hust.aims.service.dto.input.cart.AddMediaToCartInput;
 import vn.hust.aims.service.dto.input.cart.DeleteCartInput;
 import vn.hust.aims.service.dto.input.cart.GetCartInput;
+import vn.hust.aims.service.dto.input.cart.UpdateMediaInCartInput;
 import vn.hust.aims.service.dto.output.cart.AddMediaToCartOutput;
 import vn.hust.aims.service.dto.output.cart.CreateCartOutput;
 import vn.hust.aims.service.dto.output.cart.DeleteCartOutput;
 import vn.hust.aims.service.dto.output.cart.GetCartOutput;
+import vn.hust.aims.service.dto.output.cart.UpdateMediaInCartOutput;
 
 @Service
 @AllArgsConstructor
@@ -74,7 +76,7 @@ public class CartService {
         .orElseThrow(
             () -> new AimsException(null, ErrorCodeList.MEDIA_NOT_FOUND, HttpStatus.BAD_REQUEST));
 
-    if (media.getQuantityInStock() < input.getQuantity()){
+    if (media.getQuantityInStock() < input.getQuantity()) {
       throw new AimsException(null, ErrorCodeList.QUANTITY_NOT_ENOUGH, HttpStatus.BAD_REQUEST);
     }
 
@@ -88,7 +90,27 @@ public class CartService {
     cartRepository.save(cart);
     cartMediaRepository.save(cartMedia);
 
-    return AddMediaToCartOutput.from("Add media " + input.getMediaId() + " to cart " + input.getCartId() + " successfully");
+    return AddMediaToCartOutput.from(
+        "Add media " + input.getMediaId() + " to cart " + input.getCartId() + " successfully");
+  }
+
+  public UpdateMediaInCartOutput updateMediaInCart(UpdateMediaInCartInput input) {
+
+    CartMedia cartMedia = cartMediaRepository.findById(input.getCartMediaId())
+        .orElseThrow(() -> new AimsException(null, ErrorCodeList.CART_MEDIA_NOT_FOUND,
+            HttpStatus.BAD_REQUEST));
+
+    if (cartMedia.getMedia().getQuantityInStock() < input.getQuantity()) {
+      throw new AimsException(null, ErrorCodeList.QUANTITY_NOT_ENOUGH, HttpStatus.BAD_REQUEST);
+    }
+
+    cartMedia.setQuantity(input.getQuantity());
+
+    cartMediaRepository.save(cartMedia);
+
+    return UpdateMediaInCartOutput.from(
+        "Update quantity media " + input.getCartMediaId() + " to " + input.getQuantity()
+            + " successfully");
   }
 
 }
