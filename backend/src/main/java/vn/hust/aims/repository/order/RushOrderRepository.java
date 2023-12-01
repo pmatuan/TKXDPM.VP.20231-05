@@ -5,6 +5,6 @@ import org.springframework.stereotype.Repository;
 import vn.hust.aims.entity.order.RushOrder;
 
 @Repository
-public interface RushOrderRepository extends JpaRepository<RushOrder, Long> {
+public interface RushOrderRepository extends JpaRepository<RushOrder, String> {
 
 }

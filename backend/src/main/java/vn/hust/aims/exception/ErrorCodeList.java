@@ -5,8 +5,10 @@ public enum ErrorCodeList {
   InvalidParameter("PARAM_4001", "Invalid Parameter"),
   CART_NOT_FOUND("CART_001", "Cart not found"),
   MEDIA_NOT_FOUND("MEDIA_001", "Media not found"),
+  ORDER_NOT_FOUND("ORDER_001", "Order not found"),
   CART_MEDIA_NOT_FOUND("CART_MEDIA_001", "Cart media not found"),
-  QUANTITY_NOT_ENOUGH("QUANTITY_001", "Quantity of media not enough");
+  QUANTITY_NOT_ENOUGH("QUANTITY_001", "Quantity of media not enough"),
+  INVALID_TIME("INVALID_TIME_001", "Invalid time");
 
   private final String code;
   private final String message;

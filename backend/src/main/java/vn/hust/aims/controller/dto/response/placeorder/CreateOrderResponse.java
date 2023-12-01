@@ -7,8 +7,10 @@ import vn.hust.aims.service.dto.output.placeorder.CreateOrderOutput;
 @Data
 @SuperBuilder
 public class CreateOrderResponse {
+
   private String orderId;
-  public static CreateOrderResponse from(CreateOrderOutput output){
+
+  public static CreateOrderResponse from(CreateOrderOutput output) {
     return CreateOrderResponse.builder()
         .orderId(output.getOrderId())
         .build();
