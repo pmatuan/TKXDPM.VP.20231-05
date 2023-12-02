@@ -7,6 +7,7 @@ public enum ErrorCodeList {
   MEDIA_NOT_FOUND("MEDIA_001", "Media not found"),
   ORDER_NOT_FOUND("ORDER_001", "Order not found"),
   CART_MEDIA_NOT_FOUND("CART_MEDIA_001", "Cart media not found"),
+  ORDER_MEDIA_NOT_FOUND("ORDER_MEDIA_001", "Order media not found"),
   QUANTITY_NOT_ENOUGH("QUANTITY_001", "Quantity of media not enough"),
   INVALID_TIME("INVALID_TIME_001", "Invalid time");
 

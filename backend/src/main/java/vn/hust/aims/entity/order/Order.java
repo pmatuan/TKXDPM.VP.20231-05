@@ -41,7 +41,7 @@ public class Order {
   @JoinColumn(name = "delivery_info_id")
   private DeliveryInfo deliveryInfo;
 
-  @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
+  @OneToMany(mappedBy = "order", cascade = CascadeType.REMOVE, orphanRemoval = true)
   private List<OrderMedia> orderMediaList;
 
   @Column(name = "subtotal")

@@ -12,8 +12,9 @@ public class UpdateMediaInCartRequest {
 
   private Integer quantity;
 
-  public UpdateMediaInCartInput toInput(Long cartMediaId){
+  public UpdateMediaInCartInput toInput(String cartId, Long cartMediaId){
     return UpdateMediaInCartInput.builder()
+        .cartId(cartId)
         .cartMediaId(cartMediaId)
         .quantity(quantity)
         .build();

@@ -1,5 +1,6 @@
 package vn.hust.aims.entity.order;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.time.Instant;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -31,6 +32,7 @@ public class OrderMedia {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
 
+  @JsonIgnore
   @ManyToOne
   @JoinColumn(name = "order_id")
   private Order order;

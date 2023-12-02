@@ -89,10 +89,9 @@ public class CartController {
 
   @PutMapping("/{cartId}/cart-media/{cartMediaId}")
   public ResponseEntity<AimsCommonResponse<Object>> updateMediaInCart(
-      @PathVariable Long cartMediaId, @RequestBody UpdateMediaInCartRequest request
-  ) {
+      @PathVariable String cartId, @PathVariable Long cartMediaId, @RequestBody UpdateMediaInCartRequest request) {
 
-    UpdateMediaInCartOutput output = cartService.updateMediaInCart(request.toInput(cartMediaId));
+    UpdateMediaInCartOutput output = cartService.updateMediaInCart(request.toInput(cartId, cartMediaId));
 
     return ResponseUtil.toSuccessCommonResponse(
         UpdateMediaInCartResponse.from(output)
@@ -101,11 +100,12 @@ public class CartController {
 
   @DeleteMapping("/{cartId}/cart-media/{cartMediaId}")
   public ResponseEntity<AimsCommonResponse<Object>> deleteMediaInCart(
-      @PathVariable Long cartMediaId
+      @PathVariable String cartId, @PathVariable Long cartMediaId
   ) {
 
     DeleteMediaInCartOutput output = cartService.deleteMediaInCart(
         DeleteMediaInCartInput.builder()
+            .cartId(cartId)
             .cartMediaId(cartMediaId)
             .build()
     );

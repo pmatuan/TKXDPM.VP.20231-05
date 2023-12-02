@@ -2,6 +2,7 @@ package vn.hust.aims.service;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Optional;
 import java.util.UUID;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -50,9 +51,7 @@ public class CartService {
 
   public GetCartOutput getCart(GetCartInput input) {
 
-    Cart cart = cartRepository.findById(input.getCartId())
-        .orElseThrow(
-            () -> new AimsException(null, ErrorCodeList.CART_NOT_FOUND, HttpStatus.BAD_REQUEST));
+    Cart cart = getCartById(input.getCartId());
 
     return GetCartOutput.from(cart);
   }
@@ -70,27 +69,21 @@ public class CartService {
 
   public AddMediaToCartOutput addMediaToCart(AddMediaToCartInput input) {
 
-    Cart cart = cartRepository.findById(input.getCartId())
-        .orElseThrow(
-            () -> new AimsException(null, ErrorCodeList.CART_NOT_FOUND, HttpStatus.BAD_REQUEST));
+    Cart cart = getCartById(input.getCartId());
+    Media media = getMediaById(input.getMediaId());
 
-    Media media = mediaRepository.findById(input.getMediaId())
-        .orElseThrow(
-            () -> new AimsException(null, ErrorCodeList.MEDIA_NOT_FOUND, HttpStatus.BAD_REQUEST));
+    validateQuantityInStock(media, input.getQuantity());
 
-    if (media.getQuantityInStock() < input.getQuantity()) {
-      throw new AimsException(null, ErrorCodeList.QUANTITY_NOT_ENOUGH, HttpStatus.BAD_REQUEST);
+    Optional<CartMedia> existingCartMedia = findCartMediaInCart(cart, input.getMediaId());
+
+    if (existingCartMedia.isPresent()) {
+      existingCartMedia.get()
+          .setQuantity(existingCartMedia.get().getQuantity() + input.getQuantity());
+    } else {
+      addNewCartMediaToCart(cart, media, input.getQuantity());
     }
 
-    CartMedia cartMedia = CartMedia.builder()
-        .cart(cart)
-        .media(media)
-        .quantity(input.getQuantity())
-        .build();
-    cart.getCartMediaList().add(cartMedia);
-
     cartRepository.save(cart);
-    cartMediaRepository.save(cartMedia);
 
     return AddMediaToCartOutput.from(
         "Add media " + input.getMediaId() + " to cart " + input.getCartId() + " successfully");
@@ -98,35 +91,86 @@ public class CartService {
 
   public UpdateMediaInCartOutput updateMediaInCart(UpdateMediaInCartInput input) {
 
-    CartMedia cartMedia = cartMediaRepository.findById(input.getCartMediaId())
-        .orElseThrow(() -> new AimsException(null, ErrorCodeList.CART_MEDIA_NOT_FOUND,
-            HttpStatus.BAD_REQUEST));
+    Cart cart = getCartById(input.getCartId());
+    CartMedia cartMedia = getCartMediaById(input.getCartMediaId());
 
-    if (cartMedia.getMedia().getQuantityInStock() < input.getQuantity()) {
-      throw new AimsException(null, ErrorCodeList.QUANTITY_NOT_ENOUGH, HttpStatus.BAD_REQUEST);
+    Optional<CartMedia> existingCartMedia = findCartMediaInCart(cart, cartMedia.getMedia().getId());
+
+    if (existingCartMedia.isEmpty()){
+      throw new AimsException(null, ErrorCodeList.CART_MEDIA_NOT_FOUND, HttpStatus.BAD_REQUEST);
     }
 
-    cartMedia.setQuantity(input.getQuantity());
+    validateQuantityInStock(cartMedia.getMedia(), input.getQuantity());
 
-    cartMediaRepository.save(cartMedia);
+    updateCartMediaQuantity(cartMedia, input.getQuantity());
 
     return UpdateMediaInCartOutput.from(
-        "Update quantity media " + input.getCartMediaId() + " to " + input.getQuantity()
-            + " successfully");
+        "Update quantity cart media " + input.getCartMediaId() + " to " + input.getQuantity() +
+            " successfully");
   }
 
   public DeleteMediaInCartOutput deleteMediaInCart(DeleteMediaInCartInput input) {
 
-    CartMedia cartMedia = cartMediaRepository.findById(input.getCartMediaId())
-        .orElseThrow(() -> new AimsException(null, ErrorCodeList.CART_MEDIA_NOT_FOUND,
-            HttpStatus.BAD_REQUEST));
+    Cart cart = getCartById(input.getCartId());
+    CartMedia cartMedia = getCartMediaById(input.getCartMediaId());
+
+    Optional<CartMedia> existingCartMedia = findCartMediaInCart(cart, cartMedia.getMedia().getId());
+
+    if (existingCartMedia.isEmpty()){
+      throw new AimsException(null, ErrorCodeList.CART_MEDIA_NOT_FOUND,
+          HttpStatus.BAD_REQUEST);
+    }
 
     cartMediaRepository.delete(cartMedia);
     // TODO: có thể sẽ có lỗi vì chưa bỏ cartMedia bị xoá ra khỏi cart
 
     return DeleteMediaInCartOutput.from(
-        "Deleted media " + input.getCartMediaId() + " successfully");
+        "Deleted cart media " + input.getCartMediaId() + " successfully");
   }
 
+  private Cart getCartById(String cartId) {
+    return cartRepository.findById(cartId)
+        .orElseThrow(
+            () -> new AimsException(null, ErrorCodeList.CART_NOT_FOUND, HttpStatus.BAD_REQUEST));
+  }
+
+  private Media getMediaById(Long mediaId) {
+    return mediaRepository.findById(mediaId)
+        .orElseThrow(
+            () -> new AimsException(null, ErrorCodeList.MEDIA_NOT_FOUND, HttpStatus.BAD_REQUEST));
+  }
+
+  private CartMedia getCartMediaById(Long cartMediaId) {
+    return cartMediaRepository.findById(cartMediaId)
+        .orElseThrow(() -> new AimsException(null, ErrorCodeList.CART_MEDIA_NOT_FOUND,
+            HttpStatus.BAD_REQUEST));
+  }
+
+  private void validateQuantityInStock(Media media, Integer requestedQuantity) {
+    if (media.getQuantityInStock() < requestedQuantity) {
+      throw new AimsException(null, ErrorCodeList.QUANTITY_NOT_ENOUGH, HttpStatus.BAD_REQUEST);
+    }
+  }
+
+  private Optional<CartMedia> findCartMediaInCart(Cart cart, Long mediaId) {
+    return cart.getCartMediaList().stream()
+        .filter(cartMedia -> cartMedia.getMedia().getId().equals(mediaId))
+        .findFirst();
+  }
+
+  private void addNewCartMediaToCart(Cart cart, Media media, Integer quantity) {
+    CartMedia cartMedia = CartMedia.builder()
+        .cart(cart)
+        .media(media)
+        .quantity(quantity)
+        .build();
+    cart.getCartMediaList().add(cartMedia);
+    cartMediaRepository.save(cartMedia);
+  }
+
+  private void updateCartMediaQuantity(CartMedia cartMedia, Integer quantity) {
+    cartMedia.setQuantity(quantity);
+    cartMediaRepository.save(cartMedia);
+  }
 
 }
