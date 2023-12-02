@@ -1,6 +1,5 @@
 package vn.hust.aims.service;
 
-import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -73,6 +72,13 @@ public class PlaceOrderService {
     orderRepository.save(order);
 
     if (Boolean.TRUE.equals(input.getIsOrderForRushDelivery())) {
+      order.getOrderMediaList().stream()
+          .forEach(orderMedia -> {
+            if (orderMedia.getMedia().getIsAbleToRushDelivery()){
+              orderMedia.setIsOrderForRushDelivery(true);
+            }
+          });
+
       RushOrder rushOrder = createRushOrder(order, input);
       rushOrderRepository.save(rushOrder);
     }
@@ -81,69 +87,40 @@ public class PlaceOrderService {
   }
 
   public UpdateMediaInOrderOutput updateOrderMedia(UpdateMediaInOrderInput input) {
-
     Order order = getOrderById(input.getOrderId());
-    OrderMedia orderMedia = getOrderMediaById(input.getOrderMediaId());
+    OrderMedia orderMedia = findOrderMediaById(order, input.getOrderMediaId());
 
-    Optional<OrderMedia> existingOrderMedia = findOrderMediaInOrder(order,
-        orderMedia.getMedia().getId());
-
-    if (existingOrderMedia.isEmpty()) {
-      throw new AimsException(null, ErrorCodeList.ORDER_MEDIA_NOT_FOUND, HttpStatus.BAD_REQUEST);
-    }
-
-    validateQuantityInStock(orderMedia.getMedia(), input.getQuantity());
-
-    updateOrderMediaQuantity(orderMedia, input.getQuantity());
-
-
+    validateAndUpdateOrderMedia(orderMedia, input.getQuantity(), order);
 
     return UpdateMediaInOrderOutput.from(
-        "Update quantity order media " + input.getOrderMediaId() + " to " + input.getQuantity()
-            + " successfully");
+        "Update quantity order media " + input.getOrderMediaId() + " to " + input.getQuantity() + " successfully");
   }
 
   public DeleteMediaInOrderOutput deleteOrderMedia(DeleteMediaInOrderInput input) {
-
     Order order = getOrderById(input.getOrderId());
-    OrderMedia orderMedia = getOrderMediaById(input.getOrderMediaId());
+    OrderMedia orderMedia = findOrderMediaById(order, input.getOrderMediaId());
 
-    Optional<OrderMedia> existingOrderMedia = findOrderMediaInOrder(order,
-        orderMedia.getMedia().getId());
+    deleteAndUpdateOrderMedia(orderMedia, order);
 
-    if (existingOrderMedia.isEmpty()) {
-      throw new AimsException(null, ErrorCodeList.ORDER_MEDIA_NOT_FOUND, HttpStatus.BAD_REQUEST);
-    }
+    return DeleteMediaInOrderOutput.from("Deleted order media " + input.getOrderMediaId() + " successfully");
+  }
 
-    orderMediaRepository.delete(orderMedia);
+  private Cart getCartById(String cartId) {
+    return cartRepository.findById(cartId)
+        .orElseThrow(
+            () -> new AimsException(null, ErrorCodeList.CART_NOT_FOUND, HttpStatus.BAD_REQUEST));
+  }
 
-    return DeleteMediaInOrderOutput.from(
-        "Deleted order media " + input.getOrderMediaId() + " successfully");
+  private Order getOrderById(String orderId) {
+    return orderRepository.findById(orderId)
+        .orElseThrow(
+            () -> new AimsException(null, ErrorCodeList.ORDER_NOT_FOUND, HttpStatus.BAD_REQUEST));
   }
 
   private List<OrderMedia> mapCartMediaToOrderMedia(List<CartMedia> cartMediaList) {
     return cartMediaList.stream()
         .map(OrderMedia::from)
         .collect(Collectors.toList());
-  }
-
-  private Double calculateSubtotal(List<OrderMedia> orderMediaList) {
-    return orderMediaList.stream()
-        .mapToDouble(orderMedia -> orderMedia.getMedia().getPrice() * orderMedia.getQuantity())
-        .sum();
-  }
-
-  private Double calculateVAT(Double subtotal) {
-    return subtotal / 10; // VAT is 10% of the subtotal
-  }
-
-  private Double calculateDeliveryFee(List<OrderMedia> orderMediaList) {
-    // TODO: Implement delivery fee calculation
-    return 0.0;
-  }
-
-  private Double calculateTotal(Double subtotal, Double VAT, Double deliveryFee) {
-    return subtotal + VAT + deliveryFee;
   }
 
   private Order buildOrder(List<OrderMedia> orderMediaList) {
@@ -165,22 +142,23 @@ public class PlaceOrderService {
         .build();
   }
 
-  private Cart getCartById(String cartId) {
-    return cartRepository.findById(cartId)
-        .orElseThrow(
-            () -> new AimsException(null, ErrorCodeList.CART_NOT_FOUND, HttpStatus.BAD_REQUEST));
+  private Double calculateSubtotal(List<OrderMedia> orderMediaList) {
+    return orderMediaList.stream()
+        .mapToDouble(orderMedia -> orderMedia.getMedia().getPrice() * orderMedia.getQuantity())
+        .sum();
   }
 
-  private Order getOrderById(String orderId) {
-    return orderRepository.findById(orderId)
-        .orElseThrow(
-            () -> new AimsException(null, ErrorCodeList.ORDER_NOT_FOUND, HttpStatus.BAD_REQUEST));
+  private Double calculateVAT(Double subtotal) {
+    return subtotal / 10; // VAT is 10% of the subtotal
   }
 
-  private OrderMedia getOrderMediaById(Long orderMediaId) {
-    return orderMediaRepository.findById(orderMediaId)
-        .orElseThrow(() -> new AimsException(null, ErrorCodeList.ORDER_MEDIA_NOT_FOUND,
-            HttpStatus.BAD_REQUEST));
+  private Double calculateDeliveryFee(List<OrderMedia> orderMediaList) {
+    // TODO: Implement delivery fee calculation
+    return 0.0;
+  }
+
+  private Double calculateTotal(Double subtotal, Double VAT, Double deliveryFee) {
+    return subtotal + VAT + deliveryFee;
   }
 
   private DeliveryInfo createDeliveryInfo(UpdateDeliveryInfoInput input) {
@@ -201,10 +179,23 @@ public class PlaceOrderService {
         .build();
   }
 
-  private Optional<OrderMedia> findOrderMediaInOrder(Order order, Long mediaId) {
+  private OrderMedia findOrderMediaById(Order order, Long orderMediaId) {
     return order.getOrderMediaList().stream()
-        .filter(orderMedia -> orderMedia.getMedia().getId().equals(mediaId))
-        .findFirst();
+        .filter(orderMedia -> orderMedia.getId().equals(orderMediaId))
+        .findFirst()
+        .orElseThrow(() -> new AimsException(null, ErrorCodeList.ORDER_MEDIA_NOT_FOUND, HttpStatus.BAD_REQUEST));
+  }
+
+  private void validateAndUpdateOrderMedia(OrderMedia orderMedia, Integer quantity, Order order) {
+    validateQuantityInStock(orderMedia.getMedia(), quantity);
+    updateOrderMediaQuantity(orderMedia, quantity);
+    updateOrder(order);
+  }
+
+  private void deleteAndUpdateOrderMedia(OrderMedia orderMedia, Order order) {
+    orderMediaRepository.delete(orderMedia);
+    order.getOrderMediaList().remove(orderMedia);
+    updateOrder(order);
   }
 
   private void validateQuantityInStock(Media media, Integer requestedQuantity) {
@@ -213,8 +204,24 @@ public class PlaceOrderService {
     }
   }
 
-  private void updateOrderMediaQuantity(OrderMedia orderMedia, Integer quantity) {
+  private void updateOrder(Order order) {
 
+    List<OrderMedia> orderMediaList = order.getOrderMediaList();
+
+    Double subtotal = calculateSubtotal(orderMediaList);
+    Double VAT = calculateVAT(subtotal);
+    Double deliveryFee = calculateDeliveryFee(orderMediaList);
+    Double total = calculateTotal(subtotal, VAT, deliveryFee);
+
+    order.setSubtotal(subtotal);
+    order.setVat(VAT);
+    order.setDeliveryFee(deliveryFee);
+    order.setTotal(total);
+
+    orderRepository.save(order);
+  }
+
+  private void updateOrderMediaQuantity(OrderMedia orderMedia, Integer quantity) {
     orderMedia.setQuantity(quantity);
     orderMediaRepository.save(orderMedia);
   }
