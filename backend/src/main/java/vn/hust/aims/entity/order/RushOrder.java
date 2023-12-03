@@ -23,8 +23,7 @@ import lombok.experimental.SuperBuilder;
 public class RushOrder {
 
   @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
-  private Long id;
+  private String id;
 
   @OneToOne
   @JoinColumn(name = "order_id")
