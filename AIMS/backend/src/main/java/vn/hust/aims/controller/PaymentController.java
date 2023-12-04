@@ -23,15 +23,24 @@ public class PaymentController {
 
   private PaymentSubsystem paymentSubsystem;
 
+  // PaymentController - PayOrderRequest: Data coupling
+  // Lớp PaymentController nhận dữ liệu từ client đến hệ thống qua đối tượng PayOrderRequest .
+  // Dữ liệu được truyền chỉ chứa những thông tin cần thiết.
   @PostMapping("/payorder")
   public ResponseEntity<AimsCommonResponse<Object>> payOrder(HttpServletRequest request,
       @RequestBody PayOrderRequest payOrderRequest) {
 
+    // PaymentController - PaymentSubsystemFactory: Control coupling
+    // PaymentController truyền ProviderType trong PayOrderRequest sang PaymentSubsystemFactory để xác định loại dịch vụ thanh toán cần thực hiện.
     paymentSubsystem = PaymentSubsystemFactory.get(
         ProviderType.from(payOrderRequest.getProvider()));
 
+    // PaymentController - PaymentSubsystem: Data coupling
+    // PaymentController truyền dữ liệu vừa đủ sang lớp PaymentSubsystem thông qua phương thức payOrder.
     PayOrderOutput output = paymentSubsystem.payOrder(request, payOrderRequest.toInput());
 
+    // PaymentController - PayOrderResponse: Data coupling
+    // PaymentController truyền dữ liệu vừa đủ cho lớp PayOrderResponse để tạo thành phản hồi cho client.
     return ResponseUtil.toSuccessCommonResponse(
         PayOrderResponse.from(output)
     );

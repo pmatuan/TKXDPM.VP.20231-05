@@ -1,5 +1,6 @@
 package vn.hust.aims.subsystem.provider.paypalsubsystem;
 
+import java.text.DecimalFormat;
 import java.util.Base64;
 import org.json.JSONObject;
 import org.springframework.http.HttpEntity;
@@ -14,6 +15,8 @@ import org.springframework.web.client.RestTemplate;
 
 public class PaypalUtil {
 
+  // PaypalUtil - PaypalConfig: Data coupling
+  // Dữ liệu từ PaypalConfig được sử dụng để thực hiện tính toán và xây dựng dữ liệu trong PaypalUtil.
   public String getAuth() {
     String auth = PaypalConfig.CLIENT_ID + ":" + PaypalConfig.APP_SECRET;
     return Base64.getEncoder().encodeToString(auth.getBytes());
@@ -63,5 +66,15 @@ public class PaypalUtil {
       HttpEntity<String> entity) {
     RestTemplate restTemplate = new RestTemplate();
     return restTemplate.exchange(url, method, entity, Object.class);
+  }
+
+  public Double convertVNDToDollar(Double vnd) {
+
+    Double amountDollar = vnd / PaypalConfig.usdToVndExchangeRate;
+
+    DecimalFormat df = new DecimalFormat("#.##");
+    amountDollar = Double.valueOf(df.format(amountDollar));
+
+    return amountDollar;
   }
 }

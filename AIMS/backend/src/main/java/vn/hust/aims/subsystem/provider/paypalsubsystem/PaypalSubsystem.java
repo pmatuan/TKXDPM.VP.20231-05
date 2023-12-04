@@ -22,9 +22,13 @@ public class PaypalSubsystem implements PaymentSubsystem {
     this.paypalUtil = new PaypalUtil();
   }
 
+  // PaypalSubsystem - PaypalUtil: Data coupling
+  // Phương thức payOrder của PaypalSubsystem được triển khai từ interface PaymentSubsystem,
+  // trong đó có sử dụng PaypalUtil để xây dựng HttpEntity, thực hiện HTTP request và trả về PayOrderOutput.
+  // PaypalSubsystem truyền vừa đủ dữ liệu sang PaypalUtil.
   @Override
   public PayOrderOutput payOrder(HttpServletRequest request, PayOrderInput input) {
-    Double amountDollar = convertVNDToDollar(input.getAmount());
+    Double amountDollar = paypalUtil.convertVNDToDollar(input.getAmount());
 
     String requestJson =
         "{\"intent\":\"CAPTURE\",\"purchase_units\":[{\"amount\":{\"currency_code\":\"USD\",\"value\":\""
@@ -37,6 +41,8 @@ public class PaypalSubsystem implements PaymentSubsystem {
         entity
     );
 
+    // PaypalSubsystem - PayOrderOutput: Data coupling
+    // PaypalSubsystem truyền dữ liệu vừa đủ cho PayOrderOutput để tạo thành url thanh toán trả về phía PaymentController.
     if (response.getStatusCode() == HttpStatus.CREATED) {
       LOGGER.log(Level.INFO, "ORDER CAPTURE");
       return PayOrderOutput.fromResponse(response.getBody());
@@ -45,15 +51,5 @@ public class PaypalSubsystem implements PaymentSubsystem {
       return null;
     }
 
-  }
-
-  private Double convertVNDToDollar(Double vnd) {
-
-    Double amountDollar = vnd / PaypalConfig.usdToVndExchangeRate;
-
-    DecimalFormat df = new DecimalFormat("#.##");
-    amountDollar = Double.valueOf(df.format(amountDollar));
-
-    return amountDollar;
   }
 }
