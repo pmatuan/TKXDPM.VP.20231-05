@@ -12,6 +12,8 @@ public class PayOrderResponse {
 
   private Object response;
 
+  // PayOrderResponse - PayOrderOutput: Data coupling
+  // Dữ liệu được truyền vừa đủ từ PayOrderOutput sang PayOrderResponse để tạo response cho client.
   public static PayOrderResponse from(PayOrderOutput output) {
     return PayOrderResponse.builder()
         .url(output.getUrl())

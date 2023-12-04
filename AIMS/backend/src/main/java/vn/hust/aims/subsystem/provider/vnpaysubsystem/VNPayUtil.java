@@ -21,6 +21,8 @@ import org.springframework.stereotype.Component;
 @Component
 public class VNPayUtil {
 
+  // VNPayUtil - VNPayConfig: Data coupling
+  // Dữ liệu từ VNPayConfig được sử dụng để thực hiện tính toán và xây dựng dữ liệu trong VNPayUtil.
   private VNPayConfig vnPayConfig;
 
   public VNPayUtil() {

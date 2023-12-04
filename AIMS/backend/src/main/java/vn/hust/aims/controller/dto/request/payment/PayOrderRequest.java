@@ -14,6 +14,8 @@ public class PayOrderRequest {
   private String message;
   private String provider;
 
+  // PayOrderRequest - PayOrderInput: Data coupling
+  // Dữ liệu được truyền vừa đủ từ PayOrderRequest sang PayOrderInput để tạo input cho payment subsystem sau đó
   public PayOrderInput toInput() {
     return PayOrderInput.builder()
         .amount(amount)
