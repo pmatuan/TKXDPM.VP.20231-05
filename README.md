@@ -72,17 +72,16 @@ This is a Capstone's source code for Software Design and Construction project
 <details>
 <summary>Ngô Thị Lam</summary>
 <br>
-
 - Assigned tasks:
 
-  - Task 1
-  - Task 2
-  - ...
+  - Conducting an analysis of coupling levels between classes related to cart functionality.
 
 - Implementation details:
-  - Pull Request(s): [Attach links to your pull requests here. You can attach multiple pull requests]()
+  - Pull Request(s): https://github.com/pmatuan/TKXDPM.VP.20231-05/pull/7
   - Specific implementation details:
-    - Describe specific in detail what you did last week
-    - You can attach images if you want
+    - Comments code indicating the type of coupling
+
+
+</details>
 
 </details>
