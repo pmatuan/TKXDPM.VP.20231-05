@@ -1,3 +1,11 @@
+/*
+  Functions in this class are all loosely coupled with other functions. However, the large amount of imported functions from other classes,
+  along with this class' attempt to cover all aspects of order placing process, make it become highly coupled to other classes,
+  while having low cohesion between functions.
+  Proposed solution:
+   - Separation of concerns: have a separate class for order creation, another for delivery information handling, and another for
+   order calculation.
+*/
 package vn.hust.aims.service;
 
 import lombok.RequiredArgsConstructor;
@@ -45,12 +53,14 @@ public class PlaceOrderService {
 
     List<OrderMedia> orderMediaList = mapCartMediaToOrderMedia(cart.getCartMediaList());
 
+    // data coupling
     Order order = buildOrder(orderMediaList);
     orderRepository.save(order);
 
     orderMediaList.forEach(orderMedia -> orderMedia.setOrder(order));
     orderMediaRepository.saveAll(orderMediaList);
 
+    // data coupling
     return CreateOrderOutput.from(order.getId());
   }
 
@@ -66,14 +76,17 @@ public class PlaceOrderService {
 
     Order order = getOrderById(input.getOrderId());
 
+    // data coupling
     DeliveryInfo deliveryInfo = createDeliveryInfo(input);
     deliveryInfoRepository.save(deliveryInfo);
     order.setDeliveryInfo(deliveryInfo);
 
     if (Boolean.TRUE.equals(input.getIsOrderForRushDelivery())) {
+      // data coupling
       updateOrderForRushDelivery(order, input);
     }
 
+    // data coupling
     updateOrder(order);
 
     return UpdateDeliveryInfoOutput.from(
@@ -83,8 +96,11 @@ public class PlaceOrderService {
   public UpdateMediaInOrderOutput updateOrderMedia(UpdateMediaInOrderInput input) {
 
     Order order = getOrderById(input.getOrderId());
+
+    // stamp couling: only the media list of order is used
     OrderMedia orderMedia = findOrderMediaById(order, input.getOrderMediaId());
 
+    // data coupling
     validateAndUpdateOrderMedia(orderMedia, input.getQuantity(), order);
 
     return UpdateMediaInOrderOutput.from(
@@ -95,8 +111,11 @@ public class PlaceOrderService {
   public DeleteMediaInOrderOutput deleteOrderMedia(DeleteMediaInOrderInput input) {
 
     Order order = getOrderById(input.getOrderId());
+
+    // stamp couling: only the media list of order is used
     OrderMedia orderMedia = findOrderMediaById(order, input.getOrderMediaId());
 
+    // data coupling
     deleteAndUpdateOrderMedia(orderMedia, order);
 
     return DeleteMediaInOrderOutput.from(
@@ -130,8 +149,11 @@ public class PlaceOrderService {
 
     String orderId = UUID.randomUUID().toString();
 
+    // data coupling
     Double subtotal = calculateSubtotal(orderMediaList);
+    // data coupling
     Double VAT = calculateVAT(subtotal);
+    // data coupling
     Double total = calculateTotal(subtotal, VAT, null);
 
     return Order.builder()
@@ -181,10 +203,13 @@ public class PlaceOrderService {
     String city = order.getDeliveryInfo().getCity();
 
     if (isInHanoi(city)) {
+      // data coupling
       return calculateFeeInHanoiAndHCM(maxWeight) + rushDeliveryFee;
     } else if (isInHCM(city)) {
+      // data coupling
       return calculateFeeInHanoiAndHCM(maxWeight);
     } else {
+      // data coupling
       return calculateFeeOutside(maxWeight);
     }
   }
@@ -254,19 +279,24 @@ public class PlaceOrderService {
       }
     });
 
+    // data coupling
     RushOrder rushOrder = createRushOrder(order, input);
     rushOrderRepository.save(rushOrder);
   }
 
   private void validateAndUpdateOrderMedia(OrderMedia orderMedia, Integer quantity, Order order) {
+    // data coupling
     validateQuantityInStock(orderMedia.getMedia(), quantity);
+    // data coupling
     updateOrderMediaQuantity(orderMedia, quantity);
+    // data coupling
     updateOrder(order);
   }
 
   private void deleteAndUpdateOrderMedia(OrderMedia orderMedia, Order order) {
     orderMediaRepository.delete(orderMedia);
     order.getOrderMediaList().remove(orderMedia);
+    // data coupling
     updateOrder(order);
   }
 
@@ -280,15 +310,19 @@ public class PlaceOrderService {
 
     List<OrderMedia> orderMediaList = order.getOrderMediaList();
 
+    // data coupling
     Double subtotal = calculateSubtotal(orderMediaList);
     order.setSubtotal(subtotal);
 
+    // data coupling
     Double VAT = calculateVAT(subtotal);
     order.setVat(VAT);
 
+    // data coupling
     Double deliveryFee = calculateDeliveryFee(order);
     order.setDeliveryFee(deliveryFee);
 
+    // data coupling
     Double total = calculateTotal(subtotal, VAT, deliveryFee);
     order.setTotal(total);
 
