@@ -14,7 +14,10 @@ public enum ErrorCodeList {
   INVALID_TIME("INVALID_TIME_001", "Invalid time"),
   INVALID_EMAIL("INVALID_EMAIL_001", "Invalid email"),
   INVALID_PHONE_NUMBER("INVALID_PHONE_NUMBER_001", "Invalid phone number"),
-  INVALID_PROVINCE("INVALID_PROVINCE_001", "Invalid province");
+  INVALID_PROVINCE("INVALID_PROVINCE_001", "Invalid province"),
+  PAYMENT_NOT_SUPPORTED("PAYMENT_001", "Payment type not supported"),;
+
+
 
   private final String code;
   private final String message;
