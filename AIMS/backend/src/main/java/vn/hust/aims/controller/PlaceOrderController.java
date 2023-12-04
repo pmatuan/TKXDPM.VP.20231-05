@@ -40,8 +40,10 @@ public class PlaceOrderController {
   public ResponseEntity<AimsCommonResponse<Object>> createOrderFromCart(
       @RequestBody CreateOrderRequest request) {
 
+    // data coupling
     CreateOrderOutput output = placeOrderService.createOrderFromCart(request.toInput());
 
+    // data coupling
     return ResponseUtil.toSuccessCommonResponse(
         CreateOrderResponse.from(output)
     );
@@ -56,6 +58,7 @@ public class PlaceOrderController {
             .build()
     );
 
+    // data coupling
     return ResponseUtil.toSuccessCommonResponse(
         GetOrderResponse.from(output)
     );
@@ -65,9 +68,11 @@ public class PlaceOrderController {
   public ResponseEntity<AimsCommonResponse<Object>> updateDeliveryInfo(
       @PathVariable String orderId, @RequestBody UpdateDeliveryInfoRequest request) {
 
+    // data coupling
     UpdateDeliveryInfoOutput output = placeOrderService.updateDeliveryInfo(
         request.toInput(orderId));
 
+    // data coupling
     return ResponseUtil.toSuccessCommonResponse(
         UpdateDeliveryInfoResponse.from(output)
     );
@@ -78,9 +83,11 @@ public class PlaceOrderController {
       @PathVariable String orderId, @PathVariable Long orderMediaId,
       @RequestBody UpdateMediaInOrderRequest request) {
 
+    // data coupling
     UpdateMediaInOrderOutput output = placeOrderService.updateOrderMedia(
         request.toInput(orderId, orderMediaId));
 
+    // data coupling
     return ResponseUtil.toSuccessCommonResponse(
         UpdateMediaInOrderResponse.from(output)
     );
@@ -90,6 +97,7 @@ public class PlaceOrderController {
   public ResponseEntity<AimsCommonResponse<Object>> deleteOrderMedia(
       @PathVariable String orderId, @PathVariable Long orderMediaId) {
 
+    // data coupling
     DeleteMediaInOrderOutput output = placeOrderService.deleteOrderMedia(
         DeleteMediaInOrderInput.builder()
             .orderId(orderId)
@@ -97,6 +105,7 @@ public class PlaceOrderController {
             .build()
     );
 
+    // data coupling
     return ResponseUtil.toSuccessCommonResponse(
         DeleteMediaInOrderResponse.from(output)
     );
