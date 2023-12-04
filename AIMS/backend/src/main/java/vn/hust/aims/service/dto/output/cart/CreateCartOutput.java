@@ -13,6 +13,8 @@ public class CreateCartOutput {
 
   private String cartId;
 
+  // from: data coupling
+  // Chỉ truyền vừa đủ dữ liệu đầu vào
   public static CreateCartOutput from(String cartId) {
     return CreateCartOutput.builder()
         .cartId(cartId)

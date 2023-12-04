@@ -31,6 +31,12 @@ import vn.hust.aims.service.dto.output.cart.GetCartOutput;
 import vn.hust.aims.service.dto.output.cart.UpdateMediaInCartOutput;
 import vn.hust.aims.utils.ResponseUtil;
 
+
+// CartController
+// Data coupling
+// Lớp CartController nhận dữ liệu từ Client thông qua các lớp dto request của Cart
+// Mỗi phương thức (nếu có) sẽ có dto request và response riêng
+// CartController sử dụng CartService
 @Controller
 @AllArgsConstructor
 @RequestMapping("/api/v1/cart")
@@ -38,9 +44,9 @@ public class CartController {
 
   private final CartService cartService;
 
+  // Data coupling
   @GetMapping("")
   public ResponseEntity<AimsCommonResponse<Object>> createCart() {
-
     CreateCartOutput output = cartService.createCart();
 
     return ResponseUtil.toSuccessCommonResponse(
@@ -48,6 +54,7 @@ public class CartController {
     );
   }
 
+  // Data-coupling
   @GetMapping("/{cartId}")
   public ResponseEntity<AimsCommonResponse<Object>> getCart(@PathVariable String cartId) {
 
@@ -62,6 +69,7 @@ public class CartController {
     );
   }
 
+  // Data-coupling
   @DeleteMapping("/{cartId}")
   public ResponseEntity<AimsCommonResponse<Object>> deleteCart(@PathVariable String cartId) {
 
@@ -76,6 +84,7 @@ public class CartController {
     );
   }
 
+  // Data-coupling
   @PostMapping("/{cartId}/cart-media")
   public ResponseEntity<AimsCommonResponse<Object>> addMediaToCart(
       @PathVariable String cartId, @RequestBody AddMediaToCartRequest request) {
@@ -87,6 +96,7 @@ public class CartController {
     );
   }
 
+  // Data-coupling
   @PutMapping("/{cartId}/cart-media/{cartMediaId}")
   public ResponseEntity<AimsCommonResponse<Object>> updateMediaInCart(
       @PathVariable String cartId, @PathVariable Long cartMediaId, @RequestBody UpdateMediaInCartRequest request) {
@@ -98,6 +108,7 @@ public class CartController {
     );
   }
 
+  // Data-coupling
   @DeleteMapping("/{cartId}/cart-media/{cartMediaId}")
   public ResponseEntity<AimsCommonResponse<Object>> deleteMediaInCart(
       @PathVariable String cartId, @PathVariable Long cartMediaId

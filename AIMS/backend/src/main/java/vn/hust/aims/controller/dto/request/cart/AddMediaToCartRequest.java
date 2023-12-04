@@ -13,6 +13,8 @@ public class AddMediaToCartRequest {
   private Long mediaId;
   private Integer quantity;
 
+  // toInput: data coupling
+  // Dữ liệu nhận vào cartId vừa đủ để xây dựng đối tượng AddMediaToCartInput
   public AddMediaToCartInput toInput(String cartId){
     return AddMediaToCartInput.builder()
         .cartId(cartId)

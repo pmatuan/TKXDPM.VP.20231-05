@@ -36,6 +36,7 @@ public class CartService {
   private final CartMediaRepository cartMediaRepository;
   private final MediaRepository mediaRepository;
 
+  // data-coupling
   public CreateCartOutput createCart() {
 
     String cartId = UUID.randomUUID().toString();
@@ -49,6 +50,9 @@ public class CartService {
     return CreateCartOutput.from(cartId);
   }
 
+  // data coupling
+  // Sử dụng lớp dto GetCartInput
+  // Nhận đủ dữ liệu để thực thi lấy cart
   public GetCartOutput getCart(GetCartInput input) {
 
     Cart cart = getCartById(input.getCartId());
@@ -56,6 +60,9 @@ public class CartService {
     return GetCartOutput.from(cart);
   }
 
+  // data coupling
+  // Sử dụng lớp dto DeleteCartInput
+  // Nhận đủ dữ liệu để thực thi xóa cart
   public DeleteCartOutput deleteCart(DeleteCartInput input) {
 
     if (!cartRepository.existsById(input.getCartId())) {
@@ -67,6 +74,11 @@ public class CartService {
     return DeleteCartOutput.from("Cart " + input.getCartId() + " deleted successfully");
   }
 
+
+  // data coupling
+  // Sử dụng lớp dto AddMediaToCartInput
+  // Nhận đủ dữ liệu để thực thi thêm media vào cart
+  // Không thay đổi hành vi phụ thuộc vào input
   public AddMediaToCartOutput addMediaToCart(AddMediaToCartInput input) {
 
     Cart cart = getCartById(input.getCartId());
@@ -89,6 +101,10 @@ public class CartService {
         "Add media " + input.getMediaId() + " to cart " + input.getCartId() + " successfully");
   }
 
+  // data coupling
+  // Sử dụng lớp dto UpdateMediaToCartInput
+  // Nhận đủ dữ liệu để thực thi cập nhật media trong cart
+  // Không thay đổi hành vi phụ thuộc vào input
   public UpdateMediaInCartOutput updateMediaInCart(UpdateMediaInCartInput input) {
 
     Cart cart = getCartById(input.getCartId());
@@ -101,6 +117,10 @@ public class CartService {
             " successfully");
   }
 
+  // data coupling
+  // Sử dụng lớp dto DeleteMediaToCartInput
+  // Nhận đủ dữ liệu để thực thi xóa media trong cart
+  // Không thay đổi hành vi phụ thuộc vào input
   public DeleteMediaInCartOutput deleteMediaInCart(DeleteMediaInCartInput input) {
 
     Cart cart = getCartById(input.getCartId());
@@ -112,30 +132,40 @@ public class CartService {
         "Deleted cart media " + input.getCartMediaId() + " successfully");
   }
 
+  // data-coupling
+  // Chỉ dùng đủ dữ liệu để tìm cart - cartId
   private Cart getCartById(String cartId) {
     return cartRepository.findById(cartId)
         .orElseThrow(
             () -> new AimsException(null, ErrorCodeList.CART_NOT_FOUND, HttpStatus.BAD_REQUEST));
   }
 
+  // data-coupling
+  // Chỉ duùng đủ dữ liệu để tìm media - mediaId
   private Media getMediaById(Long mediaId) {
     return mediaRepository.findById(mediaId)
         .orElseThrow(
             () -> new AimsException(null, ErrorCodeList.MEDIA_NOT_FOUND, HttpStatus.BAD_REQUEST));
   }
 
+  // data-coupling
+  // Chỉ dùng đủ dữ liệu để tìm cart media - chỉ truyền vào media và số quantity cần có
   private void validateQuantityInStock(Media media, Integer requestedQuantity) {
     if (media.getQuantityInStock() < requestedQuantity) {
       throw new AimsException(null, ErrorCodeList.QUANTITY_NOT_ENOUGH, HttpStatus.BAD_REQUEST);
     }
   }
 
+  // data-coupling
+  // Chỉ dùng đủ dữ liệu để tìm cart media - chỉ truyền vào ID
   private Optional<CartMedia> findCartMediaInCart(Cart cart, Long mediaId) {
     return cart.getCartMediaList().stream()
         .filter(cartMedia -> cartMedia.getMedia().getId().equals(mediaId))
         .findFirst();
   }
 
+  // data-coupling
+  // Chỉ dùng đủ dữ liệu để thực thi chức năng thêm media vào cart
   private void addNewCartMediaToCart(Cart cart, Media media, Integer quantity) {
     CartMedia cartMedia = CartMedia.builder()
         .cart(cart)
@@ -146,6 +176,8 @@ public class CartService {
     cartMediaRepository.save(cartMedia);
   }
 
+  // data-coupling
+  // Chỉ dùng đủ dữ liệu để tìm cart media - chỉ truyền vào ID
   private CartMedia findCartMediaById(Cart cart, Long cartMediaId){
     return cart.getCartMediaList().stream()
         .filter(cartMedia -> cartMedia.getId().equals(cartMediaId))
@@ -153,16 +185,22 @@ public class CartService {
         .orElseThrow(() -> new AimsException(null, ErrorCodeList.CART_MEDIA_NOT_FOUND, HttpStatus.BAD_REQUEST));
   }
 
+  // data-coupling
+  // Chỉ dùng đủ dữ liệu để thực thi chức năng xác minh và cập nhật cart
   private void validateAndUpdateCartMedia(CartMedia cartMedia, Integer quantity){
     validateQuantityInStock(cartMedia.getMedia(), quantity);
     updateCartMediaQuantity(cartMedia, quantity);
   }
 
+  // data-coupling
+  // Chỉ dùng đủ dữ liệu để thực thi chức năng xóa media trong cart
   private void deleteAndUpdateCartMedia(CartMedia cartMedia, Cart cart){
     cartMediaRepository.delete(cartMedia);
     cart.getCartMediaList().remove(cartMedia);
   }
 
+  // data-coupling
+  // Chỉ dùng đủ dữ liệu để thực thi chức năng cập nhật số lượng media trong cart
   private void updateCartMediaQuantity(CartMedia cartMedia, Integer quantity){
     cartMedia.setQuantity(quantity);
     cartMediaRepository.save(cartMedia);

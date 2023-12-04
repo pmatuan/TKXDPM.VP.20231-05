@@ -16,6 +16,8 @@ public class GetCartResponse {
   private Double VAT; // calculate the VAT amount directly instead of displaying the percentage
   private Double total;
 
+  // from: data coupling
+  // Chỉ truyền vừa đủ dữ liệu đầu vào
   public static GetCartResponse from(GetCartOutput output) {
 
     Cart cart = output.getCart();

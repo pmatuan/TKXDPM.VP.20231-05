@@ -13,6 +13,8 @@ public class DeleteCartOutput {
 
   private String message;
 
+  // from: data coupling
+  // Chỉ truyền vừa đủ dữ liệu đầu vào
   public static DeleteCartOutput from(String message) {
     return DeleteCartOutput.builder()
         .message(message)

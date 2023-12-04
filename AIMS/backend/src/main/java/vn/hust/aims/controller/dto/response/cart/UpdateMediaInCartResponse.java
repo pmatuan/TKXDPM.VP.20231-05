@@ -9,6 +9,8 @@ import vn.hust.aims.service.dto.output.cart.UpdateMediaInCartOutput;
 public class UpdateMediaInCartResponse {
   private String message;
 
+  // from: data coupling
+  // Chỉ truyền vừa đủ dữ liệu đầu vào
   public static UpdateMediaInCartResponse from(UpdateMediaInCartOutput output){
     return UpdateMediaInCartResponse.builder()
         .message(output.getMessage())
