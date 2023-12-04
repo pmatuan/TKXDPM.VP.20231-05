@@ -10,6 +10,8 @@ public class DeleteMediaInCartResponse {
 
   private String message;
 
+  // from: data coupling
+  // Chỉ truyền vừa đủ dữ liệu đầu vào
   public static DeleteMediaInCartResponse from(DeleteMediaInCartOutput output){
     return DeleteMediaInCartResponse.builder()
         .message(output.getMessage())

@@ -12,6 +12,8 @@ public class UpdateMediaInCartRequest {
 
   private Integer quantity;
 
+  // toInput: data coupling
+  // Dữ liệu nhận vào cartId và cartMediaId vừa đủ để xây dựng đối tượng UpdateMediaInCartInput
   public UpdateMediaInCartInput toInput(String cartId, Long cartMediaId){
     return UpdateMediaInCartInput.builder()
         .cartId(cartId)

@@ -13,6 +13,8 @@ public class AddMediaToCartOutput {
 
   private String message;
 
+  // from: data coupling
+  // Chỉ truyền vừa đủ dữ liệu đầu vào
   public static AddMediaToCartOutput from(String message) {
     return AddMediaToCartOutput.builder()
         .message(message)
