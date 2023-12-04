@@ -54,15 +54,12 @@ This is a Capstone's source code for Software Design and Construction project
 
 - Assigned tasks:
 
-  - Task 1
-  - Task 2
-  - ...
+  - Conducting an analysis of coupling levels between classes related to payment functionality.
 
 - Implementation details:
-  - Pull Request(s): [Attach links to your pull requests here. You can attach multiple pull requests]()
+  - Pull Request(s): [https://github.com/pmatuan/TKXDPM.VP.20231-05/pull/9](https://github.com/pmatuan/TKXDPM.VP.20231-05/pull/9)
   - Specific implementation details:
-    - Describe specific in detail what you did last week
-    - You can attach images if you want
+    - Conducted an analysis of the coupling between classes related to payment functionality, then introduced comments in the code indicating the type of coupling and potential solution to reduce coupling.
 
 </details>
 
