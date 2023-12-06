@@ -80,7 +80,6 @@ public class CartService {
   // Nhận đủ dữ liệu để thực thi thêm media vào cart
   // Không thay đổi hành vi phụ thuộc vào input
   public AddMediaToCartOutput addMediaToCart(AddMediaToCartInput input) {
-
     Cart cart = getCartById(input.getCartId());
     Media media = getMediaById(input.getMediaId());
 
