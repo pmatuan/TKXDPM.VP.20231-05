@@ -9,9 +9,11 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import vn.hust.aims.subsystem.PaymentSubsystem;
+import vn.hust.aims.subsystem.Provider;
 import vn.hust.aims.subsystem.dto.input.PayOrderInput;
 import vn.hust.aims.subsystem.dto.output.PayOrderOutput;
 
+@Provider("PAYPAL")
 public class PaypalSubsystem implements PaymentSubsystem {
 
   private final static Logger LOGGER = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);

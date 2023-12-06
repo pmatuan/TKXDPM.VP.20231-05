@@ -37,10 +37,13 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-web'
 	implementation group: 'org.springdoc', name: 'springdoc-openapi-common', version: '1.6.11'
 	implementation 'org.json:json:20231013'
+	implementation 'org.reflections:reflections:0.10.2'
 
-    compileOnly 'org.projectlombok:lombok:1.18.30'
+
+	compileOnly 'org.projectlombok:lombok:1.18.30'
 	annotationProcessor 'org.projectlombok:lombok:1.18.30'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test:2.7.18'
+
 }
 
 tasks.named('test') {
