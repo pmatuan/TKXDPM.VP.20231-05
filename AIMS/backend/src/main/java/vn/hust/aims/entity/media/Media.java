@@ -15,6 +15,7 @@ import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
+import vn.hust.aims.entity.TimedEntity;
 
 @Entity
 @Inheritance(strategy = InheritanceType.JOINED)
@@ -23,7 +24,7 @@ import org.hibernate.annotations.UpdateTimestamp;
 @AllArgsConstructor
 @NoArgsConstructor
 @SuperBuilder
-public class Media {
+public class Media extends TimedEntity {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -61,13 +62,5 @@ public class Media {
 
   @Column(name = "import_date")
   protected Instant importDate;
-
-  @CreationTimestamp
-  @Column(name = "created_at")
-  protected Instant createdAt;
-
-  @UpdateTimestamp
-  @Column(name = "updated_at")
-  protected Instant updatedAt;
 
 }

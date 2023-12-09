@@ -13,6 +13,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
+import vn.hust.aims.entity.TimedEntity;
 
 @Entity
 @Table(name = "rush_order")
@@ -20,7 +21,7 @@ import lombok.experimental.SuperBuilder;
 @AllArgsConstructor
 @NoArgsConstructor
 @SuperBuilder
-public class RushOrder {
+public class RushOrder extends TimedEntity {
 
   @Id
   private String id;

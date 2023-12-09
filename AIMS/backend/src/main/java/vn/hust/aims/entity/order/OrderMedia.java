@@ -17,6 +17,7 @@ import lombok.experimental.SuperBuilder;
 import org.aspectj.weaver.ast.Or;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
+import vn.hust.aims.entity.TimedEntity;
 import vn.hust.aims.entity.cart.CartMedia;
 import vn.hust.aims.entity.media.Media;
 
@@ -26,7 +27,7 @@ import vn.hust.aims.entity.media.Media;
 @AllArgsConstructor
 @NoArgsConstructor
 @SuperBuilder
-public class OrderMedia {
+public class OrderMedia extends TimedEntity {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -46,14 +47,6 @@ public class OrderMedia {
 
   @Column(name = "is_order_for_rush_delivery")
   private Boolean isOrderForRushDelivery;
-
-  @CreationTimestamp
-  @Column(name = "created_at")
-  private Instant createdAt;
-
-  @UpdateTimestamp
-  @Column(name = "updated_at")
-  private Instant updatedAt;
 
   public static OrderMedia from(CartMedia cartMedia) {
     return OrderMedia.builder()

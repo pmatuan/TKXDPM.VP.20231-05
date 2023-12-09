@@ -13,6 +13,7 @@ import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
+import vn.hust.aims.entity.TimedEntity;
 
 @Entity
 @Table(name = "delivery_info")
@@ -20,7 +21,7 @@ import org.hibernate.annotations.UpdateTimestamp;
 @AllArgsConstructor
 @NoArgsConstructor
 @SuperBuilder
-public class DeliveryInfo {
+public class DeliveryInfo extends TimedEntity {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -41,11 +42,4 @@ public class DeliveryInfo {
   @Column(name = "address")
   private String address;
 
-  @CreationTimestamp
-  @Column(name = "created_at")
-  private Instant createdAt;
-
-  @UpdateTimestamp
-  @Column(name = "updated_at")
-  private Instant updatedAt;
 }
