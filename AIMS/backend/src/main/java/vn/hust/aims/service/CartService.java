@@ -10,8 +10,11 @@ import org.springframework.stereotype.Service;
 import vn.hust.aims.entity.cart.Cart;
 import vn.hust.aims.entity.cart.CartMedia;
 import vn.hust.aims.entity.media.Media;
-import vn.hust.aims.exception.AimsException;
+import vn.hust.aims.exception.CartMediaNotFoundException;
+import vn.hust.aims.exception.CartNotFoundException;
 import vn.hust.aims.exception.ErrorCodeList;
+import vn.hust.aims.exception.MediaNotFoundException;
+import vn.hust.aims.exception.QuantityNotEnoughException;
 import vn.hust.aims.repository.cart.CartMediaRepository;
 import vn.hust.aims.repository.cart.CartRepository;
 import vn.hust.aims.repository.media.MediaRepository;
@@ -68,7 +71,7 @@ public class CartService {
   public DeleteCartOutput deleteCart(DeleteCartInput input) {
 
     if (!cartRepository.existsById(input.getCartId())) {
-      throw new AimsException(null, ErrorCodeList.CART_NOT_FOUND, HttpStatus.BAD_REQUEST);
+      throw new CartNotFoundException();
     }
 
     cartRepository.deleteById(input.getCartId());
@@ -153,23 +156,21 @@ public class CartService {
   // Chỉ dùng đủ dữ liệu để tìm cart - cartId
   private Cart getCartById(String cartId) {
     return cartRepository.findById(cartId)
-        .orElseThrow(
-            () -> new AimsException(null, ErrorCodeList.CART_NOT_FOUND, HttpStatus.BAD_REQUEST));
+        .orElseThrow(() -> new CartNotFoundException());
   }
 
   // data-coupling
   // Chỉ duùng đủ dữ liệu để tìm media - mediaId
   private Media getMediaById(Long mediaId) {
     return mediaRepository.findById(mediaId)
-        .orElseThrow(
-            () -> new AimsException(null, ErrorCodeList.MEDIA_NOT_FOUND, HttpStatus.BAD_REQUEST));
+        .orElseThrow(() -> new MediaNotFoundException());
   }
 
   // data-coupling
   // Chỉ dùng đủ dữ liệu để tìm cart media - chỉ truyền vào media và số quantity cần có
   private void validateQuantityInStock(Media media, Integer requestedQuantity) {
     if (media.getQuantityInStock() < requestedQuantity) {
-      throw new AimsException(null, ErrorCodeList.QUANTITY_NOT_ENOUGH, HttpStatus.BAD_REQUEST);
+      throw new QuantityNotEnoughException();
     }
   }
 
@@ -195,23 +196,23 @@ public class CartService {
 
   // data-coupling
   // Chỉ dùng đủ dữ liệu để tìm cart media - chỉ truyền vào ID
-  private CartMedia findCartMediaById(Cart cart, Long cartMediaId){
+  private CartMedia findCartMediaById(Cart cart, Long cartMediaId) {
     return cart.getCartMediaList().stream()
         .filter(cartMedia -> cartMedia.getId().equals(cartMediaId))
         .findFirst()
-        .orElseThrow(() -> new AimsException(null, ErrorCodeList.CART_MEDIA_NOT_FOUND, HttpStatus.BAD_REQUEST));
+        .orElseThrow(() -> new CartMediaNotFoundException());
   }
 
   // data-coupling
   // Chỉ dùng đủ dữ liệu để thực thi chức năng xóa media trong cart
-  private void deleteCartMedia(CartMedia cartMedia, Cart cart){
+  private void deleteCartMedia(CartMedia cartMedia, Cart cart) {
     cartMediaRepository.delete(cartMedia);
     cart.removeCartMedia(cartMedia);
   }
 
   // data-coupling
   // Chỉ dùng đủ dữ liệu để thực thi chức năng cập nhật số lượng media trong cart
-  private void updateCartMediaQuantity(CartMedia cartMedia, Integer quantity){
+  private void updateCartMediaQuantity(CartMedia cartMedia, Integer quantity) {
     cartMedia.setQuantity(quantity);
     cartMediaRepository.save(cartMedia);
   }

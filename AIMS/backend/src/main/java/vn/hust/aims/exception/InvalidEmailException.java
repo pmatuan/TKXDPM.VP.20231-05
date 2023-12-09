@@ -1,15 +1,10 @@
 package vn.hust.aims.exception;
 
-public class InvalidEmailException extends InvalidDeliveryInfoException {
+import org.springframework.http.HttpStatus;
 
-	private static final long serialVersionUID = 1091337136123906298L;
+public class InvalidEmailException extends AimsException{
 
-	public InvalidEmailException() {
-
-	}
-
-	public InvalidEmailException(String message) {
-		super(message);
-	}
-
+  public InvalidEmailException() {
+    super(null, ErrorCodeList.INVALID_EMAIL, HttpStatus.BAD_REQUEST);
+  }
 }

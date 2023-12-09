@@ -7,8 +7,8 @@ import org.reflections.Reflections;
 import org.reflections.scanners.SubTypesScanner;
 import org.reflections.util.ConfigurationBuilder;
 import org.springframework.http.HttpStatus;
-import vn.hust.aims.exception.AimsException;
 import vn.hust.aims.exception.ErrorCodeList;
+import vn.hust.aims.exception.PaymentNotSupportedException;
 
 public class PaymentSubsystemFactory {
 
@@ -44,7 +44,7 @@ public class PaymentSubsystemFactory {
       return (PaymentSubsystem) subsystemClass.getDeclaredConstructor().newInstance();
     } catch (Exception e) {
       // Handle exceptions appropriately
-      throw new AimsException(null, ErrorCodeList.PAYMENT_NOT_SUPPORTED, HttpStatus.BAD_REQUEST);
+      throw new PaymentNotSupportedException();
     }
   }
 }

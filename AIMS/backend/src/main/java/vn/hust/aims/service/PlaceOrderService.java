@@ -16,8 +16,11 @@ import vn.hust.aims.entity.cart.CartMedia;
 import vn.hust.aims.entity.media.Media;
 import vn.hust.aims.entity.order.*;
 import vn.hust.aims.enumeration.ProvinceEnum;
-import vn.hust.aims.exception.AimsException;
+import vn.hust.aims.exception.CartNotFoundException;
 import vn.hust.aims.exception.ErrorCodeList;
+import vn.hust.aims.exception.OrderMediaNotFoundException;
+import vn.hust.aims.exception.OrderNotFoundException;
+import vn.hust.aims.exception.QuantityNotEnoughException;
 import vn.hust.aims.repository.cart.CartRepository;
 import vn.hust.aims.repository.order.DeliveryInfoRepository;
 import vn.hust.aims.repository.order.OrderMediaRepository;
@@ -128,14 +131,12 @@ public class PlaceOrderService {
 
   private Cart getCartById(String cartId) {
     return cartRepository.findById(cartId)
-        .orElseThrow(
-            () -> new AimsException(null, ErrorCodeList.CART_NOT_FOUND, HttpStatus.BAD_REQUEST));
+        .orElseThrow(() -> new CartNotFoundException());
   }
 
   private Order getOrderById(String orderId) {
     return orderRepository.findById(orderId)
-        .orElseThrow(
-            () -> new AimsException(null, ErrorCodeList.ORDER_NOT_FOUND, HttpStatus.BAD_REQUEST));
+        .orElseThrow(() -> new OrderNotFoundException());
   }
 
   private List<OrderMedia> mapCartMediaToOrderMedia(List<CartMedia> cartMediaList) {
@@ -268,8 +269,7 @@ public class PlaceOrderService {
     return orderMediaList.stream()
         .filter(orderMedia -> orderMedia.getId().equals(orderMediaId))
         .findFirst()
-        .orElseThrow(() -> new AimsException(null, ErrorCodeList.ORDER_MEDIA_NOT_FOUND,
-            HttpStatus.BAD_REQUEST));
+        .orElseThrow(() -> new OrderMediaNotFoundException());
   }
 
   private void updateOrderForRushDelivery(Order order, UpdateDeliveryInfoInput input) {
@@ -293,7 +293,7 @@ public class PlaceOrderService {
 
   private void validateQuantityInStock(Media media, Integer requestedQuantity) {
     if (media.getQuantityInStock() < requestedQuantity) {
-      throw new AimsException(null, ErrorCodeList.QUANTITY_NOT_ENOUGH, HttpStatus.BAD_REQUEST);
+      throw new QuantityNotEnoughException();
     }
   }
 
