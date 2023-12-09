@@ -23,6 +23,10 @@ public class VNPayUtil {
 
   // VNPayUtil - VNPayConfig: Data coupling
   // Dữ liệu từ VNPayConfig được sử dụng để thực hiện tính toán và xây dựng dữ liệu trong VNPayUtil.
+
+  // Mức độ cohesion: Functional Cohesion
+  // Lớp này chứa các phương thức liên quan đến chức năng tương tác và xử lý dữ liệu cho thanh toán qua VNPay.
+
   private VNPayConfig vnPayConfig;
 
   public VNPayUtil() {
