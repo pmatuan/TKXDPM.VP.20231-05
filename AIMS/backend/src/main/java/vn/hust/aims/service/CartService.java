@@ -37,6 +37,8 @@ public class CartService {
   private final MediaRepository mediaRepository;
 
   // data-coupling
+
+  // Functional cohesion
   public CreateCartOutput createCart() {
 
     String cartId = UUID.randomUUID().toString();
