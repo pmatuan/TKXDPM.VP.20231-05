@@ -20,6 +20,7 @@ import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
+import vn.hust.aims.entity.TimedEntity;
 
 @Entity
 @Inheritance(strategy = InheritanceType.JOINED)
@@ -28,7 +29,7 @@ import org.hibernate.annotations.UpdateTimestamp;
 @AllArgsConstructor
 @NoArgsConstructor
 @SuperBuilder
-public class Order {
+public class Order extends TimedEntity {
 
   @Id
   private String id;
@@ -55,14 +56,6 @@ public class Order {
 
   @Column(name = "total")
   private Double total;
-
-  @CreationTimestamp
-  @Column(name = "created_at")
-  private Instant createdAt;
-
-  @UpdateTimestamp
-  @Column(name = "updated_at")
-  private Instant updatedAt;
 
   public void addOrderMedia(OrderMedia orderMedia){
     orderMediaList.add(orderMedia);

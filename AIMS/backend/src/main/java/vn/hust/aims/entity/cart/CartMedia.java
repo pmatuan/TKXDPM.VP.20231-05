@@ -16,6 +16,7 @@ import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
+import vn.hust.aims.entity.TimedEntity;
 import vn.hust.aims.entity.media.Media;
 
 @Entity
@@ -24,7 +25,7 @@ import vn.hust.aims.entity.media.Media;
 @AllArgsConstructor
 @NoArgsConstructor
 @SuperBuilder
-public class CartMedia {
+public class CartMedia extends TimedEntity {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -42,11 +43,4 @@ public class CartMedia {
   @Column(name = "quantity")
   private Integer quantity;
 
-  @CreationTimestamp
-  @Column(name = "created_at")
-  private Instant createdAt;
-
-  @UpdateTimestamp
-  @Column(name = "updated_at")
-  private Instant updatedAt;
 }

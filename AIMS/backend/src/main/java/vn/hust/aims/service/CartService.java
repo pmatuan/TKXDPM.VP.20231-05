@@ -1,23 +1,17 @@
 package vn.hust.aims.service;
 
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import lombok.AllArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import vn.hust.aims.entity.cart.Cart;
 import vn.hust.aims.entity.cart.CartMedia;
 import vn.hust.aims.entity.media.Media;
 import vn.hust.aims.exception.CartMediaNotFoundException;
 import vn.hust.aims.exception.CartNotFoundException;
-import vn.hust.aims.exception.ErrorCodeList;
-import vn.hust.aims.exception.MediaNotFoundException;
-import vn.hust.aims.exception.QuantityNotEnoughException;
 import vn.hust.aims.repository.cart.CartMediaRepository;
 import vn.hust.aims.repository.cart.CartRepository;
-import vn.hust.aims.repository.media.MediaRepository;
 import vn.hust.aims.service.dto.input.cart.AddMediaToCartInput;
 import vn.hust.aims.service.dto.input.cart.DeleteCartInput;
 import vn.hust.aims.service.dto.input.cart.DeleteMediaInCartInput;
@@ -36,7 +30,8 @@ public class CartService {
 
   private final CartRepository cartRepository;
   private final CartMediaRepository cartMediaRepository;
-  private final MediaRepository mediaRepository;
+  private final MediaService mediaService;
+  private final CalculationService calculationService;
 
   // data-coupling
   public CreateCartOutput createCart() {
@@ -58,9 +53,9 @@ public class CartService {
   public GetCartOutput getCart(GetCartInput input) {
 
     Cart cart = getCartById(input.getCartId());
-    Double subtotal = calculateSubtotal(cart.getCartMediaList());
-    Double VAT = calculateVAT(subtotal);
-    Double total = calculateTotal(subtotal, VAT);
+    Double subtotal = calculationService.calculateCartMediaSubtotal(cart.getCartMediaList());
+    Double VAT = calculationService.calculateVAT(subtotal);
+    Double total = calculationService.calculateTotal(subtotal, VAT);
 
     return GetCartOutput.from(cart, subtotal, VAT, total);
   }
@@ -85,9 +80,9 @@ public class CartService {
   // Không thay đổi hành vi phụ thuộc vào input
   public AddMediaToCartOutput addMediaToCart(AddMediaToCartInput input) {
     Cart cart = getCartById(input.getCartId());
-    Media media = getMediaById(input.getMediaId());
+    Media media = mediaService.getMediaById(input.getMediaId());
 
-    validateQuantityInStock(media, input.getQuantity());
+    mediaService.validateQuantityInStock(media, input.getQuantity());
 
     Optional<CartMedia> existingCartMedia = findCartMediaInCart(cart, input.getMediaId());
 
@@ -95,7 +90,7 @@ public class CartService {
       existingCartMedia.get()
           .setQuantity(existingCartMedia.get().getQuantity() + input.getQuantity());
     } else {
-      addNewCartMediaToCart(cart, media, input.getQuantity());
+      addCartMedia(cart, media, input.getQuantity());
     }
 
     cartRepository.save(cart);
@@ -113,7 +108,7 @@ public class CartService {
     Cart cart = getCartById(input.getCartId());
     CartMedia cartMedia = findCartMediaById(cart, input.getCartMediaId());
 
-    validateQuantityInStock(cartMedia.getMedia(), input.getQuantity());
+    mediaService.validateQuantityInStock(cartMedia.getMedia(), input.getQuantity());
     updateCartMediaQuantity(cartMedia, input.getQuantity());
 
     return UpdateMediaInCartOutput.from(
@@ -137,41 +132,10 @@ public class CartService {
   }
 
   // data-coupling
-  private Double calculateSubtotal(List<CartMedia> cartMediaList) {
-    return cartMediaList.stream()
-        .mapToDouble(cartMedia -> cartMedia.getMedia().getPrice() * cartMedia.getQuantity())
-        .sum();
-  }
-
-  // data-coupling
-  private Double calculateVAT(Double subtotal) {
-    return subtotal / 10; // VAT is 10% of the subtotal
-  }
-
-  private Double calculateTotal(Double subtotal, Double VAT) {
-    return subtotal + VAT;
-  }
-
-  // data-coupling
   // Chỉ dùng đủ dữ liệu để tìm cart - cartId
-  private Cart getCartById(String cartId) {
+  public Cart getCartById(String cartId) {
     return cartRepository.findById(cartId)
         .orElseThrow(() -> new CartNotFoundException());
-  }
-
-  // data-coupling
-  // Chỉ duùng đủ dữ liệu để tìm media - mediaId
-  private Media getMediaById(Long mediaId) {
-    return mediaRepository.findById(mediaId)
-        .orElseThrow(() -> new MediaNotFoundException());
-  }
-
-  // data-coupling
-  // Chỉ dùng đủ dữ liệu để tìm cart media - chỉ truyền vào media và số quantity cần có
-  private void validateQuantityInStock(Media media, Integer requestedQuantity) {
-    if (media.getQuantityInStock() < requestedQuantity) {
-      throw new QuantityNotEnoughException();
-    }
   }
 
   // data-coupling
@@ -184,7 +148,7 @@ public class CartService {
 
   // data-coupling
   // Chỉ dùng đủ dữ liệu để thực thi chức năng thêm media vào cart
-  private void addNewCartMediaToCart(Cart cart, Media media, Integer quantity) {
+  private void addCartMedia(Cart cart, Media media, Integer quantity) {
     CartMedia cartMedia = CartMedia.builder()
         .cart(cart)
         .media(media)

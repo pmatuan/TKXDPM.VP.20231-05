@@ -11,6 +11,7 @@ import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
+import vn.hust.aims.entity.TimedEntity;
 
 @Entity
 @Table(name = "payment_transaction")
@@ -18,7 +19,7 @@ import org.hibernate.annotations.UpdateTimestamp;
 @AllArgsConstructor
 @NoArgsConstructor
 @SuperBuilder
-public class PaymentTransaction {
+public class PaymentTransaction extends TimedEntity {
 
   @Id
   private String id;
@@ -31,13 +32,5 @@ public class PaymentTransaction {
 
   @Column(name = "content")
   private String content;
-
-  @CreationTimestamp
-  @Column(name = "created_at")
-  private Instant createdAt;
-
-  @UpdateTimestamp
-  @Column(name = "updated_at")
-  private Instant updatedAt;
 
 }
