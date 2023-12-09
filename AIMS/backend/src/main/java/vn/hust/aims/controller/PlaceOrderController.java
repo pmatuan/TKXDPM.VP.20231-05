@@ -17,7 +17,7 @@ import vn.hust.aims.controller.dto.response.placeorder.DeleteMediaInOrderRespons
 import vn.hust.aims.controller.dto.response.placeorder.GetOrderResponse;
 import vn.hust.aims.controller.dto.response.placeorder.UpdateMediaInOrderResponse;
 import vn.hust.aims.response.AimsCommonResponse;
-import vn.hust.aims.service.PlaceOrderService;
+import vn.hust.aims.service.OrderService;
 import vn.hust.aims.service.dto.input.placeorder.DeleteMediaInOrderInput;
 import vn.hust.aims.service.dto.input.placeorder.GetOrderInput;
 import vn.hust.aims.service.dto.output.placeorder.CreateOrderOutput;
@@ -34,14 +34,14 @@ import vn.hust.aims.controller.dto.response.placeorder.UpdateDeliveryInfoRespons
 @RequestMapping("/api/v1/place-order")
 public class PlaceOrderController {
 
-  private final PlaceOrderService placeOrderService;
+  private final OrderService orderService;
 
   @PostMapping("")
   public ResponseEntity<AimsCommonResponse<Object>> createOrderFromCart(
       @RequestBody CreateOrderRequest request) {
 
     // data coupling
-    CreateOrderOutput output = placeOrderService.createOrderFromCart(request.toInput());
+    CreateOrderOutput output = orderService.createOrderFromCart(request.toInput());
 
     // data coupling
     return ResponseUtil.toSuccessCommonResponse(
@@ -52,7 +52,7 @@ public class PlaceOrderController {
   @GetMapping("/{orderId}")
   public ResponseEntity<AimsCommonResponse<Object>> getOrder(@PathVariable String orderId) {
 
-    GetOrderOutput output = placeOrderService.getOrder(
+    GetOrderOutput output = orderService.getOrder(
         GetOrderInput.builder()
             .orderId(orderId)
             .build()
@@ -69,7 +69,7 @@ public class PlaceOrderController {
       @PathVariable String orderId, @RequestBody UpdateDeliveryInfoRequest request) {
 
     // data coupling
-    UpdateDeliveryInfoOutput output = placeOrderService.updateDeliveryInfo(
+    UpdateDeliveryInfoOutput output = orderService.updateDeliveryInfo(
         request.toInput(orderId));
 
     // data coupling
@@ -84,7 +84,7 @@ public class PlaceOrderController {
       @RequestBody UpdateMediaInOrderRequest request) {
 
     // data coupling
-    UpdateMediaInOrderOutput output = placeOrderService.updateOrderMedia(
+    UpdateMediaInOrderOutput output = orderService.updateOrderMedia(
         request.toInput(orderId, orderMediaId));
 
     // data coupling
@@ -98,7 +98,7 @@ public class PlaceOrderController {
       @PathVariable String orderId, @PathVariable Long orderMediaId) {
 
     // data coupling
-    DeleteMediaInOrderOutput output = placeOrderService.deleteOrderMedia(
+    DeleteMediaInOrderOutput output = orderService.deleteOrderMedia(
         DeleteMediaInOrderInput.builder()
             .orderId(orderId)
             .orderMediaId(orderMediaId)
