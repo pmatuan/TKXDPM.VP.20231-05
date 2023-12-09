@@ -63,4 +63,14 @@ public class Order {
   @UpdateTimestamp
   @Column(name = "updated_at")
   private Instant updatedAt;
+
+  public void addOrderMedia(OrderMedia orderMedia){
+    orderMediaList.add(orderMedia);
+    orderMedia.setOrder(this);
+  }
+
+  public void removeOrderMedia(OrderMedia orderMedia){
+    orderMediaList.remove(orderMedia);
+    orderMedia.setOrder(null);
+  }
 }

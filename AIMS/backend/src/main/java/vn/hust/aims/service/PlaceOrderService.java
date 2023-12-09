@@ -87,7 +87,7 @@ public class PlaceOrderService {
     }
 
     // data coupling
-    updateOrder(order);
+    updateShippingFeeOrder(order);
 
     return UpdateDeliveryInfoOutput.from(
         "Update delivery info to order " + input.getOrderId() + " successfully");
@@ -97,11 +97,15 @@ public class PlaceOrderService {
 
     Order order = getOrderById(input.getOrderId());
 
-    // stamp couling: only the media list of order is used
-    OrderMedia orderMedia = findOrderMediaById(order, input.getOrderMediaId());
+    // stamp coupling: only the media list of order is used: fix
+    OrderMedia orderMedia = findOrderMediaById(order.getOrderMediaList(), input.getOrderMediaId());
 
     // data coupling
-    validateAndUpdateOrderMedia(orderMedia, input.getQuantity(), order);
+    validateQuantityInStock(orderMedia.getMedia(), input.getQuantity());
+    // data coupling
+    updateOrderMediaQuantity(orderMedia, input.getQuantity());
+    // data coupling
+    updateShippingFeeOrder(order);
 
     return UpdateMediaInOrderOutput.from(
         "Update quantity order media " + input.getOrderMediaId() + " to " + input.getQuantity()
@@ -112,8 +116,8 @@ public class PlaceOrderService {
 
     Order order = getOrderById(input.getOrderId());
 
-    // stamp couling: only the media list of order is used
-    OrderMedia orderMedia = findOrderMediaById(order, input.getOrderMediaId());
+    // stamp coupling: only the media list of order is used: fix
+    OrderMedia orderMedia = findOrderMediaById(order.getOrderMediaList(), input.getOrderMediaId());
 
     // data coupling
     deleteAndUpdateOrderMedia(orderMedia, order);
@@ -134,11 +138,6 @@ public class PlaceOrderService {
             () -> new AimsException(null, ErrorCodeList.ORDER_NOT_FOUND, HttpStatus.BAD_REQUEST));
   }
 
-  private RushOrder getRushOrderById(String rushOrderId) {
-    return rushOrderRepository.findById(rushOrderId)
-        .orElse(null);
-  }
-
   private List<OrderMedia> mapCartMediaToOrderMedia(List<CartMedia> cartMediaList) {
     return cartMediaList.stream()
         .map(OrderMedia::from)
@@ -154,7 +153,7 @@ public class PlaceOrderService {
     // data coupling
     Double VAT = calculateVAT(subtotal);
     // data coupling
-    Double total = calculateTotal(subtotal, VAT, null);
+    Double total = calculateTotal(subtotal, VAT);
 
     return Order.builder()
         .id(orderId)
@@ -238,11 +237,12 @@ public class PlaceOrderService {
     return 30000 + additionalFee;
   }
 
-  private Double calculateTotal(Double subtotal, Double VAT, Double deliveryFee) {
-    if (deliveryFee != null) {
-      return subtotal + VAT + deliveryFee;
-    }
+  private Double calculateTotal(Double subtotal, Double VAT) {
     return subtotal + VAT;
+  }
+
+  private Double calculateTotal(Double subtotal, Double VAT, Double deliveryFee) {
+    return subtotal + VAT + deliveryFee;
   }
 
   private DeliveryInfo createDeliveryInfo(UpdateDeliveryInfoInput input) {
@@ -264,8 +264,8 @@ public class PlaceOrderService {
         .build();
   }
 
-  private OrderMedia findOrderMediaById(Order order, Long orderMediaId) {
-    return order.getOrderMediaList().stream()
+  private OrderMedia findOrderMediaById(List<OrderMedia> orderMediaList, Long orderMediaId) {
+    return orderMediaList.stream()
         .filter(orderMedia -> orderMedia.getId().equals(orderMediaId))
         .findFirst()
         .orElseThrow(() -> new AimsException(null, ErrorCodeList.ORDER_MEDIA_NOT_FOUND,
@@ -284,20 +284,11 @@ public class PlaceOrderService {
     rushOrderRepository.save(rushOrder);
   }
 
-  private void validateAndUpdateOrderMedia(OrderMedia orderMedia, Integer quantity, Order order) {
-    // data coupling
-    validateQuantityInStock(orderMedia.getMedia(), quantity);
-    // data coupling
-    updateOrderMediaQuantity(orderMedia, quantity);
-    // data coupling
-    updateOrder(order);
-  }
-
   private void deleteAndUpdateOrderMedia(OrderMedia orderMedia, Order order) {
     orderMediaRepository.delete(orderMedia);
-    order.getOrderMediaList().remove(orderMedia);
+    order.removeOrderMedia(orderMedia);
     // data coupling
-    updateOrder(order);
+    updateShippingFeeOrder(order);
   }
 
   private void validateQuantityInStock(Media media, Integer requestedQuantity) {
@@ -306,24 +297,14 @@ public class PlaceOrderService {
     }
   }
 
-  private void updateOrder(Order order) {
-
-    List<OrderMedia> orderMediaList = order.getOrderMediaList();
-
-    // data coupling
-    Double subtotal = calculateSubtotal(orderMediaList);
-    order.setSubtotal(subtotal);
-
-    // data coupling
-    Double VAT = calculateVAT(subtotal);
-    order.setVat(VAT);
+  private void updateShippingFeeOrder(Order order) {
 
     // data coupling
     Double deliveryFee = calculateDeliveryFee(order);
     order.setDeliveryFee(deliveryFee);
 
     // data coupling
-    Double total = calculateTotal(subtotal, VAT, deliveryFee);
+    Double total = calculateTotal(order.getSubtotal(), order.getVat(), deliveryFee);
     order.setTotal(total);
 
     orderRepository.save(order);

@@ -1,6 +1,5 @@
 package vn.hust.aims.service;
 
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Optional;
 import java.util.UUID;
@@ -12,7 +11,6 @@ import vn.hust.aims.entity.cart.CartMedia;
 import vn.hust.aims.entity.media.Media;
 import vn.hust.aims.exception.AimsException;
 import vn.hust.aims.exception.ErrorCodeList;
-import vn.hust.aims.exception.MediaNotAvailableException;
 import vn.hust.aims.repository.cart.CartMediaRepository;
 import vn.hust.aims.repository.cart.CartRepository;
 import vn.hust.aims.repository.media.MediaRepository;
@@ -74,7 +72,6 @@ public class CartService {
     return DeleteCartOutput.from("Cart " + input.getCartId() + " deleted successfully");
   }
 
-
   // data coupling
   // Sử dụng lớp dto AddMediaToCartInput
   // Nhận đủ dữ liệu để thực thi thêm media vào cart
@@ -109,7 +106,8 @@ public class CartService {
     Cart cart = getCartById(input.getCartId());
     CartMedia cartMedia = findCartMediaById(cart, input.getCartMediaId());
 
-    validateAndUpdateCartMedia(cartMedia, input.getQuantity());
+    validateQuantityInStock(cartMedia.getMedia(), input.getQuantity());
+    updateCartMediaQuantity(cartMedia, input.getQuantity());
 
     return UpdateMediaInCartOutput.from(
         "Update quantity cart media " + input.getCartMediaId() + " to " + input.getQuantity() +
@@ -125,7 +123,7 @@ public class CartService {
     Cart cart = getCartById(input.getCartId());
     CartMedia cartMedia = findCartMediaById(cart, input.getCartMediaId());
 
-    deleteAndUpdateCartMedia(cartMedia, cart);
+    deleteCartMedia(cartMedia, cart);
 
     return DeleteMediaInCartOutput.from(
         "Deleted cart media " + input.getCartMediaId() + " successfully");
@@ -171,7 +169,7 @@ public class CartService {
         .media(media)
         .quantity(quantity)
         .build();
-    cart.getCartMediaList().add(cartMedia);
+    cart.addCartMedia(cartMedia);
     cartMediaRepository.save(cartMedia);
   }
 
@@ -185,17 +183,10 @@ public class CartService {
   }
 
   // data-coupling
-  // Chỉ dùng đủ dữ liệu để thực thi chức năng xác minh và cập nhật cart
-  private void validateAndUpdateCartMedia(CartMedia cartMedia, Integer quantity){
-    validateQuantityInStock(cartMedia.getMedia(), quantity);
-    updateCartMediaQuantity(cartMedia, quantity);
-  }
-
-  // data-coupling
   // Chỉ dùng đủ dữ liệu để thực thi chức năng xóa media trong cart
-  private void deleteAndUpdateCartMedia(CartMedia cartMedia, Cart cart){
+  private void deleteCartMedia(CartMedia cartMedia, Cart cart){
     cartMediaRepository.delete(cartMedia);
-    cart.getCartMediaList().remove(cartMedia);
+    cart.removeCartMedia(cartMedia);
   }
 
   // data-coupling
