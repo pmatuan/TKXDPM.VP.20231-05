@@ -24,4 +24,14 @@ public class Cart {
 
   @OneToMany(mappedBy = "cart", cascade = CascadeType.REMOVE, orphanRemoval = true)
   private List<CartMedia> cartMediaList;
+
+  public void addCartMedia(CartMedia cartMedia) {
+    cartMediaList.add(cartMedia);
+    cartMedia.setCart(this);
+  }
+
+  public void removeCartMedia(CartMedia cartMedia) {
+    cartMediaList.remove(cartMedia);
+    cartMedia.setCart(null);
+  }
 }
