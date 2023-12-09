@@ -13,12 +13,18 @@ import vn.hust.aims.entity.cart.Cart;
 public class GetCartOutput {
 
   private Cart cart;
+  private Double subtotal;
+  private Double VAT;
+  private Double total;
 
   // from: data coupling
   // Chỉ truyền vừa đủ dữ liệu đầu vào
-  public static GetCartOutput from(Cart cart) {
+  public static GetCartOutput from(Cart cart, Double subtotal, Double VAT, Double total) {
     return GetCartOutput.builder()
         .cart(cart)
+        .subtotal(subtotal)
+        .VAT(VAT)
+        .total(total)
         .build();
   }
 }

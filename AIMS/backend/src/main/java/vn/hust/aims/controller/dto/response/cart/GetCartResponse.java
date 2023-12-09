@@ -20,34 +20,11 @@ public class GetCartResponse {
   // Chỉ truyền vừa đủ dữ liệu đầu vào
   public static GetCartResponse from(GetCartOutput output) {
 
-    Cart cart = output.getCart();
-    List<CartMedia> cartMediaList = cart.getCartMediaList();
-
-    Double subtotal = calculateSubtotal(cartMediaList);
-
-    Double VAT = calculateVAT(subtotal);
-
     return GetCartResponse.builder()
-        .cart(cart)
-        .subtotal(subtotal)
-        .VAT(VAT)
-        .total(subtotal + VAT)
+        .cart(output.getCart())
+        .subtotal(output.getSubtotal())
+        .VAT(output.getVAT())
+        .total(output.getTotal())
         .build();
-  }
-
-  private static Double calculateSubtotal(List<CartMedia> cartMediaList) {
-
-    Double subtotal = 0.0;
-
-    for (CartMedia cartMedia : cartMediaList) {
-      subtotal += cartMedia.getMedia().getPrice() * cartMedia.getQuantity();
-    }
-
-    return subtotal;
-  }
-
-  private static Double calculateVAT(Double subtotal) {
-    // VAT is 10% of the subtotal
-    return subtotal / 10;
   }
 }

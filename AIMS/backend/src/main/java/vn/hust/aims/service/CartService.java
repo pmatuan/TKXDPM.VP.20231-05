@@ -1,6 +1,7 @@
 package vn.hust.aims.service;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import lombok.AllArgsConstructor;
@@ -54,8 +55,11 @@ public class CartService {
   public GetCartOutput getCart(GetCartInput input) {
 
     Cart cart = getCartById(input.getCartId());
+    Double subtotal = calculateSubtotal(cart.getCartMediaList());
+    Double VAT = calculateVAT(subtotal);
+    Double total = calculateTotal(subtotal, VAT);
 
-    return GetCartOutput.from(cart);
+    return GetCartOutput.from(cart, subtotal, VAT, total);
   }
 
   // data coupling
@@ -127,6 +131,22 @@ public class CartService {
 
     return DeleteMediaInCartOutput.from(
         "Deleted cart media " + input.getCartMediaId() + " successfully");
+  }
+
+  // data-coupling
+  private Double calculateSubtotal(List<CartMedia> cartMediaList) {
+    return cartMediaList.stream()
+        .mapToDouble(cartMedia -> cartMedia.getMedia().getPrice() * cartMedia.getQuantity())
+        .sum();
+  }
+
+  // data-coupling
+  private Double calculateVAT(Double subtotal) {
+    return subtotal / 10; // VAT is 10% of the subtotal
+  }
+
+  private Double calculateTotal(Double subtotal, Double VAT) {
+    return subtotal + VAT;
   }
 
   // data-coupling

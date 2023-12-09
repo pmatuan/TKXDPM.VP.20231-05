@@ -87,7 +87,7 @@ public class PlaceOrderService {
     }
 
     // data coupling
-    updateShippingFeeOrder(order);
+    updateOrder(order);
 
     return UpdateDeliveryInfoOutput.from(
         "Update delivery info to order " + input.getOrderId() + " successfully");
@@ -105,7 +105,7 @@ public class PlaceOrderService {
     // data coupling
     updateOrderMediaQuantity(orderMedia, input.getQuantity());
     // data coupling
-    updateShippingFeeOrder(order);
+    updateOrder(order);
 
     return UpdateMediaInOrderOutput.from(
         "Update quantity order media " + input.getOrderMediaId() + " to " + input.getQuantity()
@@ -288,7 +288,7 @@ public class PlaceOrderService {
     orderMediaRepository.delete(orderMedia);
     order.removeOrderMedia(orderMedia);
     // data coupling
-    updateShippingFeeOrder(order);
+    updateOrder(order);
   }
 
   private void validateQuantityInStock(Media media, Integer requestedQuantity) {
@@ -297,7 +297,15 @@ public class PlaceOrderService {
     }
   }
 
-  private void updateShippingFeeOrder(Order order) {
+  private void updateOrder(Order order) {
+
+    // data coupling
+    Double subtotal = calculateSubtotal(order.getOrderMediaList());
+    order.setSubtotal(subtotal);
+
+    // data coupling
+    Double VAT = calculateVAT(subtotal);
+    order.setVat(VAT);
 
     // data coupling
     Double deliveryFee = calculateDeliveryFee(order);
