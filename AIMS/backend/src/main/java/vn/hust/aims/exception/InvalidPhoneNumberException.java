@@ -1,15 +1,10 @@
 package vn.hust.aims.exception;
 
-public class InvalidPhoneNumberException extends InvalidDeliveryInfoException {
+import org.springframework.http.HttpStatus;
 
-	private static final long serialVersionUID = 1091337136123906298L;
+public class InvalidPhoneNumberException extends AimsException{
 
-	public InvalidPhoneNumberException() {
-
-	}
-
-	public InvalidPhoneNumberException(String message) {
-		super(message);
-	}
-
+  public InvalidPhoneNumberException() {
+    super(null, ErrorCodeList.INVALID_PHONE_NUMBER, HttpStatus.BAD_REQUEST);
+  }
 }

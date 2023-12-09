@@ -3,10 +3,12 @@ package vn.hust.aims.controller.dto.request.placeorder;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.http.HttpStatus;
 import vn.hust.aims.enumeration.ProvinceEnum;
-import vn.hust.aims.exception.AimsException;
-import vn.hust.aims.exception.ErrorCodeList;
+import vn.hust.aims.exception.InvalidEmailException;
+import vn.hust.aims.exception.InvalidPhoneNumberException;
+import vn.hust.aims.exception.InvalidProvinceException;
+import vn.hust.aims.exception.InvalidTimeException;
+import vn.hust.aims.exception.NotSupportRushDeliveryException;
 import vn.hust.aims.service.dto.input.placeorder.UpdateDeliveryInfoInput;
 
 import java.time.Instant;
@@ -53,7 +55,7 @@ public class UpdateDeliveryInfoRequest {
 
   private void validateEmail() {
     if (!isValidEmail(email)) {
-      throw new AimsException(null, ErrorCodeList.INVALID_EMAIL, HttpStatus.BAD_REQUEST);
+      throw new InvalidEmailException();
     }
   }
 
@@ -63,20 +65,19 @@ public class UpdateDeliveryInfoRequest {
 
   private void validatePhoneNumber() {
     if (phoneNumber == null || phoneNumber.length() != 10) {
-      throw new AimsException(null, ErrorCodeList.INVALID_PHONE_NUMBER, HttpStatus.BAD_REQUEST);
+      throw new InvalidPhoneNumberException();
     }
   }
 
   private void validateProvince() {
     if (province == null || ProvinceEnum.fromString(province).equals(ProvinceEnum.UNKNOWN)) {
-      throw new AimsException(null, ErrorCodeList.INVALID_PROVINCE, HttpStatus.BAD_REQUEST);
+      throw new InvalidProvinceException();
     }
   }
 
   private void validateRushDelivery() {
     if (isOrderForRushDelivery && !ProvinceEnum.fromString(province).equals(ProvinceEnum.HANOI)) {
-      throw new AimsException(null, ErrorCodeList.CITY_NOT_SUPPORT_RUSH_DELIVERY,
-          HttpStatus.BAD_REQUEST);
+      throw new NotSupportRushDeliveryException();
     }
   }
 
@@ -90,7 +91,7 @@ public class UpdateDeliveryInfoRequest {
     try {
       return Instant.parse(time);
     } catch (Exception e) {
-      throw new AimsException(null, ErrorCodeList.INVALID_TIME, HttpStatus.BAD_REQUEST);
+      throw new InvalidTimeException();
     }
   }
 }
