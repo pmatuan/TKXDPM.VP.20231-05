@@ -8,6 +8,9 @@ import vn.hust.aims.subsystem.dto.output.PayOrderOutput;
 
 @Provider("VNPAY")
 public class VNPaySubsystem implements PaymentSubsystem {
+  // Mức độ cohesion: Functional Cohesion
+  // Lớp này chứa một phương thức duy nhất và tất cả các thành phần đều liên quan chặt chẽ đến
+  // chức năng thanh toán qua VNPay.
 
   private VNPayUtil vnPayUtil;
 

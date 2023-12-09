@@ -17,6 +17,11 @@ public class PaypalUtil {
 
   // PaypalUtil - PaypalConfig: Data coupling
   // Dữ liệu từ PaypalConfig được sử dụng để thực hiện tính toán và xây dựng dữ liệu trong PaypalUtil.
+
+  // Mức độ cohesion: Functional Cohesion
+  // Lớp này chứa các phương thức liên quan chặt chẽ đến các chức năng cụ thể của việc giao tiếp với Paypal.
+  // Bao gồm tạo Authorization, tạo Access Token, tạo HttpHeaders, thực hiện HTTP request, và chuyển đổi tiền tệ.
+
   public String getAuth() {
     String auth = PaypalConfig.CLIENT_ID + ":" + PaypalConfig.APP_SECRET;
     return Base64.getEncoder().encodeToString(auth.getBytes());

@@ -20,6 +20,9 @@ import vn.hust.aims.utils.ResponseUtil;
 @NoArgsConstructor
 @RequestMapping("/api/v1/payment")
 public class PaymentController {
+  // Mức độ cohesion: Functional Cohesion
+  // Lớp này thực hiện các hoạt động liên quan đến thanh toán.
+  // Mọi phương thức và thuộc tính đều được thiết kế để hỗ trợ chức năng thanh toán.
 
   private PaymentSubsystem paymentSubsystem;
 

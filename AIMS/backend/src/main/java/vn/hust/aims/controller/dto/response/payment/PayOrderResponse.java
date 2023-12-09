@@ -7,6 +7,9 @@ import vn.hust.aims.subsystem.dto.output.PayOrderOutput;
 @Data
 @SuperBuilder
 public class PayOrderResponse {
+  // Mức độ cohesion: Functional Cohesion
+  // Lớp này chứa các thuộc tính và phương thức liên quan chặt chẽ đến chức năng biểu diễn dữ liệu
+  // đầu ra từ quá trình thanh toán và cung cấp phương thức chuyển đổi từ PayOrderOutput.
 
   private String url;
 

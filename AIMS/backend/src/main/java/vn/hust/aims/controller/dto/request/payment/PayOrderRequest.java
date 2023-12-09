@@ -9,7 +9,9 @@ import vn.hust.aims.subsystem.dto.input.PayOrderInput;
 @AllArgsConstructor
 @NoArgsConstructor
 public class PayOrderRequest {
-
+  // Mức độ cohesion: Functional Cohesion
+  // Lớp này chứa các thuộc tính và phương thức liên quan chặt chẽ đến chức năng biểu diễn dữ liệu
+  // đầu vào cho quá trình thanh toán và cung cấp phương thức chuyển đổi thành đối tượng PayOrderInput.
   private Double amount;
   private String message;
   private String provider;

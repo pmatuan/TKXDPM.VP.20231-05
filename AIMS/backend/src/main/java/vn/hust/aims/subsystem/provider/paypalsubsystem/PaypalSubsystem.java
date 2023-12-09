@@ -15,6 +15,8 @@ import vn.hust.aims.subsystem.dto.output.PayOrderOutput;
 
 @Provider("PAYPAL")
 public class PaypalSubsystem implements PaymentSubsystem {
+  // Mức độ cohesion: Functional Cohesion
+  // Lớp này chứa các phương thức và thuộc tính liên quan đến chức năng thanh toán qua Paypal.
 
   private final static Logger LOGGER = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
 
