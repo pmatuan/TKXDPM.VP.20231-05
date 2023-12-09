@@ -79,3 +79,29 @@ This is a Capstone's source code for Software Design and Construction project
 </details>
 
 </details>
+
+</details>
+
+<details>
+  <summary>W11: 05/12/2023~11/12/2023 </summary>
+<br>
+
+<details>
+<summary>Nguyễn Thị Hoài Linh</summary>
+<br>
+
+- Assigned tasks:
+
+  - Conducting an analysis of cohesion levels between classes related to payment functionality. 
+  - Developing front-end code base
+
+- Implementation details:
+  - Pull Request(s): 
+    - [Pull request for analysis of cohesion levels](https://github.com/pmatuan/TKXDPM.VP.20231-05/pull/18)
+    - [Pull request for front-end code base](https://github.com/pmatuan/TKXDPM.VP.20231-05/pull/13)
+  - Specific implementation details:
+    - Conducted cohesion analysis between payment-related classes, identified types of cohesion, and added comments in the code.
+    - Created the front-end code base, focusing on user interface components.
+
+</details>
+</details>
