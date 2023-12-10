@@ -68,13 +68,12 @@ This is a Capstone's source code for Software Design and Construction project
 <br>
 - Assigned tasks:
 
-  - Conducting an analysis of coupling levels between classes related to cart functionality.
+- Conducting an analysis of coupling levels between classes related to cart functionality.
 
 - Implementation details:
   - Pull Request(s): https://github.com/pmatuan/TKXDPM.VP.20231-05/pull/7
   - Specific implementation details:
     - Comments code indicating the type of coupling
-
 
 </details>
 
@@ -92,16 +91,32 @@ This is a Capstone's source code for Software Design and Construction project
 
 - Assigned tasks:
 
-  - Conducting an analysis of cohesion levels between classes related to payment functionality. 
+  - Conducting an analysis of cohesion levels between classes related to payment functionality.
   - Developing front-end code base
 
 - Implementation details:
-  - Pull Request(s): 
+  - Pull Request(s):
     - [Pull request for analysis of cohesion levels](https://github.com/pmatuan/TKXDPM.VP.20231-05/pull/18)
     - [Pull request for front-end code base](https://github.com/pmatuan/TKXDPM.VP.20231-05/pull/13)
   - Specific implementation details:
     - Conducted cohesion analysis between payment-related classes, identified types of cohesion, and added comments in the code.
     - Created the front-end code base, focusing on user interface components.
+
+</details>
+
+<details>
+<summary>Ngô Thị Lam</summary>
+<br>
+
+- Assigned tasks:
+
+  - Conduct analysis of cohesion levels in cart related classes
+
+- Implementation details:
+  - Pull Request(s):
+    - [Cohesion analysis](https://github.com/pmatuan/TKXDPM.VP.20231-05/pull/20)
+  - Specific implementation details:
+    - Analyze cohesion levels in cart related classes by adding comments in the source code.
 
 </details>
 </details>
