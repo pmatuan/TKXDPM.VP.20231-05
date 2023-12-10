@@ -1,3 +1,7 @@
+/*
+  Functional cohesion: hầu hết các thành phần của lớp này đều hướng đến việc thực hiện một trách nhiệm chung rõ ràng là tính toán hóa đơn. Mỗi phương thức sử dụng kết quả của phương thức khác theo một quy trình.
+*/
+
 package vn.hust.aims.service;
 
 import java.util.List;
