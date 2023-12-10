@@ -33,10 +33,13 @@ import vn.hust.aims.utils.ResponseUtil;
 
 
 // CartController
+
 // Data coupling
 // Lớp CartController nhận dữ liệu từ Client thông qua các lớp dto request của Cart
 // Mỗi phương thức (nếu có) sẽ có dto request và response riêng
 // CartController sử dụng CartService
+
+// Functional Cohesion
 @Controller
 @AllArgsConstructor
 @RequestMapping("/api/v1/cart")

@@ -34,6 +34,8 @@ public class CartService {
   private final CalculationService calculationService;
 
   // data-coupling
+
+  // Functional cohesion
   public CreateCartOutput createCart() {
 
     String cartId = UUID.randomUUID().toString();
