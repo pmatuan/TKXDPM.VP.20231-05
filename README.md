@@ -79,11 +79,43 @@ This is a Capstone's source code for Software Design and Construction project
 
 </details>
 
-</details>
-
 <details>
   <summary>W11: 05/12/2023~11/12/2023 </summary>
 <br>
+
+<details>
+<summary>Phan Minh Anh Tuấn</summary>
+<br>
+
+- Assigned Tasks:
+
+  - Fix control coupling in `PaymentSubsystemFactory`
+  - Resolve stamp coupling in the handling process of the place order service
+  - Correct the calculation of order shipping fees
+  - Introduce a new exception class
+  - Enhance cohesion in the cart and order service
+
+- Implementation Details:
+
+  - Pull Request(s):
+
+    - [PR #11](https://github.com/pmatuan/TKXDPM.VP.20231-05/pull/11)
+    - [PR #12](https://github.com/pmatuan/TKXDPM.VP.20231-05/pull/12)
+    - [PR #14](https://github.com/pmatuan/TKXDPM.VP.20231-05/pull/14)
+    - [PR #15](https://github.com/pmatuan/TKXDPM.VP.20231-05/pull/15)
+    - [PR #16](https://github.com/pmatuan/TKXDPM.VP.20231-05/pull/16)
+    - [PR #17](https://github.com/pmatuan/TKXDPM.VP.20231-05/pull/17)
+
+  - Specific Implementation Details:
+
+    - Fix control coupling in `PaymentSubsystemFactory` using annotations and reflection.
+    - Resolve stamp coupling in the place order service by modifying the handling of stamp-related processes.
+    - Correct the calculation of order shipping fees.
+    - Introduce a new exception class; avoid direct usage of `AimsException`.
+    - Enhance cohesion in cart and order service by splitting into subclasses.
+
+
+</details>
 
 <details>
 <summary>Nguyễn Thị Hoài Linh</summary>
