@@ -10,13 +10,16 @@ public enum ErrorCodeList {
   CART_MEDIA_NOT_FOUND("CART_MEDIA_001", "Cart media not found"),
   ORDER_MEDIA_NOT_FOUND("ORDER_MEDIA_001", "Order media not found"),
   QUANTITY_NOT_ENOUGH("QUANTITY_001", "Quantity of media not enough"),
-  CITY_NOT_SUPPORT_RUSH_DELIVERY("CITY_NOT_SUPPORT_RUSH_DELIVERY_001", "City not support rush delivery"),
+  CITY_NOT_SUPPORT_RUSH_DELIVERY("CITY_NOT_SUPPORT_RUSH_DELIVERY_001",
+      "City not support rush delivery"),
   INVALID_TIME("INVALID_TIME_001", "Invalid time"),
   INVALID_EMAIL("INVALID_EMAIL_001", "Invalid email"),
   INVALID_PHONE_NUMBER("INVALID_PHONE_NUMBER_001", "Invalid phone number"),
   INVALID_PROVINCE("INVALID_PROVINCE_001", "Invalid province"),
-  PAYMENT_NOT_SUPPORTED("PAYMENT_001", "Payment type not supported"),;
-
+  INVALID_ORDER_STATE("INVALID_ORDER_STATE_001", "Invalid order state"),
+  CANNOT_CHANGE_ORDER_STATE("CANNOT_CHANGE_ORDER_STATE_001", "Cannot change order state"),
+  PAYMENT_NOT_SUPPORTED("PAYMENT_001", "Payment type not supported"),
+  ;
 
 
   private final String code;

@@ -9,25 +9,30 @@
 package vn.hust.aims.service;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import vn.hust.aims.entity.cart.Cart;
 import vn.hust.aims.entity.cart.CartMedia;
 import vn.hust.aims.entity.order.*;
+import vn.hust.aims.enumeration.OrderStateEnum;
+import vn.hust.aims.exception.CannotChangeOrderStateException;
 import vn.hust.aims.exception.OrderMediaNotFoundException;
 import vn.hust.aims.exception.OrderNotFoundException;
-import vn.hust.aims.repository.cart.CartRepository;
-import vn.hust.aims.repository.order.DeliveryInfoRepository;
 import vn.hust.aims.repository.order.OrderMediaRepository;
 import vn.hust.aims.repository.order.OrderRepository;
 import vn.hust.aims.repository.order.RushOrderRepository;
+import vn.hust.aims.service.dto.input.order.UpdateOrderStateInput;
 import vn.hust.aims.service.dto.input.placeorder.CreateOrderInput;
 import vn.hust.aims.service.dto.input.placeorder.DeleteMediaInOrderInput;
-import vn.hust.aims.service.dto.input.placeorder.GetOrderInput;
+import vn.hust.aims.service.dto.input.order.GetOrderInput;
 import vn.hust.aims.service.dto.input.placeorder.UpdateDeliveryInfoInput;
 import vn.hust.aims.service.dto.input.placeorder.UpdateMediaInOrderInput;
+import vn.hust.aims.service.dto.output.order.GetAllOrderOutput;
+import vn.hust.aims.service.dto.output.order.UpdateOrderStateOutput;
 import vn.hust.aims.service.dto.output.placeorder.CreateOrderOutput;
 import vn.hust.aims.service.dto.output.placeorder.DeleteMediaInOrderOutput;
-import vn.hust.aims.service.dto.output.placeorder.GetOrderOutput;
+import vn.hust.aims.service.dto.output.order.GetOrderOutput;
 import vn.hust.aims.service.dto.output.placeorder.UpdateDeliveryInfoOutput;
 
 import java.util.List;
@@ -65,6 +70,11 @@ public class OrderService {
     Order order = getOrderById(input.getOrderId());
 
     return GetOrderOutput.from(order);
+  }
+
+  public GetAllOrderOutput getAllOrder(Pageable pageable){
+    Page<Order> orderPage = orderRepository.getAllOrderPage(pageable);
+    return GetAllOrderOutput.from(orderPage);
   }
 
   public UpdateDeliveryInfoOutput updateDeliveryInfo(UpdateDeliveryInfoInput input) {
@@ -120,6 +130,30 @@ public class OrderService {
         "Deleted order media " + input.getOrderMediaId() + " successfully");
   }
 
+  public UpdateOrderStateOutput updateOrderState(UpdateOrderStateInput input) {
+    Order order = getOrderById(input.getOrderId());
+
+    OrderStateEnum newState = input.getState();
+    OrderStateEnum currentState = OrderStateEnum.from(order.getState());
+
+    // Nếu currentState là Cancel hoặc Reject thì từ chối
+    // Dựa trên int value của state để quyết định cho phép đổi state hay không
+    // Nếu trạng thái hiện tại sau trạng thái mới thì không cho update
+    if (currentState.equals(OrderStateEnum.CANCEL)
+        || currentState.equals(OrderStateEnum.REJECT)
+        || currentState.getIntValue() >= newState.getIntValue()) {
+      throw new CannotChangeOrderStateException();
+    }
+
+    order.setState(input.getState().getStringValue());
+    orderRepository.save(order);
+
+    return UpdateOrderStateOutput.from(
+        "Updated order " + input.getOrderId() + " to state " + input.getState().getStringValue()
+            + " successfully"
+    );
+  }
+
   private Order getOrderById(String orderId) {
     return orderRepository.findById(orderId)
         .orElseThrow(() -> new OrderNotFoundException());
@@ -145,6 +179,7 @@ public class OrderService {
     Order order = Order.builder()
         .id(orderId)
         .orderMediaList(orderMediaList)
+        .state(OrderStateEnum.ORDER_PLACING.getStringValue())
         .subtotal(subtotal)
         .vat(VAT)
         .total(total)
@@ -207,7 +242,8 @@ public class OrderService {
     order.setDeliveryFee(deliveryFee);
 
     // data coupling
-    Double total = calculationService.calculateTotal(order.getSubtotal(), order.getVat(), deliveryFee);
+    Double total = calculationService.calculateTotal(order.getSubtotal(), order.getVat(),
+        deliveryFee);
     order.setTotal(total);
 
     orderRepository.save(order);

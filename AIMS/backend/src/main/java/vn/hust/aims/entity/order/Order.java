@@ -45,6 +45,9 @@ public class Order extends TimedEntity {
   @OneToMany(mappedBy = "order", cascade = CascadeType.REMOVE, orphanRemoval = true)
   private List<OrderMedia> orderMediaList;
 
+  @Column(name = "state")
+  private String state;
+
   @Column(name = "subtotal")
   private Double subtotal;
 
