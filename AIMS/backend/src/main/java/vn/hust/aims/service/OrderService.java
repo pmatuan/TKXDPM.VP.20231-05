@@ -1,11 +1,8 @@
 /*
-  Functions in this class are all loosely coupled with other functions. However, the large amount of imported functions from other classes,
-  along with this class' attempt to cover all aspects of order placing process, make it become highly coupled to other classes,
-  while having low cohesion between functions.
-  Proposed solution:
-   - Separation of concerns: have a separate class for order creation, another for delivery information handling, and another for
-   order calculation.
+  Functional cohesion: hầu hết các thành phần của lớp này đều hướng đến việc thực hiện một trách nhiệm chung rõ ràng là tính toán hóa đơn. Mỗi phương thức sử dụng kết quả của phương thức khác theo một quy trình.
+  Các thành phần updateOrderForRushDelivery, createRushOrder, rushOrderRepository có thể được tách ra 1 lớp riêng để tăng cohesion.
 */
+
 package vn.hust.aims.service;
 
 import lombok.RequiredArgsConstructor;
@@ -15,8 +12,6 @@ import vn.hust.aims.entity.cart.CartMedia;
 import vn.hust.aims.entity.order.*;
 import vn.hust.aims.exception.OrderMediaNotFoundException;
 import vn.hust.aims.exception.OrderNotFoundException;
-import vn.hust.aims.repository.cart.CartRepository;
-import vn.hust.aims.repository.order.DeliveryInfoRepository;
 import vn.hust.aims.repository.order.OrderMediaRepository;
 import vn.hust.aims.repository.order.OrderRepository;
 import vn.hust.aims.repository.order.RushOrderRepository;
@@ -114,7 +109,7 @@ public class OrderService {
     OrderMedia orderMedia = findOrderMediaById(order.getOrderMediaList(), input.getOrderMediaId());
 
     // data coupling
-    deleteOrderMedia(orderMedia, order);
+    deleteOrderMediaFromRepository(orderMedia, order);
 
     return DeleteMediaInOrderOutput.from(
         "Deleted order media " + input.getOrderMediaId() + " successfully");
@@ -185,7 +180,7 @@ public class OrderService {
     rushOrderRepository.save(rushOrder);
   }
 
-  private void deleteOrderMedia(OrderMedia orderMedia, Order order) {
+  private void deleteOrderMediaFromRepository(OrderMedia orderMedia, Order order) {
     orderMediaRepository.delete(orderMedia);
     order.removeOrderMedia(orderMedia);
     // data coupling
