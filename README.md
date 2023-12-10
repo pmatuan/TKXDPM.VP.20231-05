@@ -119,4 +119,20 @@ This is a Capstone's source code for Software Design and Construction project
     - Analyze cohesion levels in cart related classes by adding comments in the source code.
 
 </details>
+
+<details>
+<summary>Vũ Minh Long</summary>
+<br>
+
+- Assigned tasks:
+
+  - Conduct analysis of cohesion levels in place order related classes.
+
+- Implementation details:
+  - Pull Request(s):
+    - [Cohesion analysis](https://github.com/pmatuan/TKXDPM.VP.20231-05/pull/22)
+  - Specific implementation details:
+    - Analyze cohesion levels in place related classes by adding comments in the source code.
+
+</details>
 </details>
