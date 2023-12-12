@@ -8,10 +8,12 @@ import javax.persistence.Enumerated;
 import javax.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 import vn.hust.aims.enumeration.CoverType;
 
+@EqualsAndHashCode(callSuper = true)
 @Entity
 @Table(name = "book")
 @Data
@@ -39,6 +41,6 @@ public class Book extends Media {
   @Column(name = "language")
   private String language;
 
-  @Column(name = "category")
-  private String category;
+  @Column(name = "type")
+  private String type;
 }
