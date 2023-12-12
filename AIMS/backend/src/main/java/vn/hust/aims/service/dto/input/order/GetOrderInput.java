@@ -1,4 +1,4 @@
-package vn.hust.aims.service.dto.input.placeorder;
+package vn.hust.aims.service.dto.input.order;
 
 import lombok.Data;
 import lombok.experimental.SuperBuilder;

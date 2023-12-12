@@ -1,4 +1,4 @@
-package vn.hust.aims.service.dto.output.placeorder;
+package vn.hust.aims.service.dto.output.order;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
