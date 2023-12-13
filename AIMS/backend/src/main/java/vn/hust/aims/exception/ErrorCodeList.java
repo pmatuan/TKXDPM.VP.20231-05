@@ -18,6 +18,7 @@ public enum ErrorCodeList {
   INVALID_PROVINCE("INVALID_PROVINCE_001", "Invalid province"),
   INVALID_ORDER_STATE("INVALID_ORDER_STATE_001", "Invalid order state"),
   CANNOT_CHANGE_ORDER_STATE("CANNOT_CHANGE_ORDER_STATE_001", "Cannot change order state"),
+  CANNOT_CANCEL_ORDER("CANNOT_CANCEL_ORDER_001", "Cannot cancel order"),
   PAYMENT_NOT_SUPPORTED("PAYMENT_001", "Payment type not supported"),
   ;
 

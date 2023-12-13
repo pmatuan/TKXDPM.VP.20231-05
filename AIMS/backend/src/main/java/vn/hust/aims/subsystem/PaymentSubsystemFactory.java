@@ -12,7 +12,7 @@ import vn.hust.aims.exception.PaymentNotSupportedException;
 
 public class PaymentSubsystemFactory {
   // Mức độ cohesion: Functional Cohesion
-  // Lớp này có các phương thức lieen quan đến việc đăng ký và truy xuất các loại PaymentSubsystem.
+  // Lớp này có các phương thức liên quan đến việc đăng ký và truy xuất các loại PaymentSubsystem.
 
   private static final Map<String, Class<? extends PaymentSubsystem>> paymentSubsystemMap = new HashMap<>();
 

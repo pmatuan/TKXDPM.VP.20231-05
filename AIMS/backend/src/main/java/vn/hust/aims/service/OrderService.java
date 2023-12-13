@@ -13,18 +13,21 @@ import vn.hust.aims.entity.cart.Cart;
 import vn.hust.aims.entity.cart.CartMedia;
 import vn.hust.aims.entity.order.*;
 import vn.hust.aims.enumeration.OrderStateEnum;
+import vn.hust.aims.exception.CannotCancelOrderException;
 import vn.hust.aims.exception.CannotChangeOrderStateException;
 import vn.hust.aims.exception.OrderMediaNotFoundException;
 import vn.hust.aims.exception.OrderNotFoundException;
 import vn.hust.aims.repository.order.OrderMediaRepository;
 import vn.hust.aims.repository.order.OrderRepository;
 import vn.hust.aims.repository.order.RushOrderRepository;
+import vn.hust.aims.service.dto.input.cancelorder.CancelOrderInput;
 import vn.hust.aims.service.dto.input.order.UpdateOrderStateInput;
 import vn.hust.aims.service.dto.input.placeorder.CreateOrderInput;
 import vn.hust.aims.service.dto.input.placeorder.DeleteMediaInOrderInput;
 import vn.hust.aims.service.dto.input.order.GetOrderInput;
 import vn.hust.aims.service.dto.input.placeorder.UpdateDeliveryInfoInput;
 import vn.hust.aims.service.dto.input.placeorder.UpdateMediaInOrderInput;
+import vn.hust.aims.service.dto.output.cancelorder.CancelOrderOutput;
 import vn.hust.aims.service.dto.output.order.GetAllOrderOutput;
 import vn.hust.aims.service.dto.output.order.UpdateOrderStateOutput;
 import vn.hust.aims.service.dto.output.placeorder.CreateOrderOutput;
@@ -36,6 +39,7 @@ import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 import vn.hust.aims.service.dto.output.placeorder.UpdateMediaInOrderOutput;
+import vn.hust.aims.subsystem.PaymentSubsystem;
 
 @Service
 @RequiredArgsConstructor
@@ -69,7 +73,7 @@ public class OrderService {
     return GetOrderOutput.from(order);
   }
 
-  public GetAllOrderOutput getAllOrder(Pageable pageable){
+  public GetAllOrderOutput getAllOrder(Pageable pageable) {
     Page<Order> orderPage = orderRepository.getAllOrderPage(pageable);
     return GetAllOrderOutput.from(orderPage);
   }
@@ -149,6 +153,23 @@ public class OrderService {
         "Updated order " + input.getOrderId() + " to state " + input.getState().getStringValue()
             + " successfully"
     );
+  }
+
+  public CancelOrderOutput cancelOrder(CancelOrderInput input) {
+    Order order = getOrderById(input.getOrderId());
+
+    OrderStateEnum currentState = OrderStateEnum.from(order.getState());
+    OrderStateEnum cancelState = OrderStateEnum.CANCEL;
+
+    if (currentState.getIntValue() >= cancelState.getIntValue()) {
+      throw new CannotCancelOrderException();
+    }
+
+    order.setState(cancelState.getStringValue());
+
+    // redirect to refund
+
+    return CancelOrderOutput.from("Cancelled order " + input.getOrderId() + " successfully");
   }
 
   private Order getOrderById(String orderId) {
