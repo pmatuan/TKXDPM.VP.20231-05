@@ -9,13 +9,13 @@ import vn.hust.aims.enumeration.ProvinceEnum;
 @SuperBuilder
 public class UpdateDeliveryInfoInput {
 
-  private String orderId;
-  private String customerName;
-  private String email;
-  private String phoneNumber;
-  private ProvinceEnum province;
-  private String address;
-  private Boolean isOrderForRushDelivery;
-  private Instant deliveryTime;
-  private String deliveryInstruction;
+    private String orderId;
+    private String customerName;
+    private String email;
+    private String phoneNumber;
+    private ProvinceEnum province;
+    private String address;
+    private Boolean isOrderForRushDelivery;
+    private Instant deliveryTime;
+    private String deliveryInstruction;
 }

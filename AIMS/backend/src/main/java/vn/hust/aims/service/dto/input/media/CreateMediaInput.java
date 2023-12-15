@@ -2,31 +2,15 @@ package vn.hust.aims.service.dto.input.media;
 
 import lombok.Data;
 import lombok.experimental.SuperBuilder;
+import vn.hust.aims.enumeration.MediaType;
 
 import java.time.Instant;
+import java.util.Map;
 
 @Data
 @SuperBuilder
 public class CreateMediaInput {
-    protected String title;
+    private String jsonPayload;
 
-    protected String category;
-
-    protected Double value;
-
-    protected Double price;
-
-    protected Integer quantityInStock;
-
-    protected Boolean isAbleToRushDelivery;
-
-    protected Double weight;
-
-    protected String imageUrl;
-
-    protected String barcodeUrl;
-
-    protected String description;
-
-    protected Instant importDate;
+    private MediaType mediaType;
 }

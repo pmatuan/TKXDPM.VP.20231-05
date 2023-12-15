@@ -7,7 +7,7 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder
 public class UpdateMediaInOrderInput {
 
-  private String orderId;
-  private Long orderMediaId;
-  private Integer quantity;
+    private String orderId;
+    private Long orderMediaId;
+    private Integer quantity;
 }

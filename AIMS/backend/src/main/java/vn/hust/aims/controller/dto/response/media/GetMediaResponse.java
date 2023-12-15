@@ -5,6 +5,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
+import vn.hust.aims.entity.media.Media;
+import vn.hust.aims.service.dto.output.media.GetMediaOutput;
 
 import java.time.Instant;
 
@@ -13,25 +15,9 @@ import java.time.Instant;
 @AllArgsConstructor
 @NoArgsConstructor
 public class GetMediaResponse {
-    protected String title;
+    private Media media;
 
-    protected String category;
-
-    protected Double value;
-
-    protected Double price;
-
-    protected Integer quantityInStock;
-
-    protected Boolean isAbleToRushDelivery;
-
-    protected Double weight;
-
-    protected String imageUrl;
-
-    protected String barcodeUrl;
-
-    protected String description;
-
-    protected Instant importDate;
+    public static GetMediaResponse from(GetMediaOutput getMediaOutput) {
+        return GetMediaResponse.builder().media(getMediaOutput.getMedia()).build();
+    }
 }

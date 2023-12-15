@@ -1,6 +1,10 @@
 package vn.hust.aims.enumeration;
 
+import com.fasterxml.jackson.annotation.JsonEnumDefaultValue;
+import com.fasterxml.jackson.annotation.JsonValue;
+
 public enum CoverType {
+  @JsonEnumDefaultValue
   UNKNOWN(0, "UNKNOWN"),
   PAPERBACK(1, "PAPERBACK"),
   HARDCOVER(2, "HARDCOVER");
@@ -12,6 +16,11 @@ public enum CoverType {
   CoverType(int intValue, String stringValue) {
     this.intValue = intValue;
     this.stringValue = stringValue;
+  }
+
+  @Override
+  public String toString() {
+    return stringValue;
   }
 
   public static CoverType from(int intValue) {

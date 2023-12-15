@@ -2,6 +2,7 @@ package vn.hust.aims.controller.dto.response.media;
 
 import lombok.Builder;
 import lombok.Data;
+import org.springframework.data.domain.Page;
 import vn.hust.aims.entity.media.Media;
 import vn.hust.aims.service.dto.output.media.GetAllMediaOutput;
 
@@ -12,9 +13,9 @@ import java.util.List;
 @Data
 public class GetAllMediaResponse {
 
-    private List<Media> mediaList;
+    private Page<Media> mediaPage;
 
     public static GetAllMediaResponse from(GetAllMediaOutput getAllMediaOutput) {
-        return GetAllMediaResponse.builder().mediaList(getAllMediaOutput.getMediaList()).build();
+        return GetAllMediaResponse.builder().mediaPage(getAllMediaOutput.getMediaPage()).build();
     }
 }

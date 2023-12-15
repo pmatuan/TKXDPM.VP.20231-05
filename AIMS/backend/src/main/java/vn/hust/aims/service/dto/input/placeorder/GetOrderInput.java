@@ -1,11 +1,11 @@
 package vn.hust.aims.service.dto.input.placeorder;
 
+import lombok.Builder;
 import lombok.Data;
-import lombok.experimental.SuperBuilder;
 
 @Data
-@SuperBuilder
+@Builder
 public class GetOrderInput {
 
-  private String orderId;
+    private String orderId;
 }

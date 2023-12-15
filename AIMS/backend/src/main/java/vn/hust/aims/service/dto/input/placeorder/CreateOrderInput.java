@@ -6,5 +6,5 @@ import lombok.experimental.SuperBuilder;
 @Data
 @SuperBuilder
 public class CreateOrderInput {
-  private String cartId;
+    private String cartId;
 }

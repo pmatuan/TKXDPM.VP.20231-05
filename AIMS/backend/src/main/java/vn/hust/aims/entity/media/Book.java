@@ -43,4 +43,5 @@ public class Book extends Media {
 
   @Column(name = "type")
   private String type;
+
 }
