@@ -4,22 +4,19 @@ import data from '../../public/data.json';
 import '../../assets/scss/astro-ecommerce.scss';
 import ComplexNavbar from "../components/complexNavbar";
 import CategoryFilters from "../components/products/categoryFilters";
-import CheckoutMultiStep from "../components/checkout/checkoutMultiStep";
 
-let cartItems2 = [];
-data.shoppingCart2.map(id =>
-    data.products.filter(x => x.id == id).map(x => cartItems2.push(x))
+let cartItems = [];
+data.shoppingCart.map(id =>
+    data.products.filter(x => x.id == id).map(x => cartItems.push(x))
 )
 ---
 
-<Layout title="Thanh toán">
+<Layout title="Cửa hàng">
   <main>
     <ComplexNavbar />
     <div class="container mt-5">
-      <h3>Thanh toán</h3>
-      <p>SWith order summary sidebar</p>
-      <CheckoutMultiStep
-          products = {cartItems2}
+      <CategoryFilters
+          title="Sản phẩm"
       />
     </div>
   </main>

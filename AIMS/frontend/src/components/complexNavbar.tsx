@@ -16,12 +16,12 @@ const ComplexNavbar = () => {
         </nav>
         <ul className="navbar-nav d-none d-lg-flex">
           <li className="nav-item px-3 py-3 border-radius-sm d-flex align-items-center">
-            <a href="#" className="p-0 nav-link">
+            <a href="/aims-ecommerce/store/" className="p-0 nav-link">
               Cửa hàng
             </a>
           </li>
           <li className="nav-item px-3 py-3 border-radius-sm d-flex align-items-center">
-            <a href="#" className="p-0 nav-link">
+            <a href="/aims-ecommerce/trace-order/" className="p-0 nav-link">
               Theo dõi đơn hàng
             </a>
           </li>

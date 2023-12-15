@@ -56,8 +56,12 @@ export default function ShoppingCart({
                 <OrderSummary 
                   subtotal={subtotal}
                 />
-                <button className="btn btn-dark btn-lg w-100 mt-3">Đặt hàng</button>
-                <button className="btn btn-white btn-lg w-100">Tiếp tục mua sắm</button>
+                <a href="/aims-ecommerce/checkout/">
+                  <button className="btn btn-dark btn-lg w-100 mt-3">Đặt hàng</button>
+                </a>
+                <a href="/aims-ecommerce/store/">
+                  <button className="btn btn-white btn-lg w-100">Tiếp tục mua sắm</button>
+                </a>
                 <p className="text-center">Phí vận chuyển được tính khi thanh toán.</p>
               </div>
             </div>

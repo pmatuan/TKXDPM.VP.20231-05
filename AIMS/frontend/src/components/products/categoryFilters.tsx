@@ -22,11 +22,9 @@ export default function ProductOverview({
                 Sort
               </button>
               <ul className="dropdown-menu" aria-labelledby="sortButton">
-                <li><a className="dropdown-item" href="javascript:;">Most Popular</a></li>
-                <li><a className="dropdown-item" href="javascript:;">Best Rating</a></li>
-                <li><a className="dropdown-item" href="javascript:;">Newest</a></li>
-                <li><a className="dropdown-item" href="javascript:;">Price: Low to High</a></li>
-                <li><a className="dropdown-item" href="javascript:;">Price: High to Low</a></li>
+                <li><a className="dropdown-item" href="javascript:;">Mới nhất</a></li>
+                <li><a className="dropdown-item" href="javascript:;">Giá: Thấp đến cao</a></li>
+                <li><a className="dropdown-item" href="javascript:;">Giá: Cao đến thấp</a></li>
               </ul>
             </div>
           </div>
@@ -157,8 +155,8 @@ export default function ProductOverview({
           <div className="col-12 col-md-8">
             <div className="d-flex h-100">
               <div className="row">
-                {data.products.slice(0, 3).map(product => 
-                  <div class="col-md-6 col-lg-4">
+                {data.products.slice(0, 8).map(product =>
+                  <div class="col-md-10 col-lg-4">
                     <CardProduct 
                       thumb_src = {product.thumb_src}
                       thumb_alt = {product.thumb_alt}
