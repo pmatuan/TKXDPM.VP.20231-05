@@ -11,10 +11,12 @@ import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 import vn.hust.aims.entity.TimedEntity;
 
+@EqualsAndHashCode(callSuper = true)
 @Entity
 @Table(name = "rush_order")
 @Data
