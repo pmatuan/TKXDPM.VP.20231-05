@@ -8,7 +8,7 @@ const ComplexNavbarDark = () => {
       <div className="container py-2">
         <nav aria-label="breadcrumb">
           <div className="d-flex align-items-center">
-            <span className="px-3 text-lg text-white font-weight-bold me-4">Astro Ecommerce</span>
+            <span className="px-3 text-lg text-white font-weight-bold me-4">AIMS Ecommerce</span>
           </div>
         </nav>
         <ul className="navbar-nav d-none d-lg-flex ms-12">
