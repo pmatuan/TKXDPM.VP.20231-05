@@ -19,7 +19,7 @@ export default function ProductOverview({
           <div className="d-flex ms-auto align-items-center">
             <div className="dropdown">
               <button className="btn btn-link text-dark mb-0 dropdown-toggle" type="button" id="sortButton" data-bs-toggle="dropdown" aria-expanded="false">
-                Sort
+                Sắp xếp
               </button>
               <ul className="dropdown-menu" aria-labelledby="sortButton">
                 <li><a className="dropdown-item" href="javascript:;">Mới nhất</a></li>

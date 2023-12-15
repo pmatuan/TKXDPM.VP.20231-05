@@ -1,4 +1,4 @@
-import PaymentDetails from './paymentDetails';
+import PaymentDetails from './rushDeliveryInfo';
 import ShippingInfo from './shippingInfo';
 import BillingInfo from './billingInfo';
 import OrderSummary from '../cart/orderSummary';
@@ -35,10 +35,19 @@ export default function CheckoutSummary({
       <section>
         <div className="row">
           <div className="col-12 col-lg-6 p-3 p-md-5 bg-gray-100">
-            <h5 className="mb-4">Contact information</h5>
             <div className="form-group">
-              <label>Email address</label>
-              <input type="email" className="form-control" placeholder="Enter your email address" />
+              <label>Tên người nhận</label>
+              <input type="text" className="form-control" placeholder="Tên người nhận" />
+            </div>
+
+            <div className="form-group">
+              <label>Email</label>
+              <input type="email" className="form-control" placeholder="Email" />
+            </div>
+
+            <div className="form-group">
+              <label>Số điện thoại</label>
+              <input type="text" className="form-control" placeholder="Số điện thoại" />
             </div>
 
             <h5 className="mt-5 mb-4">Shipping address</h5>

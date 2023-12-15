@@ -3,12 +3,8 @@ import Layout from '../layouts/Layout.astro';
 import data from '../../public/data.json';
 import '../../assets/scss/astro-ecommerce.scss';
 import OrderSummaries from '../components/order/orderSummaries';
+import OrderSearchBox from '../components/order/orderSearchBox';
 import ComplexNavbar from "../components/complexNavbar";
-
-let cartItems = [];
-data.shoppingCart.map(id =>
-    data.products.filter(x => x.id == id).map(x => cartItems.push(x))
-)
 
 let orderProducts = [];
 
@@ -21,11 +17,15 @@ data.orders[0].products.forEach(productDetails => {
 })
 ---
 
-<Layout title="Shopping Cart">
+<Layout title="Theo dõi đơn hàng">
   <main>
     <ComplexNavbar />
 
     <div class="container mt-5">
+      <div class="flex justify-center mb-4">
+        <OrderSearchBox />
+      </div>
+
       <OrderSummaries order={data.orders[0]} products={orderProducts} />
     </div>
 

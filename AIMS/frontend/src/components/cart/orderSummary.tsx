@@ -27,6 +27,12 @@ export default function OrderSummary({
             <p className={`fw-bold opacity-8` + variant}>${sum.toLocaleString()}</p>
           </div>
         </li>
+        <li className="mt-2">
+          <div className="d-flex justify-content-between">
+            <p className={`opacity-8` + variant}>Phí vận chuyển</p>
+            <p className={`fw-bold opacity-8` + variant}>${sum.toLocaleString()}</p>
+          </div>
+        </li>
         <li className="border-bottom mt-2">
           <div className="d-flex justify-content-between">
             <p className={`opacity-8` + variant}>VAT <span data-bs-toggle="tooltip" data-bs-placement="top" title="This may vary depending on the country you are in" data-container="body" data-animation="true"></span></p>
