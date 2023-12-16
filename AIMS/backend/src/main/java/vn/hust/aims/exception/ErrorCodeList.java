@@ -20,6 +20,10 @@ public enum ErrorCodeList {
   CANNOT_CHANGE_ORDER_STATE("CANNOT_CHANGE_ORDER_STATE_001", "Cannot change order state"),
   CANNOT_CANCEL_ORDER("CANNOT_CANCEL_ORDER_001", "Cannot cancel order"),
   PAYMENT_NOT_SUPPORTED("PAYMENT_001", "Payment type not supported"),
+  USER_NOT_FOUND("USER_001", "User not found"),
+  NULL_EMAIL("EMAIL_001", "Email must not be null"),
+  NULL_PASSWORD("PASSWORD_001", "Password must not be null"),
+  INVALID_ROLE("ROLE_001", "Invalid user role")
   ;
 
 
