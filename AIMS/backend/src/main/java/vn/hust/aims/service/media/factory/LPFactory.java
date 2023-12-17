@@ -4,7 +4,8 @@ import vn.hust.aims.entity.media.LP;
 import vn.hust.aims.entity.media.Media;
 import vn.hust.aims.utils.JsonMapper;
 
-public class LPFactory implements MediaFactory {
+@MediaFactoryProvider(value = "LP")
+public class LPFactory implements MediaFactoryInterface {
     @Override
     public Media build(String jsonPayload) {
         return JsonMapper.convertJsonToObject(jsonPayload, LP.class);

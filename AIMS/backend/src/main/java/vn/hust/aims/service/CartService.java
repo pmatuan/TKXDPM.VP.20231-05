@@ -23,6 +23,7 @@ import vn.hust.aims.service.dto.output.cart.DeleteCartOutput;
 import vn.hust.aims.service.dto.output.cart.DeleteMediaInCartOutput;
 import vn.hust.aims.service.dto.output.cart.GetCartOutput;
 import vn.hust.aims.service.dto.output.cart.UpdateMediaInCartOutput;
+import vn.hust.aims.service.media.MediaService;
 
 @Service
 @AllArgsConstructor

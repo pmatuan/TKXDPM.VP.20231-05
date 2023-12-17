@@ -1,6 +1,7 @@
-package vn.hust.aims.enumeration;
+package vn.hust.aims.service.media.factory;
 
 public enum MediaType {
+    MEDIA("MEDIA"),
     BOOK("BOOK"),
     CD("CD"),
     DVD("DVD"),
