@@ -69,7 +69,7 @@ public class MediaService {
     public UpdateMediaOutput updateMedia(UpdateMediaInput updateMediaInput) {
         Long id = updateMediaInput.getId();
 
-        String type = mediaRepository.findById(id).orElseThrow().getCategory();
+        String type = mediaRepository.findById(id).orElseThrow(MediaNotFoundException::new).getCategory();
         MediaFactoryInterface mediaFactoryInterface = MediaFactoryBuilder.get(MediaType.from(type));
 
         Media media = mediaFactoryInterface.build(updateMediaInput.getJsonPayload());
