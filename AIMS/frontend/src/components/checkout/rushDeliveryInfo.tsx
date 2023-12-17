@@ -4,12 +4,12 @@ export default function OrderSummary() {
   const [isFastDeliveryChecked, setIsFastDeliveryChecked] = useState(false);
 
   useEffect(() => {
-    // This runs after every state change of isFastDeliveryChecked
-    setIsFastDeliveryChecked(!isFastDeliveryChecked);
-  }, [isFastDeliveryChecked]); // Dependency array ensures re-render on state change
+    // This will run whenever isFastDeliveryChecked changes
+    console.log('isFastDeliveryChecked changed:', isFastDeliveryChecked);
+  }, [isFastDeliveryChecked]);
 
-  const handleCheckboxChange = () => {
-    setIsFastDeliveryChecked((prev) => !prev); // Update state directly
+  const handleCheckboxChange = (event) => {
+    setIsFastDeliveryChecked(event.target.checked);
   };
 
   return (
@@ -25,19 +25,18 @@ export default function OrderSummary() {
         </div>
 
         {isFastDeliveryChecked && (
-            // No need for separate component, render directly
             <div className="row">
               <div className="col-4">
                 <div className="form-group">
                   <label>Thời gian nhận hàng</label>
-                  <input type="text" className="form-control" placeholder="Thời gian nhận hàng" />
+                  <input type="text" className="form-control" placeholder="Thời gian nhận hàng"/>
                 </div>
               </div>
 
               <div className="col-8">
                 <div className="form-group">
                   <label>Chỉ dẫn giao hàng</label>
-                  <input type="text" className="form-control" placeholder="Chỉ dẫn giao hàng" />
+                  <input type="text" className="form-control" placeholder="Chỉ dẫn giao hàng"/>
                 </div>
               </div>
             </div>
@@ -45,4 +44,3 @@ export default function OrderSummary() {
       </>
   );
 }
-
