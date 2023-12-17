@@ -8,10 +8,7 @@ import org.springframework.stereotype.Service;
 import vn.hust.aims.constant.UserRole;
 import vn.hust.aims.entity.order.Order;
 import vn.hust.aims.entity.user.User;
-import vn.hust.aims.exception.InvalidRoleException;
-import vn.hust.aims.exception.NullEmailException;
-import vn.hust.aims.exception.NullPasswordException;
-import vn.hust.aims.exception.UserNotFoundException;
+import vn.hust.aims.exception.*;
 import vn.hust.aims.repository.user.UserRepository;
 import vn.hust.aims.service.dto.input.user.*;
 import vn.hust.aims.service.dto.output.order.GetAllOrderOutput;
@@ -82,7 +79,8 @@ public class UserService {
         user.setEmail(input.getEmail() != null ? input.getEmail() : user.getEmail());
         user.setPhoneNumber(input.getPhoneNumber() != null ? input.getPhoneNumber() : user.getPhoneNumber());
 
-        if (validateRole(input.getRole())) {
+        if (input.getRole() != null) {
+            validateRole(input.getRole());
             user.setRole(UserRole.from(input.getRole()));
         }
 
@@ -115,6 +113,7 @@ public class UserService {
     private Long changeBlockedStateToDb(Long userId, Integer isBlocked) {
         User user = getUserById(userId);
 
+        validateIsBlocked(isBlocked);
         user.setIsBlocked(isBlocked);
 
         userRepository.save(user);
@@ -158,10 +157,16 @@ public class UserService {
     }
 
     private boolean validateRole(String role) {
-        if (role != null && (UserRole.from(role) == UserRole.UNKNOWN)) {
+        if (UserRole.from(role) == UserRole.UNKNOWN) {
             throw new InvalidRoleException();
         }
 
         return true;
+    }
+
+    private void validateIsBlocked(Integer isBlocked) {
+        if (isBlocked != 0 && isBlocked != 1) {
+            throw new InvalidBlockedStateException();
+        }
     }
 }

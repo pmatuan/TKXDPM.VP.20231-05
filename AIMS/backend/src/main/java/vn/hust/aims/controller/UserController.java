@@ -57,7 +57,7 @@ public class UserController {
     );
   }
 
-  @PostMapping("/changePassword")
+  @PutMapping("/changePassword")
   public ResponseEntity<AimsCommonResponse<Object>> changePassword(@RequestBody ChangeUserPasswordRequest request) {
     ChangeUserPasswordOutput output = userService.changeUserPassword(request.toInput());
 
