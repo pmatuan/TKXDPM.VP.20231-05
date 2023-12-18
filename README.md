@@ -240,12 +240,16 @@ This is a Capstone's source code for Software Design and Construction project
 
 - Assigned tasks:
 
-  -
+  - Implement user management use cases for admin.
+  - Review and comment on the adherence of user management related classes to the SOLID principles.
 
 - Implementation details:
   - Pull Request(s):
-    - []()
-  - ## Specific implementation details:
+    - [User management](https://github.com/pmatuan/TKXDPM.VP.20231-05/pull/30)
+    - [SOLID principles](https://github.com/pmatuan/TKXDPM.VP.20231-05/pull/36)
+  - Specific implementation details:
+    - Implement code for user management related entity, repository, service and controller classes.
+    - Conducted an analysis of the adherence to SOLID principles in user managment related classes.
 
 </details>
 </details>

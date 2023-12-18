@@ -1,3 +1,12 @@
+/*
+SOLID analysis:
+ - Single Responsibility: this class has a clear responsibility related to user-related operations. While not directly part of user operations, validation methods are closely related and supports the primary responsibility. In the future, separating validation methods may be considered if more validation is required.
+ - Open - close principle: this class is relatively closed for modification. Each method is responsible for a specific user-related operation, and the implementation details are encapsulated within each method.
+ - Liskov substitution principle: This class is not defined for inheritance.
+ - Interface segregation principle: will be looked at on a project level
+ - Dependency inversion principle: will be looked at on a project level
+ */
+
 package vn.hust.aims.service;
 
 import lombok.RequiredArgsConstructor;
