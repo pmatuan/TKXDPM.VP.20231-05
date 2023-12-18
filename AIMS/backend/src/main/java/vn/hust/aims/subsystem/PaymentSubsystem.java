@@ -12,3 +12,7 @@ import vn.hust.aims.subsystem.dto.output.PayOrderOutput;
 public interface PaymentSubsystem {
   PayOrderOutput payOrder(HttpServletRequest request, PayOrderInput input);
 }
+// Design principles - Kết quả kiểm tra các nguyên tắc liên quan:
+// - SRP: thoả mãn, vì chỉ chịu trách nhiệm về việc thực hiện thanh toán
+// - OCP: thoả mãn, vì các lớp cụ thể có thể triển khai lại phương thức payOrder theo nhu cầu mà không làm thay đổi interface
+// - ISP: thoả mãn, vì chỉ định đúng các phương thức cần thiết cho một chức năng cụ thể.

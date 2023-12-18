@@ -83,3 +83,6 @@ public class PaypalUtil {
     return amountDollar;
   }
 }
+// Design principles - Kết quả kiểm tra các nguyên tắc liên quan:
+// - SRP: không thoả mãn, vì lớp này có nhiều trách nhiệm như chuyển đổi VND sang $, các method phục vụ giao tiếp với Paypal.
+// - OCP: thoả mãn, không cần sửa đổi mã nguồn hiện tại mà chỉ cần viết thêm method.

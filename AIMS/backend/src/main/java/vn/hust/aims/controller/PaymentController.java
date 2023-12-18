@@ -49,3 +49,7 @@ public class PaymentController {
     );
   }
 }
+// Design principles - Kết quả kiểm tra các nguyên tắc liên quan:
+// - SRP: thoả mãn, lớp PaymentController có trách nhiệm chính là xử lý các hoạt động liên quan đến thanh toán
+// - OCP: thoả mãn, có thể mở rộng bằng cách thêm dịch vụ thanh toán mới mà không làm ảnh hưởng đến mã nguồn hiện tại do sử dụng PaymentSubsystemFactory để tạo đối tượng PaymentSubsystem
+// - DIP: thoả mãn, do phụ thuộc vào interfacce PaymentSubsystem chứ không phải một triển khai cụ thể

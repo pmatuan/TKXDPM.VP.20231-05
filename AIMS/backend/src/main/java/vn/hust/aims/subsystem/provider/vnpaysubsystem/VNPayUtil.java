@@ -174,3 +174,6 @@ public class VNPayUtil {
     }
   }
 }
+// Design principles - Kết quả kiểm tra các nguyên tắc liên quan:
+// - SRP: không thoả mãn, vì lớp này có nhiều trách nhiệm như tiền xử lý dữ liệu (hash), build query url phục vụ giao tiếp với Paypal.
+// - OCP: thoả mãn, không cần sửa đổi mã nguồn hiện tại mà chỉ cần viết thêm method.

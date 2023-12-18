@@ -6,8 +6,6 @@ import java.util.Set;
 import org.reflections.Reflections;
 import org.reflections.scanners.SubTypesScanner;
 import org.reflections.util.ConfigurationBuilder;
-import org.springframework.http.HttpStatus;
-import vn.hust.aims.exception.ErrorCodeList;
 import vn.hust.aims.exception.PaymentNotSupportedException;
 
 public class PaymentSubsystemFactory {
@@ -50,3 +48,7 @@ public class PaymentSubsystemFactory {
     }
   }
 }
+// Design principles - Kết quả kiểm tra các nguyên tắc liên quan:
+// - SRP: thoả mãn, vì lớp này chỉ chịu trách nhiệm việc đăng ký và truy xuất các loại PaymentSubsystem.
+// - OCP: thoả mãn, vì không cần sửa mã nguồn để thêm một loại PaymentSubsystem mới.
+// - DIP: thoả mãn, do phụ thuộc vào interfacce PaymentSubsystem chứ không phải một triển khai cụ thể

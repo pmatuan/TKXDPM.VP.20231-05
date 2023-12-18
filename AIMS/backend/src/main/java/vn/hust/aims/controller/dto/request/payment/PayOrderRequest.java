@@ -25,3 +25,5 @@ public class PayOrderRequest {
         .build();
   }
 }
+// Design principles - Kết quả kiểm tra các nguyên tắc liên quan:
+// - SRP: thoả mãn, lớp này chỉ chịu trách nhiệm biểu diễn dữ liệu đầu vào cho thanh toán và chuyển đổi thành đối tượng PayOrderInput.
