@@ -36,3 +36,7 @@ public class VNPaySubsystem implements PaymentSubsystem {
   }
 
 }
+// Design principles - Kết quả kiểm tra các nguyên tắc liên quan:
+// - SRP: thoả mãn, vì lớp này chỉ chịu trách nhiệm thực hiện thanh toán qua VNPay.
+// - OCP: thoả mãn, vì để thêm một loại thanh toán mới (ví dụ: refund), không cần sửa đổi mã nguồn hiện tại mà chỉ cần viết thêm method.
+// - DIP: không thoả mãn, vì phụ thuộc vào một lớp cụ thể là VNPayUtil
