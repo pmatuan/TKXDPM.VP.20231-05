@@ -203,15 +203,17 @@ This is a Capstone's source code for Software Design and Construction project
 
 - Assigned tasks:
 
-  - 
-  - 
+  - Reviewed and commented on the adherence of the payment-related classes to the SOLID principles.
+  - Implementing code related to order processing for the admin.
 
 - Implementation details:
   - Pull Request(s):
-    - []()
+    - [PR - SOLID principles](https://github.com/pmatuan/TKXDPM.VP.20231-05/pull/32)
+    - [PR - Order processing](https://github.com/pmatuan/TKXDPM.VP.20231-05/pull/26)
   - Specific implementation details:
-    - 
-    - 
+    - Conducted a analysis of the adherence to SOLID principles in payment-related classes. 
+    - Added comments to the code reflecting the adherence to SOLID principles. 
+    - Implemented order processing functionality.
 
 </details>
 
