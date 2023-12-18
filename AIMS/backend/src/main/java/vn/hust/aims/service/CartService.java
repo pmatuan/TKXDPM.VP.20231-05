@@ -29,6 +29,7 @@ import vn.hust.aims.service.media.MediaService;
 // SOLID analysis
 // Single responsibility: Lớp này chỉ có duy nhất một lý do để thay đổi là chức năng liên quan đến giỏ hàng
 // Open close: Dễ thêm tính năng, chỉ cần thêm phương thức vào lớp
+// Dependency Inversion: Không thỏa mãn vì đang phụ thuộc trực tiếp vào lớp cartRepository, cartMediaRepository, mediaService, calculationService
 @Service
 @AllArgsConstructor
 public class CartService {
