@@ -114,7 +114,6 @@ This is a Capstone's source code for Software Design and Construction project
     - Introduce a new exception class; avoid direct usage of `AimsException`.
     - Enhance cohesion in cart and order service by splitting into subclasses.
 
-
 </details>
 
 <details>
@@ -194,7 +193,6 @@ This is a Capstone's source code for Software Design and Construction project
     - Analyze the SOLID design principles of classes related to order.
     - Coding classes of use case cancel order.
 
-
 </details>
 
 <details>
@@ -211,8 +209,8 @@ This is a Capstone's source code for Software Design and Construction project
     - [PR - SOLID principles](https://github.com/pmatuan/TKXDPM.VP.20231-05/pull/32)
     - [PR - Order processing](https://github.com/pmatuan/TKXDPM.VP.20231-05/pull/26)
   - Specific implementation details:
-    - Conducted a analysis of the adherence to SOLID principles in payment-related classes. 
-    - Added comments to the code reflecting the adherence to SOLID principles. 
+    - Conducted a analysis of the adherence to SOLID principles in payment-related classes.
+    - Added comments to the code reflecting the adherence to SOLID principles.
     - Implemented order processing functionality.
 
 </details>
@@ -223,13 +221,16 @@ This is a Capstone's source code for Software Design and Construction project
 
 - Assigned tasks:
 
-  - 
+  - Analyze SOLID of cart related classes
+  - Implement CRUD feature for Media related classes
 
 - Implementation details:
   - Pull Request(s):
-    - []()
+    - [29](https://github.com/pmatuan/TKXDPM.VP.20231-05/pull/29)
+    - [33](https://github.com/pmatuan/TKXDPM.VP.20231-05/pull/33)
   - Specific implementation details:
-    - 
+    - Added MediaController, MediaService and necessary DTO classes
+    - Added CRUD methods in MediaController, MediaService
 
 </details>
 
@@ -239,13 +240,12 @@ This is a Capstone's source code for Software Design and Construction project
 
 - Assigned tasks:
 
-  - 
+  -
 
 - Implementation details:
   - Pull Request(s):
     - []()
-  - Specific implementation details:
-    - 
+  - ## Specific implementation details:
 
 </details>
 </details>
