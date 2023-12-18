@@ -25,6 +25,10 @@ import vn.hust.aims.service.dto.output.cart.GetCartOutput;
 import vn.hust.aims.service.dto.output.cart.UpdateMediaInCartOutput;
 import vn.hust.aims.service.media.MediaService;
 
+
+// SOLID analysis
+// Single responsibility: Lớp này chỉ có duy nhất một lý do để thay đổi là chức năng liên quan đến giỏ hàng
+// Open close: Dễ thêm tính năng, chỉ cần thêm phương thức vào lớp
 @Service
 @AllArgsConstructor
 public class CartService {
