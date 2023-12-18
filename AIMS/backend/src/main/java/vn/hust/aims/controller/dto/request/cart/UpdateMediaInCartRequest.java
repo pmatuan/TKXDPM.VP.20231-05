@@ -5,6 +5,10 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import vn.hust.aims.service.dto.input.cart.UpdateMediaInCartInput;
 
+
+// SOLID:
+// Single Responsibility: Lớp này chỉ có duy nhất một lý do để thay đổi là đầu vào của request UpdateMediaInCart thay đổi
+// Open Close: Nếu thêm trường vào request thì chỉ cần thêm vào lớp này
 @Data
 @AllArgsConstructor
 @NoArgsConstructor

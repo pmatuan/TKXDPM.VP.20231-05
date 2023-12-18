@@ -40,6 +40,11 @@ import vn.hust.aims.utils.ResponseUtil;
 // CartController sử dụng CartService
 
 // Functional Cohesion
+
+// SOLID
+// Single responsibility: Lớp này chỉ có duy nhất một lý do để thay đổi là chức năng liên quan đến giỏ hàng
+// Open close: Dễ thêm tính năng, chỉ cần thêm phương thức vào lớp
+// Dependency Inversion: Không thỏa mãn vì đang phụ thuộc trực tiếp vào lớp CartService ?
 @Controller
 @AllArgsConstructor
 @RequestMapping("/api/v1/cart")
