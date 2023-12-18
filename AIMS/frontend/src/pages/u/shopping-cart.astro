@@ -1,0 +1,22 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import data from '../../../public/data.json';
+import '../../../assets/scss/astro-ecommerce.scss';
+import ShoppingCart from '../../components/cart/shoppingCart';
+import ComplexNavbar from "../../components/complexNavbar";
+
+let cartItems = [];
+data.shoppingCart.map(id => 
+  data.products.filter(x => x.id == id).map(x => cartItems.push(x))
+)
+---
+
+<Layout title="Giỏ hàng">
+	<main>
+    <ComplexNavbar />
+    <div class="container mt-5 pb-6">
+      <ShoppingCart products = {cartItems}/>
+    </div>
+  </main>
+
+</Layout>

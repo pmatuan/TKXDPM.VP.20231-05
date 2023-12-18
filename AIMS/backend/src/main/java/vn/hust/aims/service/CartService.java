@@ -185,3 +185,7 @@ public class CartService {
   }
 
 }
+
+// Design principle
+// - SRP: Thoả mãn, vì lớp làm 1 nhiệm vụ liên quan đến cart
+// - OCP: Thoả mãn, khi cần mở rộng có thể viết thêm phương thức vào mà không ảnh hưởng các phương thức khác

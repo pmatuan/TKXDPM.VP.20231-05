@@ -132,3 +132,7 @@ public class CalculationService {
     return rushDeliveryFee;
   }
 }
+
+// Design principle
+// - SRP: Thoả mãn, vì lớp làm 1 nhiệm vụ là tính tiền
+// - OCP: Thoả mãn, khi cần mở rộng có thể viết thêm phương thức vào mà không ảnh hưởng các phương thức khác
