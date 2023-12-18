@@ -1,3 +1,12 @@
+/*
+SOLID analysis:
+ - Single Responsibility: OK, represent user entity in the system
+ - Open - close principle: This class is not defined with extension in mind
+ - Liskov substitution principle: This class is not defined for inheritance. However, in the future, potential violation of this principle may arise if different roles require different attributes
+ - Interface segregation principle: This class does not provide methods and does not function as an interface
+ - Dependency inversion principle: will be looked at on a project level
+ */
+
 package vn.hust.aims.entity.user;
 
 import lombok.AllArgsConstructor;

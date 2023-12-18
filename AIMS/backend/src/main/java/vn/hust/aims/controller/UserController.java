@@ -1,3 +1,12 @@
+/*
+SOLID analysis:
+ - Single Responsibility: this class is responsible for both handling HTTP requests and interacting with the UserService for business logic. It also handles different responsibilities for CRUD of users. However, further consideration is needed on whether or not to divide this class into smaller controllers.
+ - Open - close principle: This class is not defined with extension in mind. It is also relatively closed for modification as each method is responsible for a specific user-related operation.
+ - Liskov substitution principle: This class is not defined for inheritance.
+ - Interface segregation principle: will be looked at on a project level
+ - Dependency inversion principle: will be looked at on a project level
+ */
+
 package vn.hust.aims.controller;
 
 import lombok.AllArgsConstructor;
