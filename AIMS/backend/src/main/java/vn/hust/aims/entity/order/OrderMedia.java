@@ -12,6 +12,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 import org.aspectj.weaver.ast.Or;
@@ -21,6 +22,7 @@ import vn.hust.aims.entity.TimedEntity;
 import vn.hust.aims.entity.cart.CartMedia;
 import vn.hust.aims.entity.media.Media;
 
+@EqualsAndHashCode(callSuper = true)
 @Entity
 @Table(name = "order_media")
 @Data

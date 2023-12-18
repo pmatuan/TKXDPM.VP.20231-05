@@ -39,6 +39,7 @@ import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 import vn.hust.aims.service.dto.output.placeorder.UpdateMediaInOrderOutput;
+import vn.hust.aims.service.media.MediaService;
 
 @Service
 @RequiredArgsConstructor
