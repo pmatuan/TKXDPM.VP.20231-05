@@ -168,3 +168,82 @@ This is a Capstone's source code for Software Design and Construction project
 
 </details>
 </details>
+
+<details>
+  <summary>W12: 12/12/2023~18/12/2023 </summary>
+<br>
+
+<details>
+<summary>Phan Minh Anh Tuấn</summary>
+<br>
+
+- Assigned Tasks:
+
+  - Analyze the design principles of order.
+  - Coding use case cancel order.
+
+- Implementation Details:
+
+  - Pull Request(s):
+
+    - [PR #27](https://github.com/pmatuan/TKXDPM.VP.20231-05/pull/27)
+    - [PR #28](https://github.com/pmatuan/TKXDPM.VP.20231-05/pull/31)
+
+  - Specific Implementation Details:
+
+    - Analyze the SOLID design principles of classes related to order.
+    - Coding classes of use case cancel order.
+
+
+</details>
+
+<details>
+<summary>Nguyễn Thị Hoài Linh</summary>
+<br>
+
+- Assigned tasks:
+
+  - 
+  - 
+
+- Implementation details:
+  - Pull Request(s):
+    - []()
+  - Specific implementation details:
+    - 
+    - 
+
+</details>
+
+<details>
+<summary>Ngô Thị Lam</summary>
+<br>
+
+- Assigned tasks:
+
+  - 
+
+- Implementation details:
+  - Pull Request(s):
+    - []()
+  - Specific implementation details:
+    - 
+
+</details>
+
+<details>
+<summary>Vũ Minh Long</summary>
+<br>
+
+- Assigned tasks:
+
+  - 
+
+- Implementation details:
+  - Pull Request(s):
+    - []()
+  - Specific implementation details:
+    - 
+
+</details>
+</details>
