@@ -34,3 +34,8 @@ public class CancelOrderController {
     );
   }
 }
+
+// Design principle
+// - SRP: Thoả mãn, vì lớp làm 1 nhiệm vụ duy nhất là huỷ đơn hàng
+// - OCP: Thoả mãn, khi cần mở rộng có thể viết thêm phương thức vào mà không ảnh hưởng các phương thức khác
+// - DIP: Không thoả mãn, vì phụ thuộc vào OrderService

@@ -25,3 +25,7 @@ public class DeliveryInfoService {
     return deliveryInfo;
   }
 }
+
+// Design principle
+// - SRP: Thoả mãn, vì lớp làm 1 nhiệm vụ
+// - OCP: Thoả mãn, khi cần mở rộng có thể viết thêm phương thức vào mà không ảnh hưởng các phương thức khác

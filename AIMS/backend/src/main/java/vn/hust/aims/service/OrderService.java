@@ -273,3 +273,8 @@ public class OrderService {
   }
 
 }
+
+// Design principle
+// - SRP: Không thoả mãn, vì lớp làm nhiều nhiệm vụ
+// - OCP: Thoả mãn, khi cần mở rộng có thể viết thêm phương thức vào mà không ảnh hưởng các phương thức khác
+// - DIP: Không thoả mãn, vì phụ thuộc vào các lớp service khác
