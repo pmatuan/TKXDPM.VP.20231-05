@@ -1,6 +1,6 @@
 ---
 import Layout from '../layouts/Layout.astro';
-import data from '../../public/data.json';
+import data from '../../src/data.json';
 import '../../assets/scss/astro-ecommerce.scss';
 import ComplexNavbar from "../components/complexNavbar";
 import CategoryFilters from "../components/products/categoryFilters";
@@ -17,6 +17,7 @@ data.shoppingCart.map(id =>
     <div class="container mt-5">
       <CategoryFilters
           title="Sản phẩm"
+          client:load
       />
     </div>
   </main>

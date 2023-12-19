@@ -1,6 +1,6 @@
 ---
 import Layout from '../layouts/Layout.astro';
-import data from '../../public/data.json';
+import data from '../../src/data.json';
 import '../../assets/scss/astro-ecommerce.scss';
 import OrderSummaries from '../components/order/orderSummaries';
 import OrderSearchBox from '../components/order/orderSearchBox';
@@ -23,10 +23,10 @@ data.orders[0].products.forEach(productDetails => {
 
     <div class="container mt-5">
       <div class="flex justify-center mb-4">
-        <OrderSearchBox />
+        <OrderSearchBox client:load/>
       </div>
 
-      <OrderSummaries order={data.orders[0]} products={orderProducts} />
+      <OrderSummaries order={data.orders[0]} products={orderProducts} client:load/>
     </div>
 
   </main>

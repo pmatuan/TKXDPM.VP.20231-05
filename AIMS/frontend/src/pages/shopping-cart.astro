@@ -1,6 +1,6 @@
 ---
 import Layout from '../layouts/Layout.astro';
-import data from '../../public/data.json';
+import data from '../../src/data.json';
 import '../../assets/scss/astro-ecommerce.scss';
 import ShoppingCart from '../components/cart/shoppingCart';
 import ComplexNavbar from "../components/complexNavbar";
@@ -15,7 +15,7 @@ data.shoppingCart.map(id =>
 	<main>
     <ComplexNavbar />
     <div class="container mt-5 pb-6">
-      <ShoppingCart products = {cartItems}/>
+      <ShoppingCart products = {cartItems} client:load/>
     </div>
   </main>
 

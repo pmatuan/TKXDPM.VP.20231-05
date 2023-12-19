@@ -3,11 +3,6 @@ import React, { useState, useEffect } from 'react';
 export default function OrderSummary() {
   const [isFastDeliveryChecked, setIsFastDeliveryChecked] = useState(false);
 
-  useEffect(() => {
-    // This will run whenever isFastDeliveryChecked changes
-    console.log('isFastDeliveryChecked changed:', isFastDeliveryChecked);
-  }, [isFastDeliveryChecked]);
-
   const handleCheckboxChange = (event) => {
     setIsFastDeliveryChecked(event.target.checked);
   };

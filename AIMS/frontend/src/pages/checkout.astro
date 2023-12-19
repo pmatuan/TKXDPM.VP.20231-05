@@ -1,6 +1,6 @@
 ---
 import Layout from '../layouts/Layout.astro';
-import data from '../../public/data.json';
+import data from '../../src/data.json';
 import '../../assets/scss/astro-ecommerce.scss';
 import ComplexNavbar from "../components/complexNavbar";
 import CategoryFilters from "../components/products/categoryFilters";
@@ -21,6 +21,7 @@ data.shoppingCart2.map(id =>
       </div>
       <CheckoutMultiStep
           products = {cartItems2}
+          client:load
       />
     </div>
   </main>
