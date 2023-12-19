@@ -1,5 +1,6 @@
 import ProductCartItem from './productCartItem';
 import OrderSummary from './orderSummary';
+import {useEffect, useState} from "react";
 
 interface Props {
   products: ({
@@ -20,10 +21,22 @@ export default function ShoppingCart({
   products
 }: Props) {
 
-  let subtotal = 0;
-  products.map(product => 
-    subtotal += product.price
-  )
+  const [cartProducts, setCartProducts] = useState(products);
+  const [subtotalCart, setSubtotalCart] = useState(0);
+
+  useEffect(() => {
+    let subtotal = 0;
+    cartProducts.forEach((product) => {
+      subtotal += product.price;
+    });
+    setSubtotalCart(subtotal);
+  }, [cartProducts]);
+
+  const handleRemoveProduct = (index: number) => {
+    const updatedProducts = [...cartProducts];
+    updatedProducts.splice(index, 1);
+    setCartProducts(updatedProducts);
+  };
 
   return (
     <>
@@ -31,10 +44,10 @@ export default function ShoppingCart({
         <h2 className="mb-3 text-center mb-8">Giỏ hàng</h2>
         <div className="row">
           <div className="col-12 col-lg-7">
-            {products.map((product, i) => 
+            {cartProducts.map((product, i) =>
               <>
               {i != 0 &&
-                <hr className="horizontal dark my-4" />  
+                <hr className="horizontal dark my-4" />
               }
                 <ProductCartItem
                   thumb_src={product.thumb_src}
@@ -44,17 +57,18 @@ export default function ShoppingCart({
                   size={product.size}
                   price={product.price}
                   stock={product.stock}
+                  onRemove={() => handleRemoveProduct(i)}
                 />
               </>
             )}
-            
+
           </div>
           <div className="col-12 col-lg-5 mt-5 mt-lg-0">
             <div className="card shadow-xs border bg-gray-100">
               <div className="card-body p-lg-5">
                 <h5 className="mb-4">Thông tin đơn hàng</h5>
-                <OrderSummary 
-                  subtotal={subtotal}
+                <OrderSummary
+                  subtotal={subtotalCart}
                 />
                 <a href="/aims-ecommerce/checkout/">
                   <button className="btn btn-dark btn-lg w-100 mt-3">Đặt hàng</button>

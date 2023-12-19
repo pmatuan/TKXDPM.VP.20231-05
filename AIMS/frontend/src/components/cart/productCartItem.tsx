@@ -6,6 +6,7 @@ interface Props {
   size: string;
   price: number;
   stock: boolean;
+  onRemove: () => void;
 }
 
 export default function CartItem({
@@ -16,7 +17,7 @@ export default function CartItem({
   size,
   price,
   stock,
-
+  onRemove,
 }: Props) {
 
   return (
@@ -49,8 +50,8 @@ export default function CartItem({
         <h4 className="ms-3">${price.toLocaleString()}</h4>
 
         <div className="w-10 text-end">
-          <a href="#">
-            <i className="fas fa-times ms-3"></i>
+          <a onClick={onRemove}>
+            <i className="fas fa-times ms-3 cursor-pointer"></i>
           </a>
         </div>
       </div>
