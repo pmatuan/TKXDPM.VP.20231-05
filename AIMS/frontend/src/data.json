@@ -65,7 +65,8 @@
         "Material": "Oil is highly versatile and used in the production of a wide range of products. It serves as a raw material for manufacturing plastics.",
         "Dimensions": "Oil is a crucial source of petrochemicals, which are used in the production of plastics."
       },
-      "stock": true
+      "stock": true,
+      "quantity": 1
     },
     {
       "id": "02",
@@ -92,7 +93,7 @@
       "color": "Black",
       "colors": ["black", "green", "white"],
       "title": "Pink Blouse",
-      "price": 1490,
+      "price": 1490000,
       "rating": 5,
       "reviews": 117,
       "description": "That’s the main thing people are controlled by! Thoughts- their perception of themselves!",
@@ -125,7 +126,8 @@
         "Includes": "Wood card tray and 3 refill packs",
         "Considerations": "Made from natural materials. Grain and color vary with each item."
       },
-      "stock": false
+      "stock": false,
+      "quantity": 1
     },
     {
       "id": "03",
@@ -168,7 +170,8 @@
         "Considerations": "I always felt like I could do anything. That’s the main thing people are controlled by! Thoughts- their perception of themselves! They're slowed down by their perception of themselves. If you're taught you can’t do anything, you won’t do anything. I was taught I could do everything.",
         "Included": "We’re not always in the position that we want to be at. We’re constantly growing. We’re constantly making mistakes. We’re constantly trying to express ourselves and actualize our dreams. If you have the opportunity to play this game of life you need to appreciate every moment. A lot of people don’t appreciate the moment until it’s passed."
       },
-      "stock": true
+      "stock": true,
+      "quantity": 1
     },
     {
       "id": "04",
@@ -186,7 +189,8 @@
         "L": 0,
         "XL": 6
       },
-      "stock": false
+      "stock": false,
+      "quantity": 1
     }
   ],
   "categories": [

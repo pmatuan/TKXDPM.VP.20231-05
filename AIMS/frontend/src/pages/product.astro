@@ -1,12 +1,13 @@
 ---
 import Layout from '../layouts/Layout.astro';
-import data from '../../public/data.json';
+import data from '../../src/data.json';
 import '../../assets/scss/astro-ecommerce.scss';
 import Navbar from '../components/navbar';
 import CardProduct from '../components/products/cardProduct';
 import ProductOverviewGrid from '../components/products/productOverviewGrid';
 import StoreDoubleColumn from '../components/store/storeDoubleColumn';
 import ReviewSummaryChart from '../components/reviews/reviewSummaryChart';
+import ComplexNavbar from "../components/complexNavbar";
 
 // filter reviews with ID 01
 let productReviews = data.reviews.filter(x => x.productID == "01");
@@ -14,7 +15,7 @@ let productReviews = data.reviews.filter(x => x.productID == "01");
 
 <Layout title="Product Page">
 	<main>
-    <Navbar />
+    <ComplexNavbar />
     <div class="container mt-5">
       <ProductOverviewGrid  
         colors={data.products[0].colors}

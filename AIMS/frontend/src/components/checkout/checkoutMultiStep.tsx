@@ -1,8 +1,7 @@
-import PaymentDetails from './paymentDetails';
+import RushDeliveryInfo from './rushDeliveryInfo';
 import ShippingInfo from './shippingInfo';
 import OrderSummary from '../cart/orderSummary';
 import CheckoutSingleItemDark from '../checkout/checkoutSingleItemDark';
-import ReviewRating from '../reviews/reviewRating';
 
 interface Props {
   products: ({
@@ -24,7 +23,7 @@ export default function CheckoutSummary({
 }: Props) {
 
   let subtotalCheckout = 0;
-  products.map(product => 
+  products.map(product =>
     subtotalCheckout += product.price
   )
 
@@ -33,34 +32,44 @@ export default function CheckoutSummary({
       <section className="bg-gray-100 px-2">
         <div className="row">
           <div className="col-12 col-lg-6 p-3 p-md-5">
-            <button className="btn btn-white w-100">
-              <i className="fab fa-apple me-2"></i>
-              Apple Pay
-            </button>
-            <div className="mt-2 mb-4 position-relative text-center">
-              <p className="text-sm font-weight-bold mb-2 text-secondary text-border d-inline z-index-2 bg-white px-3">or</p>
-            </div>
-            <h5 className="mb-4">Contact information</h5>
             <div className="form-group">
-              <label>Email address</label>
-              <input type="email" className="form-control" placeholder="Enter your email address" />
+              <label>Tên người nhận</label>
+              <input type="text" className="form-control" placeholder="Tên người nhận" />
             </div>
+
             <div className="form-group">
-              <label>Phone number</label>
-              <input type="text" className="form-control" placeholder="Enter your phone number" />
+              <label>Email</label>
+              <input type="email" className="form-control" placeholder="Email" />
             </div>
-            
-            <PaymentDetails />
 
-            <ShippingInfo />
-            
+            <div className="form-group">
+              <label>Số điện thoại</label>
+              <input type="text" className="form-control" placeholder="Số điện thoại" />
+            </div>
 
-            <button className="btn btn-dark w-100 mt-4">Continue</button>        
+            <div className="row">
+              <div className="col-4">
+                <div className="form-group">
+                  <label>Thành phố</label>
+                  <input type="text" className="form-control" placeholder="Thành phố" />
+                </div>
+              </div>
+
+              <div className="col-8">
+                <div className="form-group">
+                  <label>Địa chỉ giao hàng</label>
+                  <input type="text" className="form-control" placeholder="Địa chỉ giao hàng" />
+                </div>
+              </div>
+            </div>
+
+            <RushDeliveryInfo />
+
+
+            <button className="btn btn-dark w-100 mt-4">Thanh toán</button>
           </div>
           <div className="col-12 col-lg-6 p-lg-5">
-            <small className="opacity-6">Amount</small>
-            <h3 className="mb-5">${subtotalCheckout.toLocaleString()}</h3>
-            {products.map((product, i) => 
+            {products.map((product, i) =>
                 <CheckoutSingleItemDark
                   thumb_src={product.thumb_src}
                   thumb_alt={product.thumb_alt}
