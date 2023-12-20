@@ -29,7 +29,7 @@
         "green"
       ],
       "title": "Truyện ngắn",
-      "price": 399,
+      "price": 399000,
       "description": "That’s the main thing people are controlled by! Thoughts- their perception of themselves!",
       "full_description": "The time is now for it to be okay to be great. People in this world shun people for being great. For being a bright color. For standing out.",
       "details": "There’s nothing I really wanted to do in life that I wasn’t able to get good at. That’s my skill. I’m not really specifically talented at anything except for the ability to learn.",
@@ -153,7 +153,7 @@
       "colors": ["SpaceGray"],
       "title": "Premium Suit",
       "description": "There’s nothing I really wanted to do in life that I wasn’t able to get good at.",
-      "price": 1399,
+      "price": 1399000,
       "size": "Large",
       "sizes": {
         "XS": 3,
@@ -177,7 +177,7 @@
       "color": "Blue",
       "title": "iPhone",
       "description": "That’s the main thing people are controlled by! Thoughts- their perception of themselves!",
-      "price": 1599,
+      "price": 1599000,
       "size": "Small",
       "sizes": {
         "XS": 3,

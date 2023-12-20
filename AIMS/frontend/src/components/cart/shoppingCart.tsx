@@ -14,6 +14,7 @@ interface Props {
     subtotal: number;
     shipping: number;
     tax: number;
+    quantity: number;
   })[];
 }
 
@@ -27,7 +28,7 @@ export default function ShoppingCart({
   useEffect(() => {
     let subtotal = 0;
     cartProducts.forEach((product) => {
-      subtotal += product.price;
+      subtotal += product.price * product.quantity;
     });
     setSubtotalCart(subtotal);
   }, [cartProducts]);
@@ -35,6 +36,15 @@ export default function ShoppingCart({
   const handleRemoveProduct = (index: number) => {
     const updatedProducts = [...cartProducts];
     updatedProducts.splice(index, 1);
+    setCartProducts(updatedProducts);
+  };
+
+  const handleChangeQuantity = (index: number, quantity: number) => {
+    const updatedProducts = [...cartProducts];
+    updatedProducts[index] = {
+      ...updatedProducts[index],
+      quantity: quantity,
+    };
     setCartProducts(updatedProducts);
   };
 
@@ -57,7 +67,9 @@ export default function ShoppingCart({
                   size={product.size}
                   price={product.price}
                   stock={product.stock}
+                  quantity={product.quantity || 1}
                   onRemove={() => handleRemoveProduct(i)}
+                  onChangeQuantity={(quantity: number) => handleChangeQuantity(i, quantity)}
                 />
               </>
             )}
@@ -69,6 +81,9 @@ export default function ShoppingCart({
                 <h5 className="mb-4">Thông tin đơn hàng</h5>
                 <OrderSummary
                   subtotal={subtotalCart}
+                  shippingFee={-1}
+                  vat={subtotalCart / 10}
+                  total={subtotalCart * 1.1}
                 />
                 <a href="/aims-ecommerce/checkout/">
                   <button className="btn btn-dark btn-lg w-100 mt-3">Đặt hàng</button>
