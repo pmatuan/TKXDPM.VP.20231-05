@@ -11,7 +11,7 @@ import java.util.Map;
 import java.util.Set;
 
 public class MediaFactoryBuilder {
-    private static Map<String, MediaFactoryInterface> mediaFactoryMap = new HashMap<>();
+    private static final Map<String, MediaFactoryInterface> mediaFactoryMap = new HashMap<>();
 
     static {
         registerMediaFactoryClasses();
