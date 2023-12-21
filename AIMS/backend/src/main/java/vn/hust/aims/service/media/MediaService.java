@@ -27,14 +27,13 @@ public class MediaService {
     public CreateMediaOutput createMedia(CreateMediaInput createMediaInput) {
         MediaFactoryInterface mediaFactoryInterface = MediaFactoryBuilder.get(createMediaInput.getMediaType());
 
-        System.out.println("Here");
         Media media = mediaFactoryInterface.build(createMediaInput.getJsonPayload());
 
         mediaRepository.save(media);
         return CreateMediaOutput.from("Create success");
     }
     public GetMediaOutput getMedia(GetMediaInput getMediaInput) {
-        Media media = mediaRepository.findById(getMediaInput.getId()).orElseThrow();
+        Media media = mediaRepository.findById(getMediaInput.getId()).orElseThrow(MediaNotFoundException::new);
 
         return GetMediaOutput.builder().media(media).build();
     }
@@ -85,7 +84,7 @@ public class MediaService {
     // Chỉ dùng đủ dữ liệu để tìm media - mediaId
     public Media getMediaById(Long mediaId) {
         return mediaRepository.findById(mediaId)
-                .orElseThrow(() -> new MediaNotFoundException());
+                .orElseThrow(MediaNotFoundException::new);
     }
 
     // data-coupling
