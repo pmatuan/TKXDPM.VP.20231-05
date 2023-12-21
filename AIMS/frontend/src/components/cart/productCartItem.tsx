@@ -2,8 +2,7 @@ interface Props {
   thumb_src: string;
   thumb_alt: string;
   title: string;
-  color: string;
-  size: string;
+  category: string;
   price: number;
   stock: boolean;
   quantity: number;
@@ -15,8 +14,7 @@ export default function CartItem({
   thumb_src,
   thumb_alt,
   title,
-  color,
-  size,
+  category,
   price,
   stock,
   quantity,
@@ -31,8 +29,7 @@ export default function CartItem({
           <div className="w-100 w-md-35 ps-md-4">
           <h6 className="text-lg mb-1">{title}</h6>
           <div className="d-flex">
-            <p className="pe-3 mb-0">{color}</p>
-            <p className="border-start ps-3 mb-0">{size}</p>
+            <p className="pe-3 mb-0">{category}</p>
           </div>
           <div className="d-flex align-items-center mt-6">
            {(stock) ? 

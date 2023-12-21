@@ -6,10 +6,9 @@ interface Props {
   products: ({
     thumb_src: string;
     thumb_alt: string;
-    color: string;
+    category: string;
     title: string;
     price: number;
-    size: string;
     stock: boolean
     subtotal: number;
     shipping: number;
@@ -63,8 +62,7 @@ export default function ShoppingCart({
                   thumb_src={product.thumb_src}
                   thumb_alt={product.thumb_alt}
                   title={product.title}
-                  color={product.color}
-                  size={product.size}
+                  category={product.category}
                   price={product.price}
                   stock={product.stock}
                   quantity={product.quantity || 1}
