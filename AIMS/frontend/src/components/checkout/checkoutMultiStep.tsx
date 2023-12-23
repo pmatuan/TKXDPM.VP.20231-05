@@ -74,9 +74,9 @@ export default function CheckoutSummary({
                   thumb_src={product.thumb_src}
                   thumb_alt={product.thumb_alt}
                   title={product.title}
-                  color={product.color}
-                  size={product.size}
+                  quantity={2}
                   price={product.price}
+                  onRemove={() => console.log("hello")}
                 />
             )}
             <OrderSummary subtotal={subtotalCheckout}/>

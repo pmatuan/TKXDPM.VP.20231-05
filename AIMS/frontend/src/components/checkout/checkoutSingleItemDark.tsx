@@ -2,19 +2,18 @@ interface Props {
   thumb_src: string;
   thumb_alt: string;
   title: string;
-  color: string;
-  size: string;
   price: number;
+  quantity: number;
+  onRemove: () => void;
 }
 
 export default function CheckoutSingleItem({
   thumb_src,
   thumb_alt,
   title,
-  color,
-  size,
   price,
-
+  quantity,
+  onRemove
 }: Props) {
 
   return (
@@ -26,17 +25,15 @@ export default function CheckoutSingleItem({
           </div>
           <div className="col-5 col-md-6">
             <h5 className="text-base mb-1">{title}</h5>
-            <h6 className="text-sm font-weight-bold mb-0">${price.toLocaleString()}</h6>
-            <p className="text-sm mb-0 opacity-8">{color}</p>
-            <p className="text-sm mb-0 opacity-8">{size}</p>
+            <h6 className="text-sm font-weight-bold mb-0">{price.toLocaleString()} đồng</h6>
           </div>
           <div className="col-2">
-            <div className="d-block d-md-flex align-items-center">
-              <button className="btn btn-link text-dark d-block d-md-none"><i className="fas fa-pen"></i></button>
-              <button className="btn btn-dark btn-sm d-none d-md-block">Edit</button>
-              <button className="btn btn-link text-dark d-block d-md-none"><i className="fas fa-trash"></i></button>
-              <button className="btn btn-link text-dark d-none d-md-block">Remove</button>
-            </div>
+            <input type="number" min={1} className="form-control" placeholder={String(quantity)} aria-label="amount" onChange={(e) => onChangeQuantity(Number(e.target.value))}/>
+          </div>
+          <div className="col-2">
+            <a onClick={onRemove}>
+              <i className="fas fa-times ms-3 cursor-pointer"></i>
+            </a>
           </div>
         </div>
       </div>
