@@ -1,20 +1,20 @@
 interface Props {
-  image_url: string;
+  imageUrl: string;
   title: string;
   category: string;
   price: number;
-  stock: boolean;
+  quantityInStock: number;
   quantity: number;
   onRemove: () => void;
   onChangeQuantity: (quantity: number) => void;
 }
 
 export default function CartItem({
-  image_url,
+  imageUrl,
   title,
   category,
   price,
-  stock,
+  quantityInStock,
   quantity,
   onRemove,
   onChangeQuantity,
@@ -23,8 +23,12 @@ export default function CartItem({
     <>
       <div className="d-block d-md-flex">
         <img
-            className="w-50 w-md-25 rounded-3"
-            src={image_url.includes("http") ? `${image_url}` : `${import.meta.env.BASE_URL}${image_url}`}
+          className="w-50 w-md-25 rounded-3"
+          src={
+            imageUrl.includes("http")
+              ? `${imageUrl}`
+              : `${import.meta.env.BASE_URL}${imageUrl}`
+          }
         />
 
         <div className="w-100 w-md-35 ps-md-4">
@@ -33,7 +37,7 @@ export default function CartItem({
             <p className="pe-3 mb-0">{category}</p>
           </div>
           <div className="d-flex align-items-center mt-6">
-            {stock ? (
+            {quantityInStock >= quantity ? (
               <>
                 <i className="fas fa-check text-lg text-success"></i>
                 <p className="mb-0 ms-2 text-sm">Còn hàng</p>
@@ -41,7 +45,7 @@ export default function CartItem({
             ) : (
               <>
                 <i className="fas fa-minus-circle text-lg"></i>
-                <p className="mb-0 ms-2 text-sm">Hết hàng</p>
+                <p className="mb-0 ms-2 text-sm">Thiếu {quantity - quantityInStock} sản phẩm</p>
               </>
             )}
           </div>

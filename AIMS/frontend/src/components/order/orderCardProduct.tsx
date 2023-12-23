@@ -1,7 +1,7 @@
 interface Props {
   product: {
     id: string;
-    image_url: string;
+    imageUrl: string;
     title: string;
     price: number;
     description: string;
@@ -45,7 +45,7 @@ export default function OrderCardProduct({
           <div className="col-12 col-md-6 col-lg-2">
             <img
               className="w-100 rounded-3 mb-3 mb-md-0"
-              src={`${import.meta.env.BASE_URL}${product.image_url}`}
+              src={`${import.meta.env.BASE_URL}${product.imageUrl}`}
             />
           </div>
           <div className="col-12 col-md-6 col-lg-5">

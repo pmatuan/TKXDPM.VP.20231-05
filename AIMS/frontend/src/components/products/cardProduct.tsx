@@ -1,7 +1,7 @@
 import ProductBadge from "./productBadge";
 
 interface Props {
-  image_url: string;
+  imageUrl: string;
   title: string;
   description: string;
   price: number;
@@ -11,7 +11,7 @@ interface Props {
 }
 
 export default function CardProduct({
-  image_url,
+  imageUrl,
   title,
   description,
   price,
@@ -28,7 +28,7 @@ export default function CardProduct({
           <div className="height-350">
             <img
               className="w-100 h-100 p-4 rounded-top"
-              src={`${import.meta.env.BASE_URL}${image_url}`}
+              src={`${import.meta.env.BASE_URL}${imageUrl}`}
             />
           </div>
           <div className={classList}>

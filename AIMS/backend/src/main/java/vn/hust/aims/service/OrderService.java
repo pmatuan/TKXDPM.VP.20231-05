@@ -108,7 +108,7 @@ public class OrderService {
     // data coupling
     mediaService.validateQuantityInStock(orderMedia.getMedia(), input.getQuantity());
     // data coupling
-    updateOrderMediaQuantity(orderMedia, input.getQuantity());
+    updateOrderMediaQuantity(orderMedia, order, input.getQuantity());
     // data coupling
     updateOrder(order);
 
@@ -126,6 +126,8 @@ public class OrderService {
 
     // data coupling
     deleteOrderMediaFromRepository(orderMedia, order);
+    // data coupling
+    updateOrder(order);
 
     return DeleteMediaInOrderOutput.from(
         "Deleted order media " + input.getOrderMediaId() + " successfully");
@@ -241,8 +243,6 @@ public class OrderService {
   private void deleteOrderMediaFromRepository(OrderMedia orderMedia, Order order) {
     orderMediaRepository.delete(orderMedia);
     order.removeOrderMedia(orderMedia);
-    // data coupling
-    updateOrder(order);
   }
 
   private void updateOrder(Order order) {
@@ -267,9 +267,14 @@ public class OrderService {
     orderRepository.save(order);
   }
 
-  private void updateOrderMediaQuantity(OrderMedia orderMedia, Integer quantity) {
-    orderMedia.setQuantity(quantity);
-    orderMediaRepository.save(orderMedia);
+  private void updateOrderMediaQuantity(OrderMedia orderMedia, Order order, Integer quantity) {
+    if (quantity == 0){
+      deleteOrderMediaFromRepository(orderMedia, order);
+    }
+    else {
+      orderMedia.setQuantity(quantity);
+      orderMediaRepository.save(orderMedia);
+    }
   }
 
 }

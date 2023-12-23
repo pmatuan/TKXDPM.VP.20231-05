@@ -1,7 +1,7 @@
 interface Props {
   product: {
     id: string;
-    image_url: string;
+    imageUrl: string;
     title: string;
     price: number;
     description: string;
@@ -20,7 +20,7 @@ export default function OrderSummary({ product, status, dateModified }: Props) {
         >
           <img
             className="w-20 w-lg-10 rounded-3"
-            src={`${import.meta.env.BASE_URL}${product.image_url}`}
+            src={`${import.meta.env.BASE_URL}${product.imageUrl}`}
           />
           <p className="text-sm text-dark font-weight-bold mb-0 ms-3">
             {product.title}

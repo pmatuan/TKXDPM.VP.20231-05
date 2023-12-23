@@ -345,7 +345,7 @@ export default function ProductOverview({ title }: Props) {
                 {data.products.slice(0, 8).map((product) => (
                   <div class="col-md-10 col-lg-4">
                     <CardProduct
-                      image_url={product.image_url}
+                      imageUrl={product.imageUrl}
                       color={product.color}
                       colors={product.colors}
                       title={product.title}

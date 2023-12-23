@@ -2,7 +2,7 @@
   "products": [
     {
       "id": "01",
-      "image_url": "/images/suit-3.jpg",
+      "imageUrl": "/images/suit-3.jpg",
       "images": [
         {
           "src": "https://images.unsplash.com/photo-1611930021592-a8cfd5319ceb?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=987&q=80",
@@ -65,7 +65,7 @@
     },
     {
       "id": "02",
-      "image_url": "/images/suit-1.jpg",
+      "imageUrl": "/images/suit-1.jpg",
       "images": [
         {
           "src": "https://images.unsplash.com/photo-1511499767150-a48a237f0083?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=400&q=80",
@@ -125,7 +125,7 @@
     },
     {
       "id": "03",
-      "image_url": "/images/suit-2.jpg",
+      "imageUrl": "/images/suit-2.jpg",
       "images": [
         {
           "src": "https://images.unsplash.com/photo-1567790350645-dbc1486a89c3?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=600&q=80",
@@ -168,7 +168,7 @@
     },
     {
       "id": "04",
-      "image_url": "/images/suit-5.jpg",
+      "imageUrl": "/images/suit-5.jpg",
       "category": "Blue",
       "title": "iPhone",
       "description": "That’s the main thing people are controlled by! Thoughts- their perception of themselves!",
@@ -187,37 +187,37 @@
   ],
   "categories": [
     {
-      "image_url": "/images/category1.jpg",
+      "imageUrl": "/images/category1.jpg",
       "title": "Silk Dresses",
       "collection": "Pre-fall"
     },
     {
-      "image_url": "/images/category2.jpg",
+      "imageUrl": "/images/category2.jpg",
       "title": "Suits",
       "collection": "Designers"
     },
     {
-      "image_url": "/images/category3.jpg",
+      "imageUrl": "/images/category3.jpg",
       "title": "Festival",
       "collection": "Summer"
     },
     {
-      "image_url": "/images/category4.jpg",
+      "imageUrl": "/images/category4.jpg",
       "title": "Showroom",
       "collection": "Sale"
     },
     {
-      "image_url": "/images/product10.jpg",
+      "imageUrl": "/images/product10.jpg",
       "title": "Living Sofas",
       "collection": "Interior Design"
     },
     {
-      "image_url": "/images/category5.jpg",
+      "imageUrl": "/images/category5.jpg",
       "title": "Chairs by Designers",
       "collection": "Sale"
     },
     {
-      "image_url": "/images/product9.jpg",
+      "imageUrl": "/images/product9.jpg",
       "title": "Home care",
       "collection": "Products"
     }

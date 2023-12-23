@@ -19,7 +19,7 @@ interface Props {
   };
   products: {
     id: string;
-    image_url: string;
+    imageUrl: string;
     title: string;
     price: number;
     description: string;

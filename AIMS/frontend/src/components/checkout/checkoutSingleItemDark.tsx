@@ -1,5 +1,5 @@
 interface Props {
-  image_url: string;
+  imageUrl: string;
   title: string;
   price: number;
   quantity: number;
@@ -7,7 +7,7 @@ interface Props {
 }
 
 export default function CheckoutSingleItem({
-  image_url,
+  imageUrl,
   title,
   price,
   quantity,
@@ -20,7 +20,7 @@ export default function CheckoutSingleItem({
           <div className="col-4 col-md-2">
             <img
               className="w-100 max-height-100 rounded-3"
-              src={`${import.meta.env.BASE_URL}${image_url}`}
+              src={`${import.meta.env.BASE_URL}${imageUrl}`}
             />
           </div>
           <div className="col-5 col-md-6">
