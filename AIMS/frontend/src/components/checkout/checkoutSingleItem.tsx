@@ -1,6 +1,5 @@
 interface Props {
-  thumb_src: string;
-  thumb_alt: string;
+  image_url: string;
   title: string;
   color: string;
   size: string;
@@ -8,19 +7,19 @@ interface Props {
 }
 
 export default function CheckoutSingleItem({
-  thumb_src,
-  thumb_alt,
+  image_url,
   title,
   color,
   size,
   price,
-
 }: Props) {
-
   return (
     <>
       <div className="d-flex mb-4">
-        <img className="w-20 rounded-3" src={`${import.meta.env.BASE_URL}${thumb_src}`} alt={thumb_alt} />
+        <img
+          className="w-20 rounded-3"
+          src={`${import.meta.env.BASE_URL}${image_url}`}
+        />
         <div className="w-60 w-md-70 pt-2 ps-3 ps-md-4">
           <h6 className="text-lg text-white mb-1">{title}</h6>
           <p className="mb-0 text-white opacity-8">{color}</p>

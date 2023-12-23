@@ -2,8 +2,7 @@
   "products": [
     {
       "id": "01",
-      "thumb_src": "/images/suit-3.jpg",
-      "thumb_alt": "watch-image",
+      "image_url": "/images/suit-3.jpg",
       "images": [
         {
           "src": "https://images.unsplash.com/photo-1611930021592-a8cfd5319ceb?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=987&q=80",
@@ -22,16 +21,12 @@
           "alt": "fourth_image"
         }
       ],
-      "color": "8 colors",
-      "colors": [
-        "red", 
-        "blue", 
-        "green"
-      ],
+      "category": "8 categorys",
+      "categorys": ["red", "blue", "green"],
       "title": "Truyện ngắn",
       "price": 399000,
       "description": "That’s the main thing people are controlled by! Thoughts- their perception of themselves!",
-      "full_description": "The time is now for it to be okay to be great. People in this world shun people for being great. For being a bright color. For standing out.",
+      "full_description": "The time is now for it to be okay to be great. People in this world shun people for being great. For being a bright category. For standing out.",
       "details": "There’s nothing I really wanted to do in life that I wasn’t able to get good at. That’s my skill. I’m not really specifically talented at anything except for the ability to learn.",
       "highlights": [
         "Oil is a primary source of energy for various sectors, including transportation, industries, and residential use.",
@@ -55,9 +50,9 @@
         "XL": 6
       },
       "data": {
-        "Features": "The time is now for it to be okay to be great. People in this world shun people for being great. For being a bright color. For standing out. But the time is now to be okay to be the greatest you.",
+        "Features": "The time is now for it to be okay to be great. People in this world shun people for being great. For being a bright category. For standing out. But the time is now to be okay to be the greatest you.",
         "Care": "It really matters and then like it really doesn`t matter. What matters is the people who are sparked by it. And the people who are like offended by it, it doesn`t matter. Because it's about motivating the doers. Because I`m here to follow my dreams and inspire other people to follow their dreams, too.",
-        "Shipping": "The time is now for it to be okay to be great. People in this world shun people for being great. For being a bright color. For standing out. But the time is now to be okay to be the greatest you. Would you believe in what you believe in, if you were the only one who believed it?",
+        "Shipping": "The time is now for it to be okay to be great. People in this world shun people for being great. For being a bright category. For standing out. But the time is now to be okay to be the greatest you. Would you believe in what you believe in, if you were the only one who believed it?",
         "Returns": "I always felt like I could do anything. That`s the main thing people are controlled by! Thoughts- their perception of themselves! They're slowed down by their perception of themselves. If you're taught you can`t do anything, you won`t do anything. I was taught I could do everything."
       },
       "featuresDetails": {
@@ -70,8 +65,7 @@
     },
     {
       "id": "02",
-      "thumb_src": "/images/suit-1.jpg",
-      "thumb_alt": "watch-image",
+      "image_url": "/images/suit-1.jpg",
       "images": [
         {
           "src": "https://images.unsplash.com/photo-1511499767150-a48a237f0083?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=400&q=80",
@@ -90,14 +84,14 @@
           "alt": "fourth_image"
         }
       ],
-      "color": "Black",
-      "colors": ["black", "green", "white"],
+      "category": "Black",
+      "categorys": ["black", "green", "white"],
       "title": "Pink Blouse",
       "price": 1490000,
       "rating": 5,
       "reviews": 117,
       "description": "That’s the main thing people are controlled by! Thoughts- their perception of themselves!",
-      "full_description": "The 6-Pack includes two black, two white, and two heather gray Basic Tees. Sign up for our subscription service and be the first to get new, exciting colors, like our upcoming `Charcoal Gray` limited release.",
+      "full_description": "The 6-Pack includes two black, two white, and two heather gray Basic Tees. Sign up for our subscription service and be the first to get new, exciting categorys, like our upcoming `Charcoal Gray` limited release.",
       "features": [
         "Multiple strap configuration",
         "Water Resistant",
@@ -113,9 +107,9 @@
         "XL": 6
       },
       "data": {
-        "Features": "The time is now for it to be okay to be great. People in this world shun people for being great. For being a bright color. For standing out. But the time is now to be okay to be the greatest you.",
+        "Features": "The time is now for it to be okay to be great. People in this world shun people for being great. For being a bright category. For standing out. But the time is now to be okay to be the greatest you.",
         "Care": "It really matters and then like it really doesn`t matter. What matters is the people who are sparked by it. And the people who are like offended by it, it doesn`t matter. Because it's about motivating the doers. Because I`m here to follow my dreams and inspire other people to follow their dreams, too.",
-        "Shipping": "The time is now for it to be okay to be great. People in this world shun people for being great. For being a bright color. For standing out. But the time is now to be okay to be the greatest you. Would you believe in what you believe in, if you were the only one who believed it?",
+        "Shipping": "The time is now for it to be okay to be great. People in this world shun people for being great. For being a bright category. For standing out. But the time is now to be okay to be the greatest you. Would you believe in what you believe in, if you were the only one who believed it?",
         "Returns": "I always felt like I could do anything. That`s the main thing people are controlled by! Thoughts- their perception of themselves! They're slowed down by their perception of themselves. If you're taught you can`t do anything, you won`t do anything. I was taught I could do everything."
       },
       "featuresDetails": {
@@ -124,15 +118,14 @@
         "Dimensions": "6.25 x 3.55' x 1.15'",
         "Finish": "Hand sanded and finished with natural oil",
         "Includes": "Wood card tray and 3 refill packs",
-        "Considerations": "Made from natural materials. Grain and color vary with each item."
+        "Considerations": "Made from natural materials. Grain and category vary with each item."
       },
       "stock": false,
       "quantity": 1
     },
     {
       "id": "03",
-      "thumb_src": "/images/suit-2.jpg",
-      "thumb_alt": "iMac-image",
+      "image_url": "/images/suit-2.jpg",
       "images": [
         {
           "src": "https://images.unsplash.com/photo-1567790350645-dbc1486a89c3?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=600&q=80",
@@ -151,8 +144,8 @@
           "alt": "fourth_image"
         }
       ],
-      "color": "Yellow",
-      "colors": ["SpaceGray"],
+      "category": "Yellow",
+      "categorys": ["SpaceGray"],
       "title": "Premium Suit",
       "description": "There’s nothing I really wanted to do in life that I wasn’t able to get good at.",
       "price": 1399000,
@@ -166,7 +159,7 @@
       },
       "data": {
         "Design": "If everything I did failed - which it doesn't, it actually succeeds - just the fact that I'm willing to fail is an inspiration. People are so scared to lose that they don't even try. Like, one thing people can't say is that I'm not trying, and I'm not trying my hardest, and I'm not trying to do the best way I know how.",
-        "Material": "The time is now for it to be okay to be great. People in this world shun people for being great. For being a bright color. For standing out. But the time is now to be okay to be the greatest you. Would you believe in what you believe in, if you were the only one who believed it? People are so scared to lose that they don't even try.",
+        "Material": "The time is now for it to be okay to be great. People in this world shun people for being great. For being a bright category. For standing out. But the time is now to be okay to be the greatest you. Would you believe in what you believe in, if you were the only one who believed it? People are so scared to lose that they don't even try.",
         "Considerations": "I always felt like I could do anything. That’s the main thing people are controlled by! Thoughts- their perception of themselves! They're slowed down by their perception of themselves. If you're taught you can’t do anything, you won’t do anything. I was taught I could do everything.",
         "Included": "We’re not always in the position that we want to be at. We’re constantly growing. We’re constantly making mistakes. We’re constantly trying to express ourselves and actualize our dreams. If you have the opportunity to play this game of life you need to appreciate every moment. A lot of people don’t appreciate the moment until it’s passed."
       },
@@ -175,9 +168,8 @@
     },
     {
       "id": "04",
-      "thumb_src": "/images/suit-5.jpg",
-      "thumb_alt": "iPhone_thumb",
-      "color": "Blue",
+      "image_url": "/images/suit-5.jpg",
+      "category": "Blue",
       "title": "iPhone",
       "description": "That’s the main thing people are controlled by! Thoughts- their perception of themselves!",
       "price": 1599000,
@@ -195,37 +187,37 @@
   ],
   "categories": [
     {
-      "thumb_src": "/images/category1.jpg",
+      "image_url": "/images/category1.jpg",
       "title": "Silk Dresses",
       "collection": "Pre-fall"
     },
     {
-      "thumb_src": "/images/category2.jpg",
+      "image_url": "/images/category2.jpg",
       "title": "Suits",
       "collection": "Designers"
     },
     {
-      "thumb_src": "/images/category3.jpg",
+      "image_url": "/images/category3.jpg",
       "title": "Festival",
       "collection": "Summer"
     },
     {
-      "thumb_src": "/images/category4.jpg",
+      "image_url": "/images/category4.jpg",
       "title": "Showroom",
       "collection": "Sale"
     },
     {
-      "thumb_src": "/images/product10.jpg",
+      "image_url": "/images/product10.jpg",
       "title": "Living Sofas",
       "collection": "Interior Design"
     },
     {
-      "thumb_src": "/images/category5.jpg",
+      "image_url": "/images/category5.jpg",
       "title": "Chairs by Designers",
       "collection": "Sale"
     },
     {
-      "thumb_src": "/images/product9.jpg",
+      "image_url": "/images/product9.jpg",
       "title": "Home care",
       "collection": "Products"
     }
@@ -260,7 +252,7 @@
       "name": "Joe Molly",
       "date": "Mar 23, 2023",
       "rating": 3,
-      "comment": "It’s like a little kid, a little boy, looking at colors, and no one told him what colors are good, before somebody tells you you shouldn’t like pink.",
+      "comment": "It’s like a little kid, a little boy, looking at categorys, and no one told him what categorys are good, before somebody tells you you shouldn’t like pink.",
       "productID": "01"
     },
     {
@@ -357,14 +349,6 @@
       "phoneNumber": "(307) 682-8835"
     }
   ],
-  "shoppingCart": [
-    "01", 
-    "02", 
-    "03"
-  ],
-  "shoppingCart2": [ 
-    "02", 
-    "03",
-    "04"
-  ]
+  "shoppingCart": ["01", "02", "03"],
+  "shoppingCart2": ["01", "02", "03"]
 }

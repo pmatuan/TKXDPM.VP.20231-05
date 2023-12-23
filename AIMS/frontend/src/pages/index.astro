@@ -85,8 +85,7 @@ data.orders.forEach((order) => {
         {data.products.map(product => 
           <div class="col-md-6 col-lg-3">
             <CardProduct 
-              thumb_src = {product.thumb_src}
-              thumb_alt = {product.thumb_alt}
+              image_url = {product.image_url}
               color = {product.color}
               colors = {product.colors}
               title = {product.title}
@@ -104,8 +103,7 @@ data.orders.forEach((order) => {
         {data.products.map(product => 
           <div class="col-md-6 col-lg-3">
             <CardProduct 
-              thumb_src = {product.thumb_src}
-              thumb_alt = {product.thumb_alt}
+              image_url = {product.image_url}
               color = {product.color}
               colors = {product.colors}
               title = {product.title}
@@ -125,7 +123,7 @@ data.orders.forEach((order) => {
         {data.categories.slice(0, 4).map(category => 
           <div class="col-md-6 col-lg-3">
             <CardCategory
-              thumb_src = {category.thumb_src}
+              image_url = {category.image_url}
               title = {category.title}
               collection = {category.collection}
             />
@@ -142,7 +140,7 @@ data.orders.forEach((order) => {
           <CardCategory
             classList = "h-100"
             cta = ""
-            thumb_src = {data.categories[4].thumb_src}
+            image_url = {data.categories[4].image_url}
             title = {data.categories[4].title}
           />
         </div>
@@ -151,7 +149,7 @@ data.orders.forEach((order) => {
             <CardCategory
               classList = ""
               cta = ""
-              thumb_src = {data.categories[5].thumb_src}
+              image_url = {data.categories[5].image_url}
               title = {data.categories[5].title}
             />
           </div>
@@ -159,7 +157,7 @@ data.orders.forEach((order) => {
             <CardCategory
               classList = ""
               cta = ""
-              thumb_src = {data.categories[6].thumb_src}
+              image_url = {data.categories[6].image_url}
               title = {data.categories[6].title}
             />
           </div>
@@ -228,7 +226,7 @@ data.orders.forEach((order) => {
 
         <ProductQuickview 
           colors={data.products[0].colors}
-          thumb_src={data.products[0].thumb_src}
+          image_url={data.products[0].image_url}
           title={data.products[0].title}
           price={data.products[0].price}
           rating={data.products[0].rating}
@@ -241,7 +239,7 @@ data.orders.forEach((order) => {
         <p class="mb-5">With large size selector</p>
         <ProductQuickview2 
           colors={data.products[1].colors}
-          thumb_src="/images/mirror.png"
+          image_url="/images/mirror.png"
           title="Sofa"
           price={data.products[1].price}
           rating={data.products[1].rating}
@@ -276,8 +274,7 @@ data.orders.forEach((order) => {
           {data.products.map(product => 
             <div class="col-12 col-md-6 col-lg-3">
               <CardProduct
-                thumb_src = {product.thumb_src}
-                thumb_alt = {product.thumb_alt}
+                image_url = {product.image_url}
                 title = {product.title}
                 price={product.price}
               />
@@ -293,8 +290,7 @@ data.orders.forEach((order) => {
           {data.products.map(product => 
             <div class="col-12 col-md-6 col-lg-3">
               <CardProduct
-                thumb_src = {product.thumb_src}
-                thumb_alt = {product.thumb_alt}
+                image_url = {product.image_url}
                 title = {product.title}
                 price={product.price}
               />
