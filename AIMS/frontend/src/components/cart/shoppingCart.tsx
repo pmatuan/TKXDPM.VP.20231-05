@@ -1,26 +1,20 @@
-import ProductCartItem from './productCartItem';
-import OrderSummary from './orderSummary';
-import {useEffect, useState} from "react";
+import ProductCartItem from "./productCartItem";
+import OrderSummary from "./orderSummary";
+import { useEffect, useState } from "react";
 
 interface Props {
-  products: ({
-    thumb_src: string;
-    thumb_alt: string;
+  products: {
+    image_url: string;
     category: string;
     title: string;
     price: number;
-    stock: boolean
+    stock: boolean;
     subtotal: number;
-    shipping: number;
-    tax: number;
     quantity: number;
-  })[];
+  }[];
 }
 
-export default function ShoppingCart({
-  products
-}: Props) {
-
+export default function ShoppingCart({ products }: Props) {
   const [cartProducts, setCartProducts] = useState(products);
   const [subtotalCart, setSubtotalCart] = useState(0);
 
@@ -53,25 +47,23 @@ export default function ShoppingCart({
         <h2 className="mb-3 text-center mb-8">Giỏ hàng</h2>
         <div className="row">
           <div className="col-12 col-lg-7">
-            {cartProducts.map((product, i) =>
+            {cartProducts.map((product, i) => (
               <>
-              {i != 0 &&
-                <hr className="horizontal dark my-4" />
-              }
+                {i != 0 && <hr className="horizontal dark my-4" />}
                 <ProductCartItem
-                  thumb_src={product.thumb_src}
-                  thumb_alt={product.thumb_alt}
+                  image_url={product.image_url}
                   title={product.title}
                   category={product.category}
                   price={product.price}
                   stock={product.stock}
                   quantity={product.quantity || 1}
                   onRemove={() => handleRemoveProduct(i)}
-                  onChangeQuantity={(quantity: number) => handleChangeQuantity(i, quantity)}
+                  onChangeQuantity={(quantity: number) =>
+                    handleChangeQuantity(i, quantity)
+                  }
                 />
               </>
-            )}
-
+            ))}
           </div>
           <div className="col-12 col-lg-5 mt-5 mt-lg-0">
             <div className="card shadow-xs border bg-gray-100">
@@ -84,12 +76,18 @@ export default function ShoppingCart({
                   total={subtotalCart * 1.1}
                 />
                 <a href="/aims-ecommerce/checkout/">
-                  <button className="btn btn-dark btn-lg w-100 mt-3">Đặt hàng</button>
+                  <button className="btn btn-dark btn-lg w-100 mt-3">
+                    Đặt hàng
+                  </button>
                 </a>
                 <a href="/aims-ecommerce/store/">
-                  <button className="btn btn-white btn-lg w-100">Tiếp tục mua sắm</button>
+                  <button className="btn btn-white btn-lg w-100">
+                    Tiếp tục mua sắm
+                  </button>
                 </a>
-                <p className="text-center">Phí vận chuyển được tính khi thanh toán.</p>
+                <p className="text-center">
+                  Phí vận chuyển được tính khi thanh toán.
+                </p>
               </div>
             </div>
           </div>
@@ -97,4 +95,4 @@ export default function ShoppingCart({
       </div>
     </>
   );
-};
+}

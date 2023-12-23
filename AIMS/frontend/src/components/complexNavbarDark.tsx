@@ -241,7 +241,7 @@ const ComplexNavbarDark = () => {
                 {data.categories.slice(0, 2).map((category) => (
                   <div className="col-md-6">
                     <CardCategory
-                      thumb_src={category.thumb_src}
+                      image_url={category.image_url}
                       title={category.title}
                       collection={category.collection}
                     />
