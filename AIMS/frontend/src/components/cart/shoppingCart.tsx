@@ -117,12 +117,10 @@ export default function ShoppingCart({ products, cartId }: Props) {
               <div className="card-body p-lg-5">
                 <h5 className="mb-4">Thông tin đơn hàng</h5>
                 <OrderSummary
-                    summary={{
-                      subtotal: subtotalCart,
-                      shippingFee: -1,
-                      vat: subtotalCart / 10,
-                      total: subtotalCart * 1.1,
-                    }}
+                    subtotal={subtotalCart}
+                    shippingFee={-1}
+                    vat={subtotalCart / 10}
+                    total={subtotalCart * 1.1}
                 />
                 {canPlaceOrder ? (
                     <a onClick={handlePlaceOrder}>

@@ -3,35 +3,8 @@ import Layout from '../layouts/Layout.astro';
 import '../../assets/scss/astro-ecommerce.scss';
 import ComplexNavbar from "../components/complexNavbar";
 import CheckoutMultiStep from "../components/checkout/checkoutMultiStep";
-
-const BACKEND_URL = "http://localhost:8080/api/v1" // TODO: do chưa load được từ env nên dùng tạm
 const orderId = Astro.cookies.get("orderId").value;
-
-const response = await fetch(BACKEND_URL + `/order/${orderId}`)
-
-const data = await response.json()
-
-const orderMediaList = data.result.order.orderMediaList
-
-const orderItems = orderMediaList.map(orderMedia => ({
-  id: orderMedia.id,
-  imageUrl: orderMedia.media.imageUrl,
-  category: orderMedia.media.category,
-  title: orderMedia.media.title,
-  price: orderMedia.media.price,
-  quantityInStock: orderMedia.media.quantityInStock,
-  subtotal: orderMedia.media.price * orderMedia.quantity,
-  quantity: orderMedia.quantity,
-  isAbleToRushDelivery: orderMedia.media.isAbleToRushDelivery,
-  isOrderForRushDelivery: orderMedia.isOrderForRushDelivery,
-}));
-
-const orderSummary = {
-  subtotal: data.result.order.subtotal,
-  shippingFee: data.result.order.deliveryFee,
-  vat: data.result.order.vat,
-  total: data.result.order.total,
-}
+console.log("orderId: " + orderId)
 ---
 
 <Layout title="Thanh toán">
@@ -42,9 +15,7 @@ const orderSummary = {
         <h3>Thanh toán</h3>
       </div>
       <CheckoutMultiStep
-          products = {orderItems}
-          summary = {orderSummary}
-          orderId = {orderId}
+          orderId={orderId}
           client:load
       />
     </div>
