@@ -260,8 +260,8 @@ public class OrderService {
     order.setDeliveryFee(deliveryFee);
 
     // data coupling
-    Double total = calculationService.calculateTotal(order.getSubtotal(), order.getVat(),
-        deliveryFee);
+    Double total = deliveryFee != null ? calculationService.calculateTotal(order.getSubtotal(), order.getVat(),
+        deliveryFee) : calculationService.calculateTotal(order.getSubtotal(), order.getVat());
     order.setTotal(total);
 
     orderRepository.save(order);
