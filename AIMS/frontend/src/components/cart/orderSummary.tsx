@@ -22,7 +22,7 @@ export default function OrderSummary({
               </div>
             </li>
         )}
-        {summary.shippingFee > 0 && (
+        {summary.shippingFee >= 0 && (
             <li className="mt-2">
               <div className="d-flex justify-content-between">
                 <p className={`opacity-8`}>Phí vận chuyển</p>

@@ -30,6 +30,68 @@ export default function CheckoutSummary({ products, summary, orderId }: Props) {
   const [orderProducts, setOrderProducts] = useState(products);
   const [subTotalOrder, setSubtotalOrder] = useState(summary.subtotal);
   const [canCheckOut, setCanCheckOut] = useState(false);
+  const [selectedCity, setSelectedCity] = useState("");
+  const [summaryOrder, setSummaryOrder] = useState(summary);
+
+  const provinces = [
+    "Hà Nội",
+    "Hồ Chí Minh",
+    "Hải Phòng",
+    "Cần Thơ",
+    "Đà Nẵng",
+    "Hà Giang",
+    "Cao Bằng",
+    "Lai Châu",
+    "Lào Cai",
+    "Tuyên Quang",
+    "Lạng Sơn",
+    "Bắc Kạn",
+    "Thái Nguyên",
+    "Phú Thọ",
+    "Bắc Giang",
+    "Quảng Ninh",
+    "Bắc Ninh",
+    "Hải Dương",
+    "Hưng Yên",
+    "Nam Định",
+    "Thái Bình",
+    "Ninh Bình",
+    "Thanh Hóa",
+    "Nghệ An",
+    "Hà Tĩnh",
+    "Quảng Bình",
+    "Quảng Trị",
+    "Thừa Thiên Huế",
+    "Quảng Nam",
+    "Quảng Ngãi",
+    "Bình Định",
+    "Phú Yên",
+    "Khánh Hòa",
+    "Ninh Thuận",
+    "Bình Thuận",
+    "Kon Tum",
+    "Gia Lai",
+    "Đắk Lắk",
+    "Đắk Nông",
+    "Lâm Đồng",
+    "Bình Phước",
+    "Tây Ninh",
+    "Bình Dương",
+    "Đồng Nai",
+    "Bà Rịa - Vũng Tàu",
+    "Long An",
+    "Tiền Giang",
+    "Bến Tre",
+    "Trà Vinh",
+    "Vĩnh Long",
+    "Đồng Tháp",
+    "An Giang",
+    "Kiên Giang",
+    "Hậu Giang",
+    "Sóc Trăng",
+    "Bạc Liêu",
+    "Cà Mau"
+  ];
 
   useEffect(() => {
     let subtotal = 0;
@@ -40,7 +102,23 @@ export default function CheckoutSummary({ products, summary, orderId }: Props) {
     summary.subtotal = subtotal
     summary.vat = subtotal / 10
     summary.total = subtotal * 1.1
+    setSummaryOrder(summary)
   }, [orderProducts]);
+
+  useEffect(() => {
+    const updateOrder = async () => {
+      try {
+        await handleChangeSelectedCity();
+        await handleGetNewShippingFee();
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    };
+
+    updateOrder();
+  }, [selectedCity]);
+
+
 
   const handleRemoveProduct = (index: number) => {
     const updatedProducts = [...orderProducts];
@@ -62,6 +140,25 @@ export default function CheckoutSummary({ products, summary, orderId }: Props) {
     }
     setOrderProducts(updatedProducts);
   };
+
+  const handleChangeSelectedCity = async () => {
+    const BACKEND_URL = "http://localhost:8080/api/v1";
+    const response = await fetch(`${BACKEND_URL}/place-order/${orderId}/delivery-info`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ province: selectedCity }),
+    });
+  }
+
+  const handleGetNewShippingFee = async () => {
+    const BACKEND_URL = "http://localhost:8080/api/v1";
+    const response = await fetch(BACKEND_URL + `/order/${orderId}`)
+    const data = await response.json()
+    summary.shippingFee = data.result.order.deliveryFee
+    setSummaryOrder(summary)
+  }
 
   return (
     <>
@@ -99,13 +196,24 @@ export default function CheckoutSummary({ products, summary, orderId }: Props) {
               <div className="col-4">
                 <div className="form-group">
                   <label>Thành phố</label>
-                  <input
-                    type="text"
-                    className="form-control"
-                    placeholder="Thành phố"
-                  />
+                  <select
+                      className="form-control"
+                      value={selectedCity}
+                      onChange={(e) => setSelectedCity(e.target.value)}
+                  >
+                    <option value="" disabled >
+                      Chọn thành phố
+                    </option>
+
+                    {provinces.map((city) => (
+                        <option key={city} value={city}>
+                          {city}
+                        </option>
+                    ))}
+                  </select>
                 </div>
               </div>
+
 
               <div className="col-8">
                 <div className="form-group">
@@ -140,7 +248,7 @@ export default function CheckoutSummary({ products, summary, orderId }: Props) {
                   }
               />
             ))}
-            <OrderSummary summary={summary} />
+            <OrderSummary summary={summaryOrder} />
           </div>
         </div>
       </section>
