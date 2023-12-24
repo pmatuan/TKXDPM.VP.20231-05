@@ -1,6 +1,7 @@
 package vn.hust.aims.entity.media;
 
 import java.time.Instant;
+import java.time.LocalDate;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -63,6 +64,6 @@ public class Media extends TimedEntity {
   protected String description;
 
   @Column(name = "import_date")
-  protected Instant importDate;
+  protected LocalDate importDate;
 
 }

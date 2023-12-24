@@ -343,7 +343,7 @@ export default function ProductOverview({ title }: Props) {
             <div className="d-flex h-100">
               <div className="row">
                 {data.products.slice(0, 8).map((product) => (
-                  <div class="col-md-10 col-lg-4">
+                  <div className="col-md-10 col-lg-4">
                     <CardProduct
                       imageUrl={product.imageUrl}
                       color={product.color}
