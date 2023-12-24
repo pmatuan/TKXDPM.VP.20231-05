@@ -131,7 +131,7 @@ export default function CheckoutSummary({orderId}: Props) {
       const orderSummary: OrderSummaryData = {
         summary: {
           subtotal: order.subtotal,
-          shippingFee: order.deliveryFee != null ? order.deliveryFee : -1,
+          shippingFee: order.deliveryFee != null ? order.deliveryFee : 0,
           vat: order.vat,
           total: order.total,
         }
@@ -146,36 +146,51 @@ export default function CheckoutSummary({orderId}: Props) {
     }
   };
 
-  const handleRemoveProduct = (index: number) => {
-    const updatedProducts = [...orderProducts];
-    updatedProducts.splice(index, 1);
-    setOrderProducts(updatedProducts);
-  };
-
-  const handleChangeQuantity = (index: number, quantity: number) => {
-    const updatedProducts = [...orderProducts];
-    updatedProducts[index] = {
-      ...updatedProducts[index],
-      quantity: quantity,
-    };
-    if (updatedProducts[index].quantity > updatedProducts[index].quantityInStock) {
-      setCanCheckOut(false)
-    } else {
-      setCanCheckOut(true)
-    }
-    setOrderProducts(updatedProducts);
-  };
-
   const handleChangeSelectedCity = async () => {
-    const BACKEND_URL = "http://localhost:8080/api/v1";
-    const response = await fetch(`${BACKEND_URL}/place-order/${orderId}/delivery-info`, {
-      method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({province: selectedCity}),
-    });
-  }
+    try {
+      const response = await fetch(
+          `${BACKEND_URL}/place-order/${orderId}/delivery-info`,
+          {
+            method: "PUT",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ province: selectedCity }),
+          }
+      );
+
+      // If the API call is successful, update the shipping fee
+      if (response.ok) {
+        handleChangeShippingFee();
+      }
+    } catch (error) {
+      console.error("Error updating selected city:", error);
+      // Handle error as needed
+    }
+  };
+
+  const handleChangeShippingFee = async () => {
+    try {
+      const response = await fetch(BACKEND_URL + `/order/${orderId}`);
+      const data = await response.json();
+
+      const order = data.result.order;
+
+      const orderSummary: OrderSummaryData = {
+        summary: {
+          subtotal: order.subtotal,
+          shippingFee: order.deliveryFee != null ? order.deliveryFee : 0,
+          vat: order.vat,
+          total: order.total,
+        },
+      };
+
+      setSummaryOrder(orderSummary);
+    } catch (error) {
+      console.error("Error updating shipping fee:", error);
+      // Handle error as needed
+    }
+  };
 
   useEffect(() => {
     initialize();
@@ -184,10 +199,6 @@ export default function CheckoutSummary({orderId}: Props) {
   useEffect(() => {
     handleChangeSelectedCity();
   }, [selectedCity]);
-
-  useEffect(() => {
-
-  }, [orderProducts]);
 
   return (
       <>
@@ -264,24 +275,28 @@ export default function CheckoutSummary({orderId}: Props) {
               )}
             </div>
             <div className="col-12 col-lg-6 p-lg-5">
-              {orderProducts.map((product, i) => (
-                  <CheckoutSingleItemDark
-                      key={product.id}
-                      imageUrl={product.imageUrl}
-                      title={product.title}
-                      price={product.price}
-                      quantityInStock={product.quantityInStock}
-                      quantity={product.quantity || 1}
-                      onRemove={() => handleRemoveProduct(i)}
-                      onChangeQuantity={(quantity: number) =>
-                          handleChangeQuantity(i, quantity)
-                      }
+              {orderProducts.map((product, i) => {
+                if (product.quantity > 0) {
+                  return (
+                      <CheckoutSingleItemDark
+                          key={product.id}
+                          imageUrl={product.imageUrl}
+                          title={product.title}
+                          price={product.price}
+                          quantityInStock={product.quantityInStock}
+                          quantity={product.quantity || 1}
+                      />
+                  );
+                }
+              })}
+              {summaryOrder && (
+                  <OrderSummary
+                      subtotal={summaryOrder.summary.subtotal}
+                      shippingFee={summaryOrder.summary.shippingFee}
+                      total={summaryOrder.summary.total}
+                      vat={summaryOrder.summary.vat}
                   />
-              ))}
-              {summaryOrder && <OrderSummary subtotal={summaryOrder.summary.subtotal}
-                                             shippingFee={summaryOrder.summary.shippingFee}
-                                             total={summaryOrder.summary.total}
-                                             vat={summaryOrder.summary.vat}/>}
+              )}
             </div>
           </div>
         </section>

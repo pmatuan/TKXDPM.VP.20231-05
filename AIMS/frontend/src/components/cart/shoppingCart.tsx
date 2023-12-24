@@ -30,12 +30,6 @@ export default function ShoppingCart({ products, cartId }: Props) {
     setSubtotalCart(subtotal);
   }, [cartProducts]);
 
-  const handleRemoveProduct = (index: number) => {
-    const updatedProducts = [...cartProducts];
-    updatedProducts.splice(index, 1);
-    setCartProducts(updatedProducts);
-  };
-
   const handleChangeQuantity = (index: number, quantity: number) => {
     const updatedProducts = [...cartProducts];
     updatedProducts[index] = {
@@ -97,18 +91,17 @@ export default function ShoppingCart({ products, cartId }: Props) {
             {cartProducts.map((product, i) => (
               <>
                 {i != 0 && <hr className="horizontal dark my-4" />}
-                <ProductCartItem
-                  imageUrl={product.imageUrl}
-                  title={product.title}
-                  category={product.category}
-                  price={product.price}
-                  quantityInStock={product.quantityInStock}
-                  quantity={product.quantity || 1}
-                  onRemove={() => handleRemoveProduct(i)}
-                  onChangeQuantity={(quantity: number) =>
-                    handleChangeQuantity(i, quantity)
-                  }
-                />
+                {product.quantity > 0 && (
+                    <ProductCartItem
+                        imageUrl={product.imageUrl}
+                        title={product.title}
+                        category={product.category}
+                        price={product.price}
+                        quantityInStock={product.quantityInStock}
+                        quantity={product.quantity || 1}
+                        onChangeQuantity={(quantity: number) => handleChangeQuantity(i, quantity)}
+                    />
+                )}
               </>
             ))}
           </div>
