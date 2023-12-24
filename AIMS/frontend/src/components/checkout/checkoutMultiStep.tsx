@@ -1,25 +1,67 @@
 import RushDeliveryInfo from "./rushDeliveryInfo";
-import ShippingInfo from "./shippingInfo";
-import OrderSummary from "../cart/orderSummary";
 import CheckoutSingleItemDark from "../checkout/checkoutSingleItemDark";
+import {useEffect, useState} from "react";
+import OrderSummary from "../cart/orderSummary";
 
 interface Props {
   products: {
+    id: number;
     imageUrl: string;
-    color: string;
+    category: string;
     title: string;
     price: number;
-    size: string;
-    stock: string;
+    quantityInStock: number;
     subtotal: number;
-    shipping: number;
-    tax: number;
-  }[];
+    quantity: number;
+    isAbleToRushDelivery: boolean;
+    isOrderForRushDelivery: boolean;
+  }[],
+  summary: {
+    subtotal: number;
+    shippingFee: number;
+    vat: number;
+    total: number;
+  },
+  orderId: string;
 }
 
-export default function CheckoutSummary({ products }: Props) {
-  let subtotalCheckout = 0;
-  products.map((product) => (subtotalCheckout += product.price));
+export default function CheckoutSummary({ products, summary, orderId }: Props) {
+  
+  const [orderProducts, setOrderProducts] = useState(products);
+  const [subTotalOrder, setSubtotalOrder] = useState(summary.subtotal);
+  const [canCheckOut, setCanCheckOut] = useState(false);
+
+  useEffect(() => {
+    let subtotal = 0;
+    orderProducts.forEach((product) => {
+      subtotal += product.price * product.quantity;
+    });
+    setSubtotalOrder(subtotal);
+    summary.subtotal = subtotal
+    summary.vat = subtotal / 10
+    summary.total = subtotal * 1.1
+  }, [orderProducts]);
+
+  const handleRemoveProduct = (index: number) => {
+    const updatedProducts = [...orderProducts];
+    updatedProducts.splice(index, 1);
+    setOrderProducts(updatedProducts);
+  };
+
+  const handleChangeQuantity = (index: number, quantity: number) => {
+    const updatedProducts = [...orderProducts];
+    updatedProducts[index] = {
+      ...updatedProducts[index],
+      quantity: quantity,
+    };
+    if (updatedProducts[index].quantity > updatedProducts[index].quantityInStock){
+      setCanCheckOut(false)
+    }
+    else {
+      setCanCheckOut(true)
+    }
+    setOrderProducts(updatedProducts);
+  };
 
   return (
     <>
@@ -78,20 +120,27 @@ export default function CheckoutSummary({ products }: Props) {
             </div>
 
             <RushDeliveryInfo />
-
-            <button className="btn btn-dark w-100 mt-4">Thanh toán</button>
+            {canCheckOut ? (
+                <button className="btn btn-dark w-100 mt-4">Thanh toán</button>
+            ) : (
+                <button className="btn btn-dark w-100 mt-4" disabled>Thanh toán</button>
+            )}
           </div>
           <div className="col-12 col-lg-6 p-lg-5">
-            {products.map((product, i) => (
+            {orderProducts.map((product, i) => (
               <CheckoutSingleItemDark
-                imageUrl={product.imageUrl}
-                title={product.title}
-                quantity={2}
-                price={product.price}
-                onRemove={() => console.log("hello")}
+                  imageUrl={product.imageUrl}
+                  title={product.title}
+                  price={product.price}
+                  quantityInStock={product.quantityInStock}
+                  quantity={product.quantity || 1}
+                  onRemove={() => handleRemoveProduct(i)}
+                  onChangeQuantity={(quantity: number) =>
+                      handleChangeQuantity(i, quantity)
+                  }
               />
             ))}
-            <OrderSummary subtotal={subtotalCheckout} />
+            <OrderSummary summary={summary} />
           </div>
         </div>
       </section>

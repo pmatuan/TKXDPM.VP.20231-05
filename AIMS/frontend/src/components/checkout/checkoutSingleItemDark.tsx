@@ -2,16 +2,20 @@ interface Props {
   imageUrl: string;
   title: string;
   price: number;
+  quantityInStock: number;
   quantity: number;
   onRemove: () => void;
+  onChangeQuantity: (quantity: number) => void;
 }
 
 export default function CheckoutSingleItem({
   imageUrl,
   title,
   price,
+  quantityInStock,
   quantity,
   onRemove,
+  onChangeQuantity,
 }: Props) {
   return (
     <>
@@ -20,7 +24,11 @@ export default function CheckoutSingleItem({
           <div className="col-4 col-md-2">
             <img
               className="w-100 max-height-100 rounded-3"
-              src={`${import.meta.env.BASE_URL}${imageUrl}`}
+              src={
+                imageUrl.includes("http")
+                    ? `${imageUrl}`
+                    : `${import.meta.env.BASE_URL}${imageUrl}`
+              }
             />
           </div>
           <div className="col-5 col-md-6">
@@ -28,15 +36,28 @@ export default function CheckoutSingleItem({
             <h6 className="text-sm font-weight-bold mb-0">
               {price.toLocaleString()} đồng
             </h6>
+            <div className="d-flex align-items-center mt-2">
+              {quantityInStock >= quantity ? (
+                  <>
+                    <i className="fas fa-check text-lg text-success"></i>
+                    <p className="mb-0 ms-2 text-sm">Còn hàng</p>
+                  </>
+              ) : (
+                  <>
+                    <i className="fas fa-minus-circle text-lg"></i>
+                    <p className="mb-0 ms-2 text-sm">Thiếu {quantity - quantityInStock} sản phẩm</p>
+                  </>
+              )}
+            </div>
           </div>
           <div className="col-2">
             <input
-              type="number"
-              min={1}
-              className="form-control"
-              placeholder={String(quantity)}
-              aria-label="amount"
-              onChange={(e) => onChangeQuantity(Number(e.target.value))}
+                type="number"
+                min={1}
+                className="form-control"
+                placeholder={String(quantity)}
+                aria-label="amount"
+                onChange={(e) => onChangeQuantity(Number(e.target.value))}
             />
           </div>
           <div className="col-2">

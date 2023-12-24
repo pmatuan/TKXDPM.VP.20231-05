@@ -12,7 +12,7 @@ const response = await fetch(BACKEND_URL + `/cart/${cartId}`)
 
 const data = await response.json()
 
-const cartMediaList = data.result["cart"]["cartMediaList"]
+const cartMediaList = data.result.cart.cartMediaList
 
 const cartItems = cartMediaList.map(cartMedia => ({
   id: cartMedia.id,

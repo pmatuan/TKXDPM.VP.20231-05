@@ -1,6 +1,7 @@
 import ProductCartItem from "./productCartItem";
 import OrderSummary from "./orderSummary";
 import { useEffect, useState } from "react";
+import { setCookie } from 'typescript-cookie'
 
 interface Props {
   products: {
@@ -52,9 +53,9 @@ export default function ShoppingCart({ products, cartId }: Props) {
 
   const handlePlaceOrder = async () => {
     const BACKEND_URL = "http://localhost:8080/api/v1";
-    await Promise.all(products.map(async (product) => {
+    await Promise.all(cartProducts.map(async (product) => {
       const response = await fetch(`${BACKEND_URL}/cart/${cartId}/cart-media/${product.id}`, {
-        method: "POST",
+        method: "PUT",
         headers: {
           "Content-Type": "application/json",
         },
@@ -77,7 +78,11 @@ export default function ShoppingCart({ products, cartId }: Props) {
     });
 
     if (orderResponse.ok) {
+      const orderData = await orderResponse.json();
+      const orderId = orderData.result.orderId;
       console.log("Order placed successfully!");
+      setCookie("orderId", orderId)
+      window.location.href = `/aims-ecommerce/checkout`;
     } else {
       console.error("Failed to place the order");
     }
@@ -112,13 +117,15 @@ export default function ShoppingCart({ products, cartId }: Props) {
               <div className="card-body p-lg-5">
                 <h5 className="mb-4">Thông tin đơn hàng</h5>
                 <OrderSummary
-                  subtotal={subtotalCart}
-                  shippingFee={-1}
-                  vat={subtotalCart / 10}
-                  total={subtotalCart * 1.1}
+                    summary={{
+                      subtotal: subtotalCart,
+                      shippingFee: -1,
+                      vat: subtotalCart / 10,
+                      total: subtotalCart * 1.1,
+                    }}
                 />
                 {canPlaceOrder ? (
-                    <a href="/aims-ecommerce/checkout/" onClick={handlePlaceOrder}>
+                    <a onClick={handlePlaceOrder}>
                       <button className="btn btn-dark btn-lg w-100 mt-3">
                         Đặt hàng
                       </button>
