@@ -55,7 +55,7 @@ export default function CheckoutSingleItem({
                 type="number"
                 min={1}
                 className="form-control"
-                placeholder={String(quantity)}
+                value={String(quantity)}
                 aria-label="amount"
                 onChange={(e) => onChangeQuantity(Number(e.target.value))}
             />
