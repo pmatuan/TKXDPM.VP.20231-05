@@ -95,17 +95,27 @@ export default function CheckoutSummary({orderId}: Props) {
 
   const orderSummaryTmp: OrderSummaryData = {
     summary: {
-      subtotal: 1,
-      shippingFee: 1,
-      vat: 1,
-      total: 1,
+      subtotal: 0,
+      shippingFee: 0,
+      vat: 0,
+      total: 0,
     }
   };
 
   const [orderProducts, setOrderProducts] = useState<OrderMedia[]>([]);
-  const [canCheckOut, setCanCheckOut] = useState(false);
   const [selectedCity, setSelectedCity] = useState("");
   const [summaryOrder, setSummaryOrder] = useState(orderSummaryTmp);
+
+  const [recipientName, setRecipientName] = useState("");
+  const [email, setEmail] = useState("");
+  const [phoneNumber, setPhoneNumber] = useState("");
+  const [deliveryCity, setDeliveryCity] = useState("");
+  const [deliveryAddress, setDeliveryAddress] = useState("");
+  const [isRushDelivery, setIsRushDelivery] = useState(false);
+  const [rushDeliveryTime, setRushDeliveryTime] = useState<Date>(new Date("Thu Nov 30 2023 17:09:46 GMT+0700 (Indochina Time)"));
+  const [rushDeliveryInstructions, setRushDeliveryInstructions] = useState("");
+  const [canCheckOut, setCanCheckOut] = useState(false); // Updated this line
+
 
   const initialize = async () => {
     try {
@@ -131,7 +141,7 @@ export default function CheckoutSummary({orderId}: Props) {
       const orderSummary: OrderSummaryData = {
         summary: {
           subtotal: order.subtotal,
-          shippingFee: order.deliveryFee != null ? order.deliveryFee : -1,
+          shippingFee: order.deliveryFee != null ? order.deliveryFee : 0,
           vat: order.vat,
           total: order.total,
         }
@@ -146,35 +156,81 @@ export default function CheckoutSummary({orderId}: Props) {
     }
   };
 
-  const handleRemoveProduct = (index: number) => {
-    const updatedProducts = [...orderProducts];
-    updatedProducts.splice(index, 1);
-    setOrderProducts(updatedProducts);
-  };
-
-  const handleChangeQuantity = (index: number, quantity: number) => {
-    const updatedProducts = [...orderProducts];
-    updatedProducts[index] = {
-      ...updatedProducts[index],
-      quantity: quantity,
-    };
-    if (updatedProducts[index].quantity > updatedProducts[index].quantityInStock) {
-      setCanCheckOut(false)
-    } else {
-      setCanCheckOut(true)
-    }
-    setOrderProducts(updatedProducts);
-  };
-
   const handleChangeSelectedCity = async () => {
-    const BACKEND_URL = "http://localhost:8080/api/v1";
-    const response = await fetch(`${BACKEND_URL}/place-order/${orderId}/delivery-info`, {
-      method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({province: selectedCity}),
-    });
+    try {
+      const response = await fetch(
+          `${BACKEND_URL}/place-order/${orderId}/delivery-info`,
+          {
+            method: "PUT",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ province: selectedCity }),
+          }
+      );
+
+      // If the API call is successful, update the shipping fee
+      if (response.ok) {
+        setDeliveryCity(selectedCity);
+        handleChangeShippingFee();
+      }
+    } catch (error) {
+      console.error("Error updating selected city:", error);
+      // Handle error as needed
+    }
+  };
+
+  const handleChangeShippingFee = async () => {
+    try {
+      const response = await fetch(BACKEND_URL + `/order/${orderId}`);
+      const data = await response.json();
+
+      const order = data.result.order;
+
+      const orderSummary: OrderSummaryData = {
+        summary: {
+          subtotal: order.subtotal,
+          shippingFee: order.deliveryFee != null ? order.deliveryFee : 0,
+          vat: order.vat,
+          total: order.total,
+        },
+      };
+
+      setSummaryOrder(orderSummary);
+    } catch (error) {
+      console.error("Error updating shipping fee:", error);
+      // Handle error as needed
+    }
+  };
+
+  const handleCheckout = async () => {
+    try {
+      const response = await fetch(
+          `${BACKEND_URL}/place-order/${orderId}/delivery-info`,
+          {
+            method: "PUT",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              customerName: recipientName,
+              email: email,
+              phoneNumber: phoneNumber,
+              province: selectedCity,
+              address: deliveryAddress,
+              isOrderForRushDelivery: isRushDelivery,
+              deliveryTime: rushDeliveryTime.toISOString(),
+              deliveryInstruction: rushDeliveryInstructions
+            }),
+          }
+      );
+      if (response.ok){
+        console.log("Checkout successful")
+      }
+    } catch (error) {
+      console.error("Error updating selected city:", error);
+      // Handle error as needed
+    }
   }
 
   useEffect(() => {
@@ -186,8 +242,23 @@ export default function CheckoutSummary({orderId}: Props) {
   }, [selectedCity]);
 
   useEffect(() => {
+    const isFilled =
+        !!recipientName && !!email && !!phoneNumber && !!deliveryCity && !!deliveryAddress;
 
-  }, [orderProducts]);
+    const isRushDeliveryFilled =
+        isRushDelivery && !!rushDeliveryTime && !!rushDeliveryInstructions;
+
+    setCanCheckOut(isFilled && (!isRushDelivery || isRushDeliveryFilled));
+  }, [
+    recipientName,
+    email,
+    phoneNumber,
+    deliveryCity,
+    deliveryAddress,
+    isRushDelivery,
+    rushDeliveryTime,
+    rushDeliveryInstructions,
+  ]);
 
   return (
       <>
@@ -200,6 +271,7 @@ export default function CheckoutSummary({orderId}: Props) {
                     type="text"
                     className="form-control"
                     placeholder="Tên người nhận"
+                    onChange={(e) => setRecipientName(e.target.value)}
                 />
               </div>
 
@@ -209,6 +281,7 @@ export default function CheckoutSummary({orderId}: Props) {
                     type="email"
                     className="form-control"
                     placeholder="Email"
+                    onChange={(e) => setEmail(e.target.value)}
                 />
               </div>
 
@@ -218,6 +291,7 @@ export default function CheckoutSummary({orderId}: Props) {
                     type="text"
                     className="form-control"
                     placeholder="Số điện thoại"
+                    onChange={(e) => setPhoneNumber(e.target.value)}
                 />
               </div>
 
@@ -251,37 +325,47 @@ export default function CheckoutSummary({orderId}: Props) {
                         type="text"
                         className="form-control"
                         placeholder="Địa chỉ giao hàng"
+                        onChange={(e) => setDeliveryAddress(e.target.value)}
                     />
                   </div>
                 </div>
               </div>
 
-              <RushDeliveryInfo/>
+              <RushDeliveryInfo
+                  isRushDelivery={isRushDelivery}
+                  setRushDelivery={(value) => setIsRushDelivery(!!value)} // Updated this line
+                  setRushDeliveryTime={setRushDeliveryTime}
+                  setRushDeliveryInstructions={setRushDeliveryInstructions}
+              />
               {canCheckOut ? (
-                  <button className="btn btn-dark w-100 mt-4">Thanh toán</button>
+                  <button className="btn btn-dark w-100 mt-4" onClick={handleCheckout}>Thanh toán</button>
               ) : (
                   <button className="btn btn-dark w-100 mt-4" disabled>Thanh toán</button>
               )}
             </div>
             <div className="col-12 col-lg-6 p-lg-5">
-              {orderProducts.map((product, i) => (
-                  <CheckoutSingleItemDark
-                      key={product.id}
-                      imageUrl={product.imageUrl}
-                      title={product.title}
-                      price={product.price}
-                      quantityInStock={product.quantityInStock}
-                      quantity={product.quantity || 1}
-                      onRemove={() => handleRemoveProduct(i)}
-                      onChangeQuantity={(quantity: number) =>
-                          handleChangeQuantity(i, quantity)
-                      }
+              {orderProducts.map((product, i) => {
+                if (product.quantity > 0) {
+                  return (
+                      <CheckoutSingleItemDark
+                          key={product.id}
+                          imageUrl={product.imageUrl}
+                          title={product.title}
+                          price={product.price}
+                          quantityInStock={product.quantityInStock}
+                          quantity={product.quantity || 1}
+                      />
+                  );
+                }
+              })}
+              {summaryOrder && (
+                  <OrderSummary
+                      subtotal={summaryOrder.summary.subtotal}
+                      shippingFee={summaryOrder.summary.shippingFee}
+                      total={summaryOrder.summary.total}
+                      vat={summaryOrder.summary.vat}
                   />
-              ))}
-              {summaryOrder && <OrderSummary subtotal={summaryOrder.summary.subtotal}
-                                             shippingFee={summaryOrder.summary.shippingFee}
-                                             total={summaryOrder.summary.total}
-                                             vat={summaryOrder.summary.vat}/>}
+              )}
             </div>
           </div>
         </section>

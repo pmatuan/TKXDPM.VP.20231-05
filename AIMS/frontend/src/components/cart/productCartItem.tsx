@@ -5,7 +5,6 @@ interface Props {
   price: number;
   quantityInStock: number;
   quantity: number;
-  onRemove: () => void;
   onChangeQuantity: (quantity: number) => void;
 }
 
@@ -16,7 +15,6 @@ export default function CartItem({
   price,
   quantityInStock,
   quantity,
-  onRemove,
   onChangeQuantity,
 }: Props) {
   return (
@@ -63,7 +61,7 @@ export default function CartItem({
         <h4 className="ms-4 text-base">{price.toLocaleString()} đồng</h4>
 
         <div className="w-10 text-end">
-          <a onClick={onRemove}>
+          <a onClick={() => onChangeQuantity(0)}>
             <i className="fas fa-times ms-3 cursor-pointer"></i>
           </a>
         </div>

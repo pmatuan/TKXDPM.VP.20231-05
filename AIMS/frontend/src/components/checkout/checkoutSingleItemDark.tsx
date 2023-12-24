@@ -4,8 +4,6 @@ interface Props {
   price: number;
   quantityInStock: number;
   quantity: number;
-  onRemove: () => void;
-  onChangeQuantity: (quantity: number) => void;
 }
 
 export default function CheckoutSingleItem({
@@ -14,8 +12,6 @@ export default function CheckoutSingleItem({
   price,
   quantityInStock,
   quantity,
-  onRemove,
-  onChangeQuantity,
 }: Props) {
   return (
     <>
@@ -57,13 +53,8 @@ export default function CheckoutSingleItem({
                 className="form-control"
                 value={String(quantity)}
                 aria-label="amount"
-                onChange={(e) => onChangeQuantity(Number(e.target.value))}
+                readOnly
             />
-          </div>
-          <div className="col-2">
-            <a onClick={onRemove}>
-              <i className="fas fa-times ms-3 cursor-pointer"></i>
-            </a>
           </div>
         </div>
       </div>
