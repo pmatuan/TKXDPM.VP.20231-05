@@ -6,7 +6,7 @@ import ComplexNavbar from "../components/complexNavbar";
 
 const BACKEND_URL = "http://localhost:8080/api/v1" // TODO: do chưa load được từ env nên dùng tạm
 const cartId = Astro.cookies.get("cartId").value;
-console.log(cartId)
+console.log("cartId: " + cartId)
 
 const response = await fetch(BACKEND_URL + `/cart/${cartId}`)
 
