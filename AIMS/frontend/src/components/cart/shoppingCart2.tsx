@@ -3,7 +3,7 @@ import OrderSummary from "./orderSummary";
 
 interface Props {
   products: {
-    image_url: string;
+    imageUrl: string;
     color: string;
     title: string;
     price: number;
@@ -32,7 +32,7 @@ export default function ShoppingCart({ products }: Props) {
               <>
                 {i != 0 && <hr className="horizontal dark my-4" />}
                 <ProductCartItem2
-                  image_url={product.image_url}
+                  imageUrl={product.imageUrl}
                   title={product.title}
                   color={product.color}
                   size={product.size}

@@ -1,5 +1,5 @@
 interface Props {
-  image_url: string;
+  imageUrl: string;
   title: string;
   color: string;
   size: string;
@@ -7,7 +7,7 @@ interface Props {
 }
 
 export default function CheckoutSingleItem({
-  image_url,
+  imageUrl,
   title,
   color,
   size,
@@ -18,7 +18,7 @@ export default function CheckoutSingleItem({
       <div className="d-flex mb-4">
         <img
           className="w-20 rounded-3"
-          src={`${import.meta.env.BASE_URL}${image_url}`}
+          src={`${import.meta.env.BASE_URL}${imageUrl}`}
         />
         <div className="w-60 w-md-70 pt-2 ps-3 ps-md-4">
           <h6 className="text-lg text-white mb-1">{title}</h6>

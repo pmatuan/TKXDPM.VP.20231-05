@@ -1,5 +1,5 @@
 interface Props {
-  image_url: string;
+  imageUrl: string;
   title: string;
   color: string;
   size: string;
@@ -8,7 +8,7 @@ interface Props {
 }
 
 export default function CartItem({
-  image_url,
+  imageUrl,
   title,
   color,
   size,
@@ -20,7 +20,7 @@ export default function CartItem({
       <div className="d-block d-md-flex mt-4">
         <img
           className="w-50 w-md-20 w-lg-10 rounded-3 m-4"
-          src={`${import.meta.env.BASE_URL}${image_url}`}
+          src={`${import.meta.env.BASE_URL}${imageUrl}`}
         />
         <div className="w-100 w-md-50 pt-4 ps-md-4">
           <div className="d-flex align-items-center mb-2">

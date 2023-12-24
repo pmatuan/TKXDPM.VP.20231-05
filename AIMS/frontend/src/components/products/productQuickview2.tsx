@@ -3,7 +3,7 @@ import ProductRating from "./productRating";
 import ProductSizes from "./productSizes";
 
 interface Props {
-  image_url: string;
+  imageUrl: string;
   title: string;
   price: number;
   colors: string[];
@@ -13,7 +13,7 @@ interface Props {
 }
 
 export default function ProductQuickview({
-  image_url,
+  imageUrl,
   title,
   price,
   colors,
@@ -52,10 +52,10 @@ export default function ProductQuickview({
                   aria-label="Close"
                 ></button>
                 <div className="w-100 w-lg-50 text-center">
-                  {image_url && (
+                  {imageUrl && (
                     <img
                       className="w-100 rounded-3 mb-4 mt-5 mt-lg-0"
-                      src={`${import.meta.env.BASE_URL}${image_url}`}
+                      src={`${import.meta.env.BASE_URL}${imageUrl}`}
                     />
                   )}
                   <a className="text-body" href="#">

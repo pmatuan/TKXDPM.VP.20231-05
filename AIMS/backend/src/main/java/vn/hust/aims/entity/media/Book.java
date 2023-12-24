@@ -39,6 +39,6 @@ public class Book extends Media {
   @Column(name = "language")
   private String language;
 
-  @Column(name = "category")
-  private String category;
+  @Column(name = "type")
+  private String type;
 }

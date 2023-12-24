@@ -1,5 +1,5 @@
 interface Props {
-  image_url: string;
+  imageUrl: string;
   title: string;
   collection: string;
   classList: string;
@@ -7,7 +7,7 @@ interface Props {
 }
 
 export default function CardProduct({
-  image_url,
+  imageUrl,
   title,
   collection,
   classList,
@@ -27,7 +27,7 @@ export default function CardProduct({
             style={{
               backgroundImage: `url(${`${
                 import.meta.env.BASE_URL
-              }${image_url}`})`,
+              }${imageUrl}`})`,
               backgroundSize: "cover",
             }}
           ></div>

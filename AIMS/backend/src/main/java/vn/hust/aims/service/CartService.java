@@ -117,7 +117,7 @@ public class CartService {
     CartMedia cartMedia = findCartMediaById(cart, input.getCartMediaId());
 
     mediaService.validateQuantityInStock(cartMedia.getMedia(), input.getQuantity());
-    updateCartMediaQuantity(cartMedia, input.getQuantity());
+    updateCartMediaQuantity(cart, cartMedia, input.getQuantity());
 
     return UpdateMediaInCartOutput.from(
         "Update quantity cart media " + input.getCartMediaId() + " to " + input.getQuantity() +
@@ -184,9 +184,14 @@ public class CartService {
 
   // data-coupling
   // Chỉ dùng đủ dữ liệu để thực thi chức năng cập nhật số lượng media trong cart
-  private void updateCartMediaQuantity(CartMedia cartMedia, Integer quantity) {
-    cartMedia.setQuantity(quantity);
-    cartMediaRepository.save(cartMedia);
+  private void updateCartMediaQuantity(Cart cart, CartMedia cartMedia, Integer quantity) {
+    if (quantity == 0){
+      deleteCartMedia(cartMedia, cart);
+    }
+    else {
+      cartMedia.setQuantity(quantity);
+      cartMediaRepository.save(cartMedia);
+    }
   }
 
 }

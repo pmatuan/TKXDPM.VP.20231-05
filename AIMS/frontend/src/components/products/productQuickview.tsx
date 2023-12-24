@@ -5,7 +5,7 @@ import ProductGallery from "./productGallery";
 import Reviews from "../reviews/reviewSimple";
 
 interface Props {
-  image_url: string;
+  imageUrl: string;
   title: string;
   price: number;
   colors: string[];
@@ -19,7 +19,7 @@ interface Props {
 }
 
 export default function ProductQuickview({
-  image_url,
+  imageUrl,
   title,
   price,
   colors,
@@ -58,7 +58,7 @@ export default function ProductQuickview({
                   data-bs-dismiss="modal"
                   aria-label="Close"
                 ></button>
-                {image_url && <ProductGallery images={images} />}
+                {imageUrl && <ProductGallery images={images} />}
                 <div className="w-100 w-lg-70 ps-lg-5 mt-4 mt-md-5">
                   <div className="d-flex align-items-center">
                     {title.length != 0 && <h3 className="me-4">{title}</h3>}

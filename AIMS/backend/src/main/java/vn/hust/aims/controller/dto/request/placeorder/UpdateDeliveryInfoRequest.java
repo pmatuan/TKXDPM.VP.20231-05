@@ -48,7 +48,7 @@ public class UpdateDeliveryInfoRequest {
     validateEmail();
     validatePhoneNumber();
     validateProvince();
-    if (isOrderForRushDelivery) {
+    if (isOrderForRushDelivery != null && isOrderForRushDelivery) {
       validateRushDelivery();
     }
   }
@@ -60,11 +60,11 @@ public class UpdateDeliveryInfoRequest {
   }
 
   private boolean isValidEmail(String email) {
-    return Pattern.matches("[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}", email);
+    return email == null || Pattern.matches("[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}", email);
   }
 
   private void validatePhoneNumber() {
-    if (phoneNumber == null || phoneNumber.length() != 10) {
+    if (phoneNumber != null && phoneNumber.length() != 10) {
       throw new InvalidPhoneNumberException();
     }
   }

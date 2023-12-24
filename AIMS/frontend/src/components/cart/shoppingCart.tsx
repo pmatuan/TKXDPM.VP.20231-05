@@ -1,22 +1,26 @@
 import ProductCartItem from "./productCartItem";
 import OrderSummary from "./orderSummary";
 import { useEffect, useState } from "react";
+import { setCookie } from 'typescript-cookie'
 
 interface Props {
   products: {
-    image_url: string;
+    id: number;
+    imageUrl: string;
     category: string;
     title: string;
     price: number;
-    stock: boolean;
+    quantityInStock: number;
     subtotal: number;
     quantity: number;
-  }[];
+  }[],
+  cartId: string;
 }
 
-export default function ShoppingCart({ products }: Props) {
+export default function ShoppingCart({ products, cartId }: Props) {
   const [cartProducts, setCartProducts] = useState(products);
   const [subtotalCart, setSubtotalCart] = useState(0);
+  const [canPlaceOrder, setCanPlaceOrder] = useState(true);
 
   useEffect(() => {
     let subtotal = 0;
@@ -38,7 +42,50 @@ export default function ShoppingCart({ products }: Props) {
       ...updatedProducts[index],
       quantity: quantity,
     };
+    if (updatedProducts[index].quantity > updatedProducts[index].quantityInStock){
+      setCanPlaceOrder(false)
+    }
+    else {
+      setCanPlaceOrder(true)
+    }
     setCartProducts(updatedProducts);
+  };
+
+  const handlePlaceOrder = async () => {
+    const BACKEND_URL = "http://localhost:8080/api/v1";
+    await Promise.all(cartProducts.map(async (product) => {
+      const response = await fetch(`${BACKEND_URL}/cart/${cartId}/cart-media/${product.id}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ quantity: product.quantity }),
+      });
+
+      if (!response.ok) {
+        // Handle error, maybe show a message to the user
+        console.error(`Failed to update cart item for product ID ${product.id}`);
+        return Promise.reject(`Failed to update cart item for product ID ${product.id}`);
+      }
+    }));
+
+    const orderResponse = await fetch(`${BACKEND_URL}/place-order`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ cartId: cartId }),
+    });
+
+    if (orderResponse.ok) {
+      const orderData = await orderResponse.json();
+      const orderId = orderData.result.orderId;
+      console.log("Order placed successfully!");
+      setCookie("orderId", orderId)
+      window.location.href = `/aims-ecommerce/checkout`;
+    } else {
+      console.error("Failed to place the order");
+    }
   };
 
   return (
@@ -51,11 +98,11 @@ export default function ShoppingCart({ products }: Props) {
               <>
                 {i != 0 && <hr className="horizontal dark my-4" />}
                 <ProductCartItem
-                  image_url={product.image_url}
+                  imageUrl={product.imageUrl}
                   title={product.title}
                   category={product.category}
                   price={product.price}
-                  stock={product.stock}
+                  quantityInStock={product.quantityInStock}
                   quantity={product.quantity || 1}
                   onRemove={() => handleRemoveProduct(i)}
                   onChangeQuantity={(quantity: number) =>
@@ -70,16 +117,27 @@ export default function ShoppingCart({ products }: Props) {
               <div className="card-body p-lg-5">
                 <h5 className="mb-4">Thông tin đơn hàng</h5>
                 <OrderSummary
-                  subtotal={subtotalCart}
-                  shippingFee={-1}
-                  vat={subtotalCart / 10}
-                  total={subtotalCart * 1.1}
+                    summary={{
+                      subtotal: subtotalCart,
+                      shippingFee: -1,
+                      vat: subtotalCart / 10,
+                      total: subtotalCart * 1.1,
+                    }}
                 />
-                <a href="/aims-ecommerce/checkout/">
-                  <button className="btn btn-dark btn-lg w-100 mt-3">
-                    Đặt hàng
-                  </button>
-                </a>
+                {canPlaceOrder ? (
+                    <a onClick={handlePlaceOrder}>
+                      <button className="btn btn-dark btn-lg w-100 mt-3">
+                        Đặt hàng
+                      </button>
+                    </a>
+                ) : (
+                    <button
+                        className="btn btn-dark btn-lg w-100 mt-3"
+                        disabled
+                    >
+                      Đặt hàng
+                    </button>
+                )}
                 <a href="/aims-ecommerce/store/">
                   <button className="btn btn-white btn-lg w-100">
                     Tiếp tục mua sắm

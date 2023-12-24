@@ -6,7 +6,7 @@ import CheckoutSingleItem from "../checkout/checkoutSingleItem";
 
 interface Props {
   products: {
-    image_url: string;
+    imageUrl: string;
     color: string;
     title: string;
     price: number;
@@ -95,7 +95,7 @@ export default function CheckoutSummary({ products, textColor }: Props) {
             </h3>
             {products.map((product, i) => (
               <CheckoutSingleItem
-                image_url={product.image_url}
+                imageUrl={product.imageUrl}
                 title={product.title}
                 color={product.color}
                 size={product.size}
