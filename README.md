@@ -253,3 +253,77 @@ This is a Capstone's source code for Software Design and Construction project
 
 </details>
 </details>
+
+<details>
+  <summary>W13: 19/12/2023~25/12/2023 </summary>
+<br>
+
+<details>
+<summary>Phan Minh Anh Tuấn</summary>
+<br>
+
+- Assigned Tasks:
+
+  - 
+
+- Implementation Details:
+
+  - Pull Request(s):
+
+    - 
+
+  - Specific Implementation Details:
+
+    - 
+
+</details>
+
+<details>
+<summary>Nguyễn Thị Hoài Linh</summary>
+<br>
+
+- Assigned tasks:
+
+  - 
+
+- Implementation details:
+  - Pull Request(s):
+    - 
+  - Specific implementation details:
+    - 
+
+</details>
+
+<details>
+<summary>Ngô Thị Lam</summary>
+<br>
+
+- Assigned tasks:
+
+  - 
+
+- Implementation details:
+  - Pull Request(s):
+    - 
+  - Specific implementation details:
+    - 
+
+</details>
+
+<details>
+<summary>Vũ Minh Long</summary>
+<br>
+
+- Assigned tasks:
+
+  - Implement front-end code for user management.
+
+- Implementation details:
+  - Pull Request(s):
+    - [PR #47](https://github.com/pmatuan/TKXDPM.VP.20231-05/pull/47)
+  - Specific implementation details:
+    - Implement admin menu for user management.
+    - Edit user hasn't been fully implemented.
+
+</details>
+</details>
