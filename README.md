@@ -264,13 +264,19 @@ This is a Capstone's source code for Software Design and Construction project
 
 - Assigned Tasks:
 
-  - 
+  - Connect the frontend to the backend of the order section (cart and order).
+  - Initial cartId and save it to cookie if user don't have cart before.
+  - Fix CORS in backend.
 
 - Implementation Details:
 
   - Pull Request(s):
 
-    - 
+    - [PR #39](https://github.com/pmatuan/TKXDPM.VP.20231-05/pull/39)
+    - [PR #41](https://github.com/pmatuan/TKXDPM.VP.20231-05/pull/41)
+    - [PR #42](https://github.com/pmatuan/TKXDPM.VP.20231-05/pull/42)
+    - [PR #43](https://github.com/pmatuan/TKXDPM.VP.20231-05/pull/43)
+    - [PR #44](https://github.com/pmatuan/TKXDPM.VP.20231-05/pull/44)
 
   - Specific Implementation Details:
 
