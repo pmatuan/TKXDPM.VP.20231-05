@@ -265,7 +265,7 @@ This is a Capstone's source code for Software Design and Construction project
 - Assigned Tasks:
 
   - Connect the frontend to the backend of the order section (cart and order).
-  - Initial cartId and save it to cookie if user don't have cart before.
+  - Save cartId to cookie.
   - Fix CORS in backend.
 
 - Implementation Details:
@@ -280,7 +280,9 @@ This is a Capstone's source code for Software Design and Construction project
 
   - Specific Implementation Details:
 
-    - 
+    - Connect the frontend to the backend of the order section (cart and order).
+    - Initial cartId and save it to cookie if user don't have cart before.
+    - Fix CORS in backend by add CorsConfig class.
 
 </details>
 
