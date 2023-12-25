@@ -1,22 +1,49 @@
 import { useEffect } from "react";
 
-export async function createUser(name: string, email: string, phoneNumber: string, password: string, role: string) {
+// export async function createUserTest() {
+//     const data = await fetch("http://localhost:8080/api/v1/user/create", {
+//         method: "POST",
+//         headers: {
+//             'Content-type': 'application/json'
+//         },
+//         body: JSON.stringify({
+//             name: "test",
+//             email: "test",
+//             phoneNumber: "test",
+//             password: "test",
+//             role: "Customer",
+//         }),
+//     });
+
+//     const response = await data.json()
+//     const result = response.code
+// }
+
+export async function createUser(user: any) {
     const data = await fetch("http://localhost:8080/api/v1/user/create", {
         method: "POST",
         headers: {
             'Content-type': 'application/json'
         },
         body: JSON.stringify({
-            name: name,
-            email: email,
-            phoneNumber: phoneNumber,
-            password: password,
-            role: role,
+            name: user.name,
+            email: user.email,
+            phoneNumber: user.phoneNumber,
+            password: user.password,
+            role: user.role,
         }),
     });
 
     const response = await data.json()
     const result = response.code
+}
+
+export async function getUser(userId: number) {
+    const data = await fetch(`http://localhost:8080/api/v1/user/${userId}`)
+    const response = await data.json()
+    const user = response.result.user
+
+    return user
 }
 
 export async function editUser(user: any) {
