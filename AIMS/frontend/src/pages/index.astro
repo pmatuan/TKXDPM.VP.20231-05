@@ -9,7 +9,7 @@ if (!Astro.cookies.has("cartId")){
   const data = await response.json()
   const cartId = data.result.cartId
 
-  console.log(cartId)
+  console.log("Card ID: " + cartId)
 
   Astro.cookies.set("cartId", cartId)
 }

@@ -1,7 +1,12 @@
 import RushDeliveryInfo from "./rushDeliveryInfo";
 import CheckoutSingleItemDark from "../checkout/checkoutSingleItemDark";
-import { useEffect, useState } from "react";
+import {useEffect, useState} from "react";
 import OrderSummary from "../cart/orderSummary";
+import FormLabel from "@mui/material/FormLabel";
+import RadioGroup from "@mui/material/RadioGroup";
+import FormControlLabel from "@mui/material/FormControlLabel";
+import Radio from "@mui/material/Radio";
+import FormControl from "@mui/material/FormControl";
 
 interface OrderMedia {
   id: string;
@@ -91,7 +96,7 @@ const provinces = [
   "Cà Mau",
 ];
 
-export default function CheckoutSummary({ orderId }: Props) {
+export default function CheckoutSummary({orderId}: Props) {
   const orderSummaryTmp: OrderSummaryData = {
     summary: {
       subtotal: 0,
@@ -112,9 +117,10 @@ export default function CheckoutSummary({ orderId }: Props) {
   const [deliveryAddress, setDeliveryAddress] = useState("");
   const [isRushDelivery, setIsRushDelivery] = useState(false);
   const [rushDeliveryTime, setRushDeliveryTime] = useState<Date>(
-    new Date("Thu Nov 30 2023 17:09:46 GMT+0700 (Indochina Time)")
+      new Date("Thu Nov 30 2023 17:09:46 GMT+0700 (Indochina Time)")
   );
   const [rushDeliveryInstructions, setRushDeliveryInstructions] = useState("");
+  const [paymentMethod, setPaymentMethod] = useState("")
   const [canCheckOut, setCanCheckOut] = useState(false); // Updated this line
   const initialize = async () => {
     try {
@@ -157,14 +163,14 @@ export default function CheckoutSummary({ orderId }: Props) {
   const handleChangeSelectedProvince = async () => {
     try {
       const response = await fetch(
-        `${BACKEND_URL}/place-order/${orderId}/delivery-info`,
-        {
-          method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ province: selectedProvince }),
-        }
+          `${BACKEND_URL}/place-order/${orderId}/delivery-info`,
+          {
+            method: "PUT",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({province: selectedProvince}),
+          }
       );
 
       // If the API call is successful, update the shipping fee
@@ -204,23 +210,23 @@ export default function CheckoutSummary({ orderId }: Props) {
   const handleCheckout = async () => {
     try {
       const response = await fetch(
-        `${BACKEND_URL}/place-order/${orderId}/delivery-info`,
-        {
-          method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            customerName: recipientName,
-            email: email,
-            phoneNumber: phoneNumber,
-            province: selectedProvince,
-            address: deliveryAddress,
-            isOrderForRushDelivery: isRushDelivery,
-            deliveryTime: rushDeliveryTime.toISOString(),
-            deliveryInstruction: rushDeliveryInstructions,
-          }),
-        }
+          `${BACKEND_URL}/place-order/${orderId}/delivery-info`,
+          {
+            method: "PUT",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              customerName: recipientName,
+              email: email,
+              phoneNumber: phoneNumber,
+              province: selectedProvince,
+              address: deliveryAddress,
+              isOrderForRushDelivery: isRushDelivery,
+              deliveryTime: rushDeliveryTime.toISOString(),
+              deliveryInstruction: rushDeliveryInstructions,
+            }),
+          }
       );
       if (response.ok) {
         console.log("Checkout successful");
@@ -241,14 +247,15 @@ export default function CheckoutSummary({ orderId }: Props) {
 
   useEffect(() => {
     const isFilled =
-      !!recipientName &&
-      !!email &&
-      !!phoneNumber &&
-      !!deliveryProvince &&
-      !!deliveryAddress;
+        !!recipientName &&
+        !!email &&
+        !!phoneNumber &&
+        !!deliveryProvince &&
+        !!deliveryAddress &&
+        !!paymentMethod;
 
     const isRushDeliveryFilled =
-      isRushDelivery && !!rushDeliveryTime && !!rushDeliveryInstructions;
+        isRushDelivery && !!rushDeliveryTime && !!rushDeliveryInstructions;
 
     setCanCheckOut(isFilled && (!isRushDelivery || isRushDeliveryFilled));
   }, [
@@ -260,124 +267,149 @@ export default function CheckoutSummary({ orderId }: Props) {
     isRushDelivery,
     rushDeliveryTime,
     rushDeliveryInstructions,
+    paymentMethod,
   ]);
 
   return (
-    <>
-      <section className="bg-gray-100 px-2">
-        <div className="row">
-          <div className="col-12 col-lg-6 p-3 p-md-5">
-            <div className="form-group">
-              <label>Tên người nhận</label>
-              <input
-                type="text"
-                className="form-control"
-                placeholder="Tên người nhận"
-                onChange={(e) => setRecipientName(e.target.value)}
-              />
-            </div>
-
-            <div className="form-group">
-              <label>Email</label>
-              <input
-                type="email"
-                className="form-control"
-                placeholder="Email"
-                onChange={(e) => setEmail(e.target.value)}
-              />
-            </div>
-
-            <div className="form-group">
-              <label>Số điện thoại</label>
-              <input
-                type="text"
-                className="form-control"
-                placeholder="Số điện thoại"
-                onChange={(e) => setPhoneNumber(e.target.value)}
-              />
-            </div>
-
-            <div className="row">
-              <div className="col-4">
-                <div className="form-group">
-                  <label>Thành phố</label>
-                  <select
-                    className="form-control"
-                    value={selectedProvince}
-                    onChange={(e) => setSelectedProvince(e.target.value)}
-                  >
-                    <option value="" disabled>
-                      Chọn thành phố
-                    </option>
-
-                    {provinces.map((Province) => (
-                      <option key={Province} value={Province}>
-                        {Province}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-              </div>
-
-              <div className="col-8">
-                <div className="form-group">
-                  <label>Địa chỉ giao hàng</label>
-                  <input
+      <>
+        <section className="bg-gray-100 px-2">
+          <div className="row">
+            <div className="col-12 col-lg-6 p-3 p-md-5">
+              <div className="form-group">
+                <label>Tên người nhận</label>
+                <input
                     type="text"
                     className="form-control"
-                    placeholder="Địa chỉ giao hàng"
-                    onChange={(e) => setDeliveryAddress(e.target.value)}
-                  />
+                    placeholder="Tên người nhận"
+                    onChange={(e) => setRecipientName(e.target.value)}
+                />
+              </div>
+
+              <div className="form-group">
+                <label>Email</label>
+                <input
+                    type="email"
+                    className="form-control"
+                    placeholder="Email"
+                    onChange={(e) => setEmail(e.target.value)}
+                />
+              </div>
+
+              <div className="form-group">
+                <label>Số điện thoại</label>
+                <input
+                    type="text"
+                    className="form-control"
+                    placeholder="Số điện thoại"
+                    onChange={(e) => setPhoneNumber(e.target.value)}
+                />
+              </div>
+
+              <div className="row">
+                <div className="col-4">
+                  <div className="form-group">
+                    <label>Thành phố</label>
+                    <select
+                        className="form-control"
+                        value={selectedProvince}
+                        onChange={(e) => setSelectedProvince(e.target.value)}
+                    >
+                      <option value="" disabled>
+                        Chọn thành phố
+                      </option>
+
+                      {provinces.map((Province) => (
+                          <option key={Province} value={Province}>
+                            {Province}
+                          </option>
+                      ))}
+                    </select>
+                  </div>
+                </div>
+
+                <div className="col-8">
+                  <div className="form-group">
+                    <label>Địa chỉ giao hàng</label>
+                    <input
+                        type="text"
+                        className="form-control"
+                        placeholder="Địa chỉ giao hàng"
+                        onChange={(e) => setDeliveryAddress(e.target.value)}
+                    />
+                  </div>
                 </div>
               </div>
-            </div>
 
-            <RushDeliveryInfo
-              isRushDelivery={isRushDelivery}
-              setRushDelivery={(value) => setIsRushDelivery(!!value)} // Updated this line
-              setRushDeliveryTime={setRushDeliveryTime}
-              setRushDeliveryInstructions={setRushDeliveryInstructions}
-            />
-            {canCheckOut ? (
-              <button
-                className="btn btn-dark w-100 mt-4"
-                onClick={handleCheckout}
-              >
-                Thanh toán
-              </button>
-            ) : (
-              <button className="btn btn-dark w-100 mt-4" disabled>
-                Thanh toán
-              </button>
-            )}
-          </div>
-          <div className="col-12 col-lg-6 p-lg-5">
-            {orderProducts.map((product, i) => {
-              if (product.quantity > 0) {
-                return (
-                  <CheckoutSingleItemDark
-                    key={product.id}
-                    imageUrl={product.imageUrl}
-                    title={product.title}
-                    price={product.price}
-                    quantityInStock={product.quantityInStock}
-                    quantity={product.quantity || 1}
-                  />
-                );
-              }
-            })}
-            {summaryOrder && (
-              <OrderSummary
-                subtotal={summaryOrder.summary.subtotal}
-                shippingFee={summaryOrder.summary.shippingFee}
-                total={summaryOrder.summary.total}
-                vat={summaryOrder.summary.vat}
+              <RushDeliveryInfo
+                  isRushDelivery={isRushDelivery}
+                  setRushDelivery={(value) => setIsRushDelivery(!!value)} // Updated this line
+                  setRushDeliveryTime={setRushDeliveryTime}
+                  setRushDeliveryInstructions={setRushDeliveryInstructions}
               />
-            )}
+
+              <FormControl className="pt-4">
+                <label>Phương thức thanh toán</label>
+                <RadioGroup
+                    aria-labelledby="demo-radio-buttons-group-label"
+                    defaultValue="female"
+                    name="radio-buttons-group"
+                >
+                  <FormControlLabel
+                      value="PAYPAL"
+                      control={<Radio/>}
+                      label={<img
+                      src="https://static-00.iconduck.com/assets.00/paypal-icon-2048x547-tu0aql1a.png"
+                      style={{width: "80px"}}/>}
+                      onClick={() => setPaymentMethod("PAYPAL")}/>
+                  <FormControlLabel
+                      value="VNPAY"
+                      control={<Radio/>}
+                      label={<img
+                      src="https://cdn.haitrieu.com/wp-content/uploads/2022/10/Logo-VNPAY-QR-1.png"
+                      style={{width: "100px"}}/>}
+                      onClick={() => setPaymentMethod("VNPAY")}/>
+                </RadioGroup>
+              </FormControl>
+
+              {canCheckOut ? (
+                  <button
+                      className="btn btn-dark w-100 mt-4"
+                      onClick={handleCheckout}
+                  >
+                    Thanh toán
+                  </button>
+              ) : (
+                  <button className="btn btn-dark w-100 mt-4" disabled>
+                    Thanh toán
+                  </button>
+              )}
+            </div>
+            <div className="col-12 col-lg-6 p-lg-5">
+              {orderProducts.map((product, i) => {
+                if (product.quantity > 0) {
+                  return (
+                      <CheckoutSingleItemDark
+                          key={product.id}
+                          imageUrl={product.imageUrl}
+                          title={product.title}
+                          price={product.price}
+                          quantityInStock={product.quantityInStock}
+                          quantity={product.quantity || 1}
+                      />
+                  );
+                }
+              })}
+              {summaryOrder && (
+                  <OrderSummary
+                      subtotal={summaryOrder.summary.subtotal}
+                      shippingFee={summaryOrder.summary.shippingFee}
+                      total={summaryOrder.summary.total}
+                      vat={summaryOrder.summary.vat}
+                  />
+              )}
+            </div>
           </div>
-        </div>
-      </section>
-    </>
+        </section>
+      </>
   );
-}
 }
