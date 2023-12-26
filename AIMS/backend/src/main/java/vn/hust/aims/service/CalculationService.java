@@ -45,12 +45,12 @@ public class CalculationService {
       return null;
     }
 
-    String city = order.getDeliveryInfo().getCity();
+    String province = order.getDeliveryInfo().getProvince();
 
     Double rushDeliveryFee = calculateRushDeliveryFee(order.getOrderMediaList());
 
     if (order.getSubtotal() > FREE_SHIP) {
-      return isInHanoi(city) ? rushDeliveryFee : 0.0;
+      return isInHanoi(province) ? rushDeliveryFee : 0.0;
     }
 
     Double maxWeight = order.getOrderMediaList().stream()
@@ -58,10 +58,10 @@ public class CalculationService {
         .max(Double::compare)
         .orElse(0.0);
 
-    if (isInHanoi(city)) {
+    if (isInHanoi(province)) {
       // data coupling
       return calculateFeeInHanoiOrHCM(maxWeight) + rushDeliveryFee;
-    } else if (isInHCM(city)) {
+    } else if (isInHCM(province)) {
       // data coupling
       return calculateFeeInHanoiOrHCM(maxWeight);
     } else {
@@ -78,12 +78,12 @@ public class CalculationService {
     return subtotal + VAT + deliveryFee;
   }
 
-  private Boolean isInHanoi(String city) {
-    return city.equals(ProvinceEnum.HANOI.getStringValue());
+  private Boolean isInHanoi(String province) {
+    return province.equals(ProvinceEnum.HANOI.getStringValue());
   }
 
-  private Boolean isInHCM(String city) {
-    return city.equals(ProvinceEnum.HOCHIMINH.getStringValue());
+  private Boolean isInHCM(String province) {
+    return province.equals(ProvinceEnum.HOCHIMINH.getStringValue());
   }
 
   private Double calculateFeeInHanoiOrHCM(Double maxWeight) {

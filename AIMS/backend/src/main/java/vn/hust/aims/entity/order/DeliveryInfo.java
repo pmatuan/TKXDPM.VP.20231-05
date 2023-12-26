@@ -36,8 +36,8 @@ public class DeliveryInfo extends TimedEntity {
   @Column(name = "phone_number")
   private String phoneNumber;
 
-  @Column(name = "city")
-  private String city;
+  @Column(name = "province")
+  private String province;
 
   @Column(name = "address")
   private String address;

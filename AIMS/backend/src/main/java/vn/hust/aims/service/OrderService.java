@@ -69,8 +69,9 @@ public class OrderService {
   public GetOrderOutput getOrder(GetOrderInput input) {
 
     Order order = getOrderById(input.getOrderId());
+    RushOrder rushOrder = getRushOrderById(input.getOrderId());
 
-    return GetOrderOutput.from(order);
+    return GetOrderOutput.from(order, rushOrder);
   }
 
   public GetAllOrderOutput getAllOrder(Pageable pageable) {
@@ -177,6 +178,11 @@ public class OrderService {
   private Order getOrderById(String orderId) {
     return orderRepository.findById(orderId)
         .orElseThrow(() -> new OrderNotFoundException());
+  }
+
+  private RushOrder getRushOrderById(String orderId) {
+    return rushOrderRepository.findById(orderId)
+        .orElse(null);
   }
 
   private List<OrderMedia> mapCartMediaToOrderMedia(List<CartMedia> cartMediaList) {

@@ -16,7 +16,7 @@ public class DeliveryInfoService {
         .customerName(input.getCustomerName())
         .email(input.getEmail())
         .phoneNumber(input.getPhoneNumber())
-        .city(input.getProvince().getStringValue())
+        .province(input.getProvince().getStringValue())
         .address(input.getAddress())
         .build();
 
