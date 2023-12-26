@@ -47,27 +47,31 @@ public class CalculationService {
 
     String province = order.getDeliveryInfo().getProvince();
 
-    Double rushDeliveryFee = calculateRushDeliveryFee(order.getOrderMediaList());
-
-    if (order.getSubtotal() > FREE_SHIP) {
-      return isInHanoi(province) ? rushDeliveryFee : 0.0;
-    }
-
     Double maxWeight = order.getOrderMediaList().stream()
         .map(orderMedia -> orderMedia.getMedia().getWeight())
         .max(Double::compare)
         .orElse(0.0);
 
-    if (isInHanoi(province)) {
+    Double originalDeliveryFee;
+
+    if (order.getSubtotal() > FREE_SHIP) {
+      originalDeliveryFee = 0.0;
+    } else if (isInHanoi(province)) {
       // data coupling
-      return calculateFeeInHanoiOrHCM(maxWeight) + rushDeliveryFee;
+      originalDeliveryFee = calculateFeeInHanoiOrHCM(maxWeight);
     } else if (isInHCM(province)) {
       // data coupling
-      return calculateFeeInHanoiOrHCM(maxWeight);
+      originalDeliveryFee = calculateFeeInHanoiOrHCM(maxWeight);
     } else {
       // data coupling
-      return calculateFeeOutside(maxWeight);
+      originalDeliveryFee = calculateFeeOutside(maxWeight);
     }
+
+    if (order.getRushOrder() != null) {
+      return originalDeliveryFee + calculateRushDeliveryFee(order.getOrderMediaList());
+    }
+
+    return originalDeliveryFee;
   }
 
   public Double calculateTotal(Double subtotal, Double VAT) {
