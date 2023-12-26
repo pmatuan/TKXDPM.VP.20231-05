@@ -116,7 +116,6 @@ export default function CheckoutSummary({ orderId }: Props) {
   );
   const [rushDeliveryInstructions, setRushDeliveryInstructions] = useState("");
   const [canCheckOut, setCanCheckOut] = useState(false); // Updated this line
-
   const initialize = async () => {
     try {
       const response = await fetch(BACKEND_URL + `/order/${orderId}`);
@@ -380,4 +379,5 @@ export default function CheckoutSummary({ orderId }: Props) {
       </section>
     </>
   );
+}
 }

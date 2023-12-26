@@ -1,6 +1,7 @@
 package vn.hust.aims.entity.media;
 
 import java.time.Instant;
+import java.time.LocalDate;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
@@ -30,5 +31,5 @@ public class CD extends Media {
   private String genres;
 
   @Column(name = "release_date")
-  private Instant releaseDate;
+  private LocalDate releaseDate;
 }

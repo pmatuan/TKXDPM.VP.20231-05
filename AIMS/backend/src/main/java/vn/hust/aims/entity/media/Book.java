@@ -1,6 +1,7 @@
 package vn.hust.aims.entity.media;
 
 import java.time.Instant;
+import java.time.LocalDate;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -31,7 +32,7 @@ public class Book extends Media {
   private String publisher;
 
   @Column(name = "publication_date")
-  private Instant publicationDate;
+  private LocalDate publicationDate;
 
   @Column(name = "pages")
   private Integer pages;
