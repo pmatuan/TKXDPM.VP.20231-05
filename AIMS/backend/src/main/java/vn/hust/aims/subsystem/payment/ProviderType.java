@@ -1,4 +1,4 @@
-package vn.hust.aims.subsystem;
+package vn.hust.aims.subsystem.payment;
 
 public enum ProviderType {
   UNKNOWN(0, "UNKNOWN"),

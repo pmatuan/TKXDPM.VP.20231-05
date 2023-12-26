@@ -10,10 +10,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import vn.hust.aims.controller.dto.request.payment.PayOrderRequest;
 import vn.hust.aims.controller.dto.response.payment.PayOrderResponse;
 import vn.hust.aims.response.AimsCommonResponse;
-import vn.hust.aims.subsystem.PaymentSubsystem;
-import vn.hust.aims.subsystem.PaymentSubsystemFactory;
-import vn.hust.aims.subsystem.ProviderType;
-import vn.hust.aims.subsystem.dto.output.PayOrderOutput;
+import vn.hust.aims.subsystem.payment.PaymentSubsystem;
+import vn.hust.aims.subsystem.payment.PaymentSubsystemFactory;
+import vn.hust.aims.subsystem.payment.ProviderType;
+import vn.hust.aims.subsystem.payment.dto.output.PayOrderOutput;
 import vn.hust.aims.utils.ResponseUtil;
 
 @Controller

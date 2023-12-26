@@ -1,4 +1,4 @@
-package vn.hust.aims.subsystem;
+package vn.hust.aims.subsystem.payment;
 
 import java.lang.annotation.*;
 

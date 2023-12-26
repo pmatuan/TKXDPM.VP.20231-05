@@ -1,4 +1,4 @@
-package vn.hust.aims.subsystem.dto.output;
+package vn.hust.aims.subsystem.payment.dto.output;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

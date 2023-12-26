@@ -5,18 +5,24 @@
 
 package vn.hust.aims.service;
 
+import java.util.ArrayList;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import vn.hust.aims.entity.cart.Cart;
 import vn.hust.aims.entity.cart.CartMedia;
+import vn.hust.aims.entity.email.Param;
+import vn.hust.aims.entity.email.Sender;
+import vn.hust.aims.entity.email.Template;
 import vn.hust.aims.entity.order.*;
 import vn.hust.aims.enumeration.OrderStateEnum;
 import vn.hust.aims.exception.CannotCancelOrderException;
 import vn.hust.aims.exception.CannotChangeOrderStateException;
 import vn.hust.aims.exception.OrderMediaNotFoundException;
 import vn.hust.aims.exception.OrderNotFoundException;
+import vn.hust.aims.repository.email.SenderRepository;
+import vn.hust.aims.repository.email.TemplateRepository;
 import vn.hust.aims.repository.order.OrderMediaRepository;
 import vn.hust.aims.repository.order.OrderRepository;
 import vn.hust.aims.repository.order.RushOrderRepository;
@@ -40,6 +46,10 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 import vn.hust.aims.service.dto.output.placeorder.UpdateMediaInOrderOutput;
 import vn.hust.aims.service.media.MediaService;
+import vn.hust.aims.subsystem.email.MailSender;
+import vn.hust.aims.subsystem.email.dto.input.SendInput;
+import vn.hust.aims.subsystem.email.provider.GmailSender;
+import vn.hust.aims.utils.TextEngineUtil;
 
 @Service
 @RequiredArgsConstructor
@@ -48,10 +58,13 @@ public class OrderService {
   private final OrderRepository orderRepository;
   private final OrderMediaRepository orderMediaRepository;
   private final RushOrderRepository rushOrderRepository;
+  private final SenderRepository senderRepository;
+  private final TemplateRepository templateRepository;
   private final CalculationService calculationService;
   private final DeliveryInfoService deliveryInfoService;
   private final MediaService mediaService;
   private final CartService cartService;
+  private final TextEngineUtil textEngineUtil;
 
   public CreateOrderOutput createOrderFromCart(CreateOrderInput input) {
     Cart cart = cartService.getCartById(input.getCartId());

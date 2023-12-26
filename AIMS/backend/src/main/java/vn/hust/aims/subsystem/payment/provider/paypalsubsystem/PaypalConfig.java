@@ -1,4 +1,4 @@
-package vn.hust.aims.subsystem.provider.paypalsubsystem;
+package vn.hust.aims.subsystem.payment.provider.paypalsubsystem;
 
 public class PaypalConfig {
 

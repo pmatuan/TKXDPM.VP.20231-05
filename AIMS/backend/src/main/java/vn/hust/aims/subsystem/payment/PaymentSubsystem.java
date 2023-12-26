@@ -1,8 +1,8 @@
-package vn.hust.aims.subsystem;
+package vn.hust.aims.subsystem.payment;
 
 import javax.servlet.http.HttpServletRequest;
-import vn.hust.aims.subsystem.dto.input.PayOrderInput;
-import vn.hust.aims.subsystem.dto.output.PayOrderOutput;
+import vn.hust.aims.subsystem.payment.dto.input.PayOrderInput;
+import vn.hust.aims.subsystem.payment.dto.output.PayOrderOutput;
 
 // PaymentSubsystem - PayOrderInput: Data coupling
 // Interface PaymentSubsystem chỉ định phương thức payOrder nhận vào một đối tượng HttpServletRequest và PayOrderInput.

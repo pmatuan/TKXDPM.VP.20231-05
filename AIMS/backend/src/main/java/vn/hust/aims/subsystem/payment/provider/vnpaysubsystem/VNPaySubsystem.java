@@ -1,10 +1,10 @@
-package vn.hust.aims.subsystem.provider.vnpaysubsystem;
+package vn.hust.aims.subsystem.payment.provider.vnpaysubsystem;
 
 import javax.servlet.http.HttpServletRequest;
-import vn.hust.aims.subsystem.PaymentSubsystem;
-import vn.hust.aims.subsystem.Provider;
-import vn.hust.aims.subsystem.dto.input.PayOrderInput;
-import vn.hust.aims.subsystem.dto.output.PayOrderOutput;
+import vn.hust.aims.subsystem.payment.PaymentSubsystem;
+import vn.hust.aims.subsystem.payment.Provider;
+import vn.hust.aims.subsystem.payment.dto.input.PayOrderInput;
+import vn.hust.aims.subsystem.payment.dto.output.PayOrderOutput;
 
 @Provider("VNPAY")
 public class VNPaySubsystem implements PaymentSubsystem {

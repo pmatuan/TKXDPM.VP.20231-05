@@ -2,7 +2,7 @@ package vn.hust.aims.controller.dto.response.payment;
 
 import lombok.Data;
 import lombok.experimental.SuperBuilder;
-import vn.hust.aims.subsystem.dto.output.PayOrderOutput;
+import vn.hust.aims.subsystem.payment.dto.output.PayOrderOutput;
 
 @Data
 @SuperBuilder

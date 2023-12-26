@@ -1,4 +1,4 @@
-package vn.hust.aims.subsystem.dto.input;
+package vn.hust.aims.subsystem.payment.dto.input;
 
 import lombok.Data;
 import lombok.experimental.SuperBuilder;

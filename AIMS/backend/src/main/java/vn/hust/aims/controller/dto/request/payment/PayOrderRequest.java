@@ -3,7 +3,7 @@ package vn.hust.aims.controller.dto.request.payment;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import vn.hust.aims.subsystem.dto.input.PayOrderInput;
+import vn.hust.aims.subsystem.payment.dto.input.PayOrderInput;
 
 @Data
 @AllArgsConstructor

@@ -1,4 +1,4 @@
-package vn.hust.aims.subsystem.provider.vnpaysubsystem;
+package vn.hust.aims.subsystem.payment.provider.vnpaysubsystem;
 
 import java.util.Random;
 import lombok.Getter;
