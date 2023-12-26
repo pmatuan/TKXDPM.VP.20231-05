@@ -15,6 +15,7 @@ import vn.hust.aims.entity.order.*;
 import vn.hust.aims.enumeration.OrderStateEnum;
 import vn.hust.aims.exception.CannotCancelOrderException;
 import vn.hust.aims.exception.CannotChangeOrderStateException;
+import vn.hust.aims.exception.NotSupportRushDeliveryException;
 import vn.hust.aims.exception.OrderMediaNotFoundException;
 import vn.hust.aims.exception.OrderNotFoundException;
 import vn.hust.aims.repository.order.OrderMediaRepository;
@@ -235,11 +236,18 @@ public class OrderService {
   }
 
   private void updateOrderForRushDelivery(Order order, UpdateDeliveryInfoInput input) {
-    order.getOrderMediaList().forEach(orderMedia -> {
+    boolean hasRushDeliveryProduct = false;
+
+    for (OrderMedia orderMedia : order.getOrderMediaList()) {
       if (orderMedia.getMedia().getIsAbleToRushDelivery()) {
         orderMedia.setIsOrderForRushDelivery(true);
+        hasRushDeliveryProduct = true;
       }
-    });
+    }
+
+    if (!hasRushDeliveryProduct) {
+      throw new NotSupportRushDeliveryException();
+    }
 
     // data coupling
     RushOrder rushOrder = createRushOrder(order, input);
