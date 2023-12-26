@@ -1,6 +1,6 @@
 import RushDeliveryInfo from "./rushDeliveryInfo";
 import CheckoutSingleItemDark from "../checkout/checkoutSingleItemDark";
-import {useEffect, useState} from "react";
+import { useEffect, useState } from "react";
 import OrderSummary from "../cart/orderSummary";
 
 interface OrderMedia {
@@ -22,14 +22,14 @@ interface OrderSummaryData {
     shippingFee: number;
     vat: number;
     total: number;
-  }
+  };
 }
 
 interface Props {
   orderId: string;
 }
 
-const BACKEND_URL = "http://localhost:8080/api/v1"
+const BACKEND_URL = "http://localhost:8080/api/v1";
 
 const provinces = [
   "Hà Nội",
@@ -88,24 +88,34 @@ const provinces = [
   "Hậu Giang",
   "Sóc Trăng",
   "Bạc Liêu",
-  "Cà Mau"
+  "Cà Mau",
 ];
 
-export default function CheckoutSummary({orderId}: Props) {
-
+export default function CheckoutSummary({ orderId }: Props) {
   const orderSummaryTmp: OrderSummaryData = {
     summary: {
-      subtotal: 1,
-      shippingFee: 1,
-      vat: 1,
-      total: 1,
-    }
+      subtotal: 0,
+      shippingFee: 0,
+      vat: 0,
+      total: 0,
+    },
   };
 
   const [orderProducts, setOrderProducts] = useState<OrderMedia[]>([]);
-  const [canCheckOut, setCanCheckOut] = useState(false);
-  const [selectedCity, setSelectedCity] = useState("");
+  const [selectedProvince, setSelectedProvince] = useState("");
   const [summaryOrder, setSummaryOrder] = useState(orderSummaryTmp);
+
+  const [recipientName, setRecipientName] = useState("");
+  const [email, setEmail] = useState("");
+  const [phoneNumber, setPhoneNumber] = useState("");
+  const [deliveryProvince, setDeliveryProvince] = useState("");
+  const [deliveryAddress, setDeliveryAddress] = useState("");
+  const [isRushDelivery, setIsRushDelivery] = useState(false);
+  const [rushDeliveryTime, setRushDeliveryTime] = useState<Date>(
+    new Date("Thu Nov 30 2023 17:09:46 GMT+0700 (Indochina Time)")
+  );
+  const [rushDeliveryInstructions, setRushDeliveryInstructions] = useState("");
+  const [canCheckOut, setCanCheckOut] = useState(false); // Updated this line
 
   const initialize = async () => {
     try {
@@ -134,37 +144,37 @@ export default function CheckoutSummary({orderId}: Props) {
           shippingFee: order.deliveryFee != null ? order.deliveryFee : 0,
           vat: order.vat,
           total: order.total,
-        }
+        },
       };
 
       setOrderProducts(orderItems);
       setSummaryOrder(orderSummary);
-
     } catch (error) {
       console.error("Error fetching data:", error);
       // Handle error as needed
     }
   };
 
-  const handleChangeSelectedCity = async () => {
+  const handleChangeSelectedProvince = async () => {
     try {
       const response = await fetch(
-          `${BACKEND_URL}/place-order/${orderId}/delivery-info`,
-          {
-            method: "PUT",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({ province: selectedCity }),
-          }
+        `${BACKEND_URL}/place-order/${orderId}/delivery-info`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ province: selectedProvince }),
+        }
       );
 
       // If the API call is successful, update the shipping fee
       if (response.ok) {
+        setDeliveryProvince(selectedProvince);
         handleChangeShippingFee();
       }
     } catch (error) {
-      console.error("Error updating selected city:", error);
+      console.error("Error updating selected Province:", error);
       // Handle error as needed
     }
   };
@@ -192,114 +202,182 @@ export default function CheckoutSummary({orderId}: Props) {
     }
   };
 
+  const handleCheckout = async () => {
+    try {
+      const response = await fetch(
+        `${BACKEND_URL}/place-order/${orderId}/delivery-info`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            customerName: recipientName,
+            email: email,
+            phoneNumber: phoneNumber,
+            province: selectedProvince,
+            address: deliveryAddress,
+            isOrderForRushDelivery: isRushDelivery,
+            deliveryTime: rushDeliveryTime.toISOString(),
+            deliveryInstruction: rushDeliveryInstructions,
+          }),
+        }
+      );
+      if (response.ok) {
+        console.log("Checkout successful");
+      }
+    } catch (error) {
+      console.error("Error updating selected Province:", error);
+      // Handle error as needed
+    }
+  };
+
   useEffect(() => {
     initialize();
   }, []);
 
   useEffect(() => {
-    handleChangeSelectedCity();
-  }, [selectedCity]);
+    handleChangeSelectedProvince();
+  }, [selectedProvince]);
+
+  useEffect(() => {
+    const isFilled =
+      !!recipientName &&
+      !!email &&
+      !!phoneNumber &&
+      !!deliveryProvince &&
+      !!deliveryAddress;
+
+    const isRushDeliveryFilled =
+      isRushDelivery && !!rushDeliveryTime && !!rushDeliveryInstructions;
+
+    setCanCheckOut(isFilled && (!isRushDelivery || isRushDeliveryFilled));
+  }, [
+    recipientName,
+    email,
+    phoneNumber,
+    deliveryProvince,
+    deliveryAddress,
+    isRushDelivery,
+    rushDeliveryTime,
+    rushDeliveryInstructions,
+  ]);
 
   return (
-      <>
-        <section className="bg-gray-100 px-2">
-          <div className="row">
-            <div className="col-12 col-lg-6 p-3 p-md-5">
-              <div className="form-group">
-                <label>Tên người nhận</label>
-                <input
-                    type="text"
-                    className="form-control"
-                    placeholder="Tên người nhận"
-                />
-              </div>
+    <>
+      <section className="bg-gray-100 px-2">
+        <div className="row">
+          <div className="col-12 col-lg-6 p-3 p-md-5">
+            <div className="form-group">
+              <label>Tên người nhận</label>
+              <input
+                type="text"
+                className="form-control"
+                placeholder="Tên người nhận"
+                onChange={(e) => setRecipientName(e.target.value)}
+              />
+            </div>
 
-              <div className="form-group">
-                <label>Email</label>
-                <input
-                    type="email"
-                    className="form-control"
-                    placeholder="Email"
-                />
-              </div>
+            <div className="form-group">
+              <label>Email</label>
+              <input
+                type="email"
+                className="form-control"
+                placeholder="Email"
+                onChange={(e) => setEmail(e.target.value)}
+              />
+            </div>
 
-              <div className="form-group">
-                <label>Số điện thoại</label>
-                <input
-                    type="text"
-                    className="form-control"
-                    placeholder="Số điện thoại"
-                />
-              </div>
+            <div className="form-group">
+              <label>Số điện thoại</label>
+              <input
+                type="text"
+                className="form-control"
+                placeholder="Số điện thoại"
+                onChange={(e) => setPhoneNumber(e.target.value)}
+              />
+            </div>
 
-              <div className="row">
-                <div className="col-4">
-                  <div className="form-group">
-                    <label>Thành phố</label>
-                    <select
-                        className="form-control"
-                        value={selectedCity}
-                        onChange={(e) => setSelectedCity(e.target.value)}
-                    >
-                      <option value="" disabled>
-                        Chọn thành phố
+            <div className="row">
+              <div className="col-4">
+                <div className="form-group">
+                  <label>Thành phố</label>
+                  <select
+                    className="form-control"
+                    value={selectedProvince}
+                    onChange={(e) => setSelectedProvince(e.target.value)}
+                  >
+                    <option value="" disabled>
+                      Chọn thành phố
+                    </option>
+
+                    {provinces.map((Province) => (
+                      <option key={Province} value={Province}>
+                        {Province}
                       </option>
-
-                      {provinces.map((city) => (
-                          <option key={city} value={city}>
-                            {city}
-                          </option>
-                      ))}
-                    </select>
-                  </div>
-                </div>
-
-
-                <div className="col-8">
-                  <div className="form-group">
-                    <label>Địa chỉ giao hàng</label>
-                    <input
-                        type="text"
-                        className="form-control"
-                        placeholder="Địa chỉ giao hàng"
-                    />
-                  </div>
+                    ))}
+                  </select>
                 </div>
               </div>
 
-              <RushDeliveryInfo/>
-              {canCheckOut ? (
-                  <button className="btn btn-dark w-100 mt-4">Thanh toán</button>
-              ) : (
-                  <button className="btn btn-dark w-100 mt-4" disabled>Thanh toán</button>
-              )}
-            </div>
-            <div className="col-12 col-lg-6 p-lg-5">
-              {orderProducts.map((product, i) => {
-                if (product.quantity > 0) {
-                  return (
-                      <CheckoutSingleItemDark
-                          key={product.id}
-                          imageUrl={product.imageUrl}
-                          title={product.title}
-                          price={product.price}
-                          quantityInStock={product.quantityInStock}
-                          quantity={product.quantity || 1}
-                      />
-                  );
-                }
-              })}
-              {summaryOrder && (
-                  <OrderSummary
-                      subtotal={summaryOrder.summary.subtotal}
-                      shippingFee={summaryOrder.summary.shippingFee}
-                      total={summaryOrder.summary.total}
-                      vat={summaryOrder.summary.vat}
+              <div className="col-8">
+                <div className="form-group">
+                  <label>Địa chỉ giao hàng</label>
+                  <input
+                    type="text"
+                    className="form-control"
+                    placeholder="Địa chỉ giao hàng"
+                    onChange={(e) => setDeliveryAddress(e.target.value)}
                   />
-              )}
+                </div>
+              </div>
             </div>
+
+            <RushDeliveryInfo
+              isRushDelivery={isRushDelivery}
+              setRushDelivery={(value) => setIsRushDelivery(!!value)} // Updated this line
+              setRushDeliveryTime={setRushDeliveryTime}
+              setRushDeliveryInstructions={setRushDeliveryInstructions}
+            />
+            {canCheckOut ? (
+              <button
+                className="btn btn-dark w-100 mt-4"
+                onClick={handleCheckout}
+              >
+                Thanh toán
+              </button>
+            ) : (
+              <button className="btn btn-dark w-100 mt-4" disabled>
+                Thanh toán
+              </button>
+            )}
           </div>
-        </section>
-      </>
+          <div className="col-12 col-lg-6 p-lg-5">
+            {orderProducts.map((product, i) => {
+              if (product.quantity > 0) {
+                return (
+                  <CheckoutSingleItemDark
+                    key={product.id}
+                    imageUrl={product.imageUrl}
+                    title={product.title}
+                    price={product.price}
+                    quantityInStock={product.quantityInStock}
+                    quantity={product.quantity || 1}
+                  />
+                );
+              }
+            })}
+            {summaryOrder && (
+              <OrderSummary
+                subtotal={summaryOrder.summary.subtotal}
+                shippingFee={summaryOrder.summary.shippingFee}
+                total={summaryOrder.summary.total}
+                vat={summaryOrder.summary.vat}
+              />
+            )}
+          </div>
+        </div>
+      </section>
+    </>
   );
 }
