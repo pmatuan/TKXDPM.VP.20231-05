@@ -24,7 +24,7 @@ import vn.hust.aims.service.dto.output.order.GetAllOrderOutput;
 import vn.hust.aims.service.dto.output.user.*;
 
 import java.lang.reflect.Field;
-import java.util.List;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -65,7 +65,7 @@ public class UserService {
                 .email(input.getEmail())
                 .phoneNumber(input.getPhoneNumber())
                 .password(input.getPassword()) // TODO: hash password
-                .role(UserRole.from(input.getRole()))
+                .role(input.getRole())
                 .build();
 
         userRepository.save(user);
@@ -90,7 +90,7 @@ public class UserService {
 
         if (input.getRole() != null) {
             validateRole(input.getRole());
-            user.setRole(UserRole.from(input.getRole()));
+            user.setRole(input.getRole());
         }
 
         userRepository.save(user);
@@ -166,7 +166,16 @@ public class UserService {
     }
 
     private boolean validateRole(String role) {
-        if (UserRole.from(role) == UserRole.UNKNOWN) {
+        Set<String> roles = Collections.unmodifiableSet(
+                new HashSet<String>(Arrays.asList(role.split(",")))
+        );
+
+        System.out.println(roles);
+        System.out.println(UserRole.roles);
+        System.out.println(roles.isEmpty());
+        System.out.println(UserRole.roles.containsAll(roles));
+
+        if (roles.isEmpty() || !UserRole.roles.containsAll(roles)) {
             throw new InvalidRoleException();
         }
 
