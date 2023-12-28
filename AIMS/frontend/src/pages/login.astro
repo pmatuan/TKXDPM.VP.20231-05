@@ -1,0 +1,86 @@
+---
+import Layout from "../layouts/Layout.astro";
+import "../../assets/scss/astro-ecommerce.scss";
+---
+<script>
+    let loginButton = document.getElementById('loginBtn')
+    loginButton?.addEventListener('click', async () => {
+        const credentials = {
+            "email": (document.getElementById('email') as HTMLInputElement).value,
+            "password": (document.getElementById('password') as HTMLInputElement).value
+        }
+
+        const data = await fetch("http://localhost:8080/api/v1/login", {
+            method: 'POST',
+            headers: {
+                'Content-type': 'application/json'
+            },
+            body: JSON.stringify(credentials)
+        })
+
+        const response = await data.json()
+        console.log(response)
+        const role = response.result.role
+        
+        if (role.includes('seller')) {
+            window.location.href = "admin/home" // home for seller
+        } else {
+            window.location.href = "admin/manage-user" // home for admin
+        }
+    })
+</script>
+
+<Layout title="Login">
+    <div class="container">
+        <!-- modal -->
+        <div class="">
+            <div
+                class="modal-dialog modal-dialog-centered modal-xl"
+                role="form"
+            >
+                <div class="modal-content">
+                    <div class="card align-items-center">
+                        <div class="card-body d-block d-lg-flex p-4">
+                            <div class="ps-lg-5 mt-4 mt-md-5">
+                                <h3>Login</h3>
+                                <div
+                                    class="d-flex align-items-start flex-column"
+                                >
+                                    <table>
+                                        <tr
+                                            ><td>
+                                                <label for="email">Email</label
+                                                ></td
+                                            >
+                                            <td
+                                                ><input
+                                                    type="text"
+                                                    name="email"
+                                                    id="email"
+                                                /></td
+                                            >
+                                        </tr>
+                                        <tr
+                                            ><td>
+                                                <label for="password">Password</label
+                                                ></td
+                                            >
+                                            <td
+                                                ><input
+                                                    type="password"
+                                                    name="password"
+                                                    id="password"
+                                                /></td
+                                            >
+                                        </tr>
+                                    </table>
+                                </div>
+                                <button class="btn btn-dark btn-lg mx-1" id="loginBtn">Login</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</Layout>
