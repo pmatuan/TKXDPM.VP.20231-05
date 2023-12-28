@@ -1,8 +1,6 @@
 package vn.hust.aims.service.media.factory;
 
-import vn.hust.aims.entity.media.LP;
 import vn.hust.aims.entity.media.Media;
-import vn.hust.aims.subsystem.Provider;
 import vn.hust.aims.utils.JsonMapper;
 
 @MediaFactoryProvider(value = "MEDIA")
