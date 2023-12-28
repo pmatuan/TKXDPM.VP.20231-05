@@ -1,4 +1,4 @@
-package vn.hust.aims.subsystem.payment.dto.output;
+package vn.hust.aims.service.dto.output.payment;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -12,17 +12,10 @@ import lombok.experimental.SuperBuilder;
 public class PayOrderOutput {
 
   private String url;
-  private Object response;
 
-  public static PayOrderOutput fromUrl (String url) {
+  public static PayOrderOutput from(String url) {
     return PayOrderOutput.builder()
         .url(url)
-        .build();
-  }
-
-  public static PayOrderOutput fromResponse(Object response) {
-    return PayOrderOutput.builder()
-        .response(response)
         .build();
   }
 

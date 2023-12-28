@@ -1,4 +1,4 @@
-package vn.hust.aims.subsystem.payment.dto.input;
+package vn.hust.aims.service.dto.input.payment;
 
 import lombok.Data;
 import lombok.experimental.SuperBuilder;
@@ -6,6 +6,6 @@ import lombok.experimental.SuperBuilder;
 @Data
 @SuperBuilder
 public class PayOrderInput {
-  private Double amount;
-  private String message;
+  private String orderId;
+  private String provider;
 }

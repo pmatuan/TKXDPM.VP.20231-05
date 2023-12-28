@@ -7,6 +7,7 @@ import RadioGroup from "@mui/material/RadioGroup";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import Radio from "@mui/material/Radio";
 import FormControl from "@mui/material/FormControl";
+import {PayPalScriptProvider, PayPalButtons} from "@paypal/react-paypal-js";
 
 interface OrderMedia {
   id: string;
@@ -120,8 +121,8 @@ export default function CheckoutSummary({orderId}: Props) {
       new Date("Thu Nov 30 2023 17:09:46 GMT+0700 (Indochina Time)")
   );
   const [rushDeliveryInstructions, setRushDeliveryInstructions] = useState("");
-  const [paymentMethod, setPaymentMethod] = useState("")
   const [canCheckOut, setCanCheckOut] = useState(false); // Updated this line
+  let paypalId = ""
   const initialize = async () => {
     try {
       const response = await fetch(BACKEND_URL + `/order/${orderId}`);
@@ -207,9 +208,9 @@ export default function CheckoutSummary({orderId}: Props) {
     }
   };
 
-  const handleCheckout = async () => {
+  const updateOrderInfo = async () => {
     try {
-      const response = await fetch(
+      await fetch(
           `${BACKEND_URL}/place-order/${orderId}/delivery-info`,
           {
             method: "PUT",
@@ -228,14 +229,80 @@ export default function CheckoutSummary({orderId}: Props) {
             }),
           }
       );
-      if (response.ok) {
-        console.log("Checkout successful");
-      }
+    }
+    catch (error) {
+      console.error(error);
+    }
+  }
+
+  const handleCheckout = async (paymentMethod: string) => {
+    try {
+
+      const response = await fetch(
+          `${BACKEND_URL}/payment/payorder`,
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              orderId: orderId,
+              provider: paymentMethod
+            }),
+          }
+      );
+      const data = await response.json();
+      return data.result.url
+
     } catch (error) {
-      console.error("Error updating selected Province:", error);
+      console.error(error);
       // Handle error as needed
     }
   };
+
+  const handleVNPayCheckout = async () => {
+    // await updateOrderInfo()
+    const url = await handleCheckout("VNPAY")
+    window.location.href = url
+  }
+
+  const handlePaypalCheckout = async () => {
+    try {
+      const id = await handleCheckout("PAYPAL");
+      paypalId = id;
+      console.log("paypalCheckoutID: " + paypalId)
+      return id;
+    } catch (error) {
+      console.error("Error:", error);
+    }
+  }
+
+
+  const onApprove = async () => {
+    try {
+      const id = paypalId;
+      const response = await fetch(
+          `${BACKEND_URL}/payment/paypal-return`,
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              id: id,
+              orderId: orderId,
+            }),
+          }
+      );
+
+      const url = await response.text();
+      window.location.href = url
+
+    } catch (error) {
+      console.error("Error:", error);
+    }
+  }
+
 
   useEffect(() => {
     initialize();
@@ -251,13 +318,13 @@ export default function CheckoutSummary({orderId}: Props) {
         !!email &&
         !!phoneNumber &&
         !!deliveryProvince &&
-        !!deliveryAddress &&
-        !!paymentMethod;
+        !!deliveryAddress;
 
     const isRushDeliveryFilled =
         isRushDelivery && !!rushDeliveryTime && !!rushDeliveryInstructions;
 
     setCanCheckOut(isFilled && (!isRushDelivery || isRushDeliveryFilled));
+    updateOrderInfo();
   }, [
     recipientName,
     email,
@@ -267,7 +334,6 @@ export default function CheckoutSummary({orderId}: Props) {
     isRushDelivery,
     rushDeliveryTime,
     rushDeliveryInstructions,
-    paymentMethod,
   ]);
 
   return (
@@ -347,42 +413,88 @@ export default function CheckoutSummary({orderId}: Props) {
                   setRushDeliveryInstructions={setRushDeliveryInstructions}
               />
 
-              <FormControl className="pt-4">
+              {/*<FormControl className="pt-4">*/}
+              {/*  <label>Phương thức thanh toán</label>*/}
+              {/*  <RadioGroup*/}
+              {/*      aria-labelledby="demo-radio-buttons-group-label"*/}
+              {/*      defaultValue="female"*/}
+              {/*      name="radio-buttons-group"*/}
+              {/*  >*/}
+              {/*    <FormControlLabel*/}
+              {/*        value="PAYPAL"*/}
+              {/*        control={<Radio/>}*/}
+              {/*        label={<img*/}
+              {/*            src="https://static-00.iconduck.com/assets.00/paypal-icon-2048x547-tu0aql1a.png"*/}
+              {/*            style={{width: "80px"}}/>}*/}
+              {/*        onClick={() => setPaymentMethod("PAYPAL")}/>*/}
+              {/*    <FormControlLabel*/}
+              {/*        value="VNPAY"*/}
+              {/*        control={<Radio/>}*/}
+              {/*        label={<img*/}
+              {/*            src="https://cdn.haitrieu.com/wp-content/uploads/2022/10/Logo-VNPAY-QR-1.png"*/}
+              {/*            style={{width: "100px"}}/>}*/}
+              {/*        onClick={() => setPaymentMethod("VNPAY")}/>*/}
+              {/*  </RadioGroup>*/}
+              {/*</FormControl>*/}
+
+              {/*{canCheckOut ? (*/}
+              {/*    <button*/}
+              {/*        className="btn btn-dark w-100 mt-4"*/}
+              {/*        onClick={handleCheckout}*/}
+              {/*    >*/}
+              {/*      Thanh toán*/}
+              {/*    </button>*/}
+              {/*) : (*/}
+              {/*    <button className="btn btn-dark w-100 h-2/3 mt-4" disabled>*/}
+              {/*      Thanh toán*/}
+              {/*    </button>*/}
+              {/*)}*/}
+              <div className="mt-4">
                 <label>Phương thức thanh toán</label>
-                <RadioGroup
-                    aria-labelledby="demo-radio-buttons-group-label"
-                    defaultValue="female"
-                    name="radio-buttons-group"
-                >
-                  <FormControlLabel
-                      value="PAYPAL"
-                      control={<Radio/>}
-                      label={<img
-                      src="https://static-00.iconduck.com/assets.00/paypal-icon-2048x547-tu0aql1a.png"
-                      style={{width: "80px"}}/>}
-                      onClick={() => setPaymentMethod("PAYPAL")}/>
-                  <FormControlLabel
-                      value="VNPAY"
-                      control={<Radio/>}
-                      label={<img
-                      src="https://cdn.haitrieu.com/wp-content/uploads/2022/10/Logo-VNPAY-QR-1.png"
-                      style={{width: "100px"}}/>}
-                      onClick={() => setPaymentMethod("VNPAY")}/>
-                </RadioGroup>
-              </FormControl>
+              </div>
 
               {canCheckOut ? (
                   <button
-                      className="btn btn-dark w-100 mt-4"
-                      onClick={handleCheckout}
+                      className="btn w-100 mt-4"
+                      onClick={handleVNPayCheckout}
                   >
-                    Thanh toán
+                    <img
+                        src="https://cdn.haitrieu.com/wp-content/uploads/2022/10/Logo-VNPAY-QR-1.png"
+                        style={{width: "100px"}}/>
                   </button>
               ) : (
-                  <button className="btn btn-dark w-100 mt-4" disabled>
-                    Thanh toán
+                  <button
+                      className="btn w-100 mt-4 disabled border-none"
+                  >
+                    <img
+                        src="https://cdn.haitrieu.com/wp-content/uploads/2022/10/Logo-VNPAY-QR-1.png"
+                        style={{width: "100px"}}/>
                   </button>
               )}
+
+              {canCheckOut ? (
+                  <PayPalScriptProvider options={{
+                    clientId: "AY4ClMadd7o0YSd7Ix0vMehoXpUL4pv9SeO_E0Cht6ODzQuZOhl0WkUUR3chtMtDzo7sDGbdW3-RNE_i",
+                    'disable-funding': "credit,card"
+                  }}>
+                    <PayPalButtons
+                        createOrder={handlePaypalCheckout}
+                        onApprove={onApprove}
+                    />
+                  </PayPalScriptProvider>
+              ) : (
+                  <PayPalScriptProvider options={{
+                    clientId: "AY4ClMadd7o0YSd7Ix0vMehoXpUL4pv9SeO_E0Cht6ODzQuZOhl0WkUUR3chtMtDzo7sDGbdW3-RNE_i",
+                    'disable-funding': "credit,card"
+                  }}>
+                    <PayPalButtons
+                        createOrder={handlePaypalCheckout}
+                        onApprove={onApprove}
+                        disabled
+                    />
+                  </PayPalScriptProvider>
+              )}
+
             </div>
             <div className="col-12 col-lg-6 p-lg-5">
               {orderProducts.map((product, i) => {

@@ -24,6 +24,12 @@ public class PaymentTransaction extends TimedEntity {
   @Id
   private String id;
 
+  @Column(name = "payment_method")
+  private String paymentMethod;
+
+  @Column(name = "status")
+  private Boolean status;
+
   @Column(name = "amount")
   private Double amount;
 

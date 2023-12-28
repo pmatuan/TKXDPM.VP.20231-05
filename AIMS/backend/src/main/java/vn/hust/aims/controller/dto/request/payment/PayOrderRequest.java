@@ -3,7 +3,7 @@ package vn.hust.aims.controller.dto.request.payment;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import vn.hust.aims.subsystem.payment.dto.input.PayOrderInput;
+import vn.hust.aims.service.dto.input.payment.PayOrderInput;
 
 @Data
 @AllArgsConstructor
@@ -12,16 +12,15 @@ public class PayOrderRequest {
   // Mức độ cohesion: Functional Cohesion
   // Lớp này chứa các thuộc tính và phương thức liên quan chặt chẽ đến chức năng biểu diễn dữ liệu
   // đầu vào cho quá trình thanh toán và cung cấp phương thức chuyển đổi thành đối tượng PayOrderInput.
-  private Double amount;
-  private String message;
+  private String orderId;
   private String provider;
 
   // PayOrderRequest - PayOrderInput: Data coupling
   // Dữ liệu được truyền vừa đủ từ PayOrderRequest sang PayOrderInput để tạo input cho payment subsystem sau đó
   public PayOrderInput toInput() {
     return PayOrderInput.builder()
-        .amount(amount)
-        .message(message)
+        .orderId(orderId)
+        .provider(provider)
         .build();
   }
 }

@@ -5,16 +5,12 @@
 
 package vn.hust.aims.service;
 
-import java.util.ArrayList;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import vn.hust.aims.entity.cart.Cart;
 import vn.hust.aims.entity.cart.CartMedia;
-import vn.hust.aims.entity.email.Param;
-import vn.hust.aims.entity.email.Sender;
-import vn.hust.aims.entity.email.Template;
 import vn.hust.aims.entity.order.*;
 import vn.hust.aims.enumeration.OrderStateEnum;
 import vn.hust.aims.exception.CannotCancelOrderException;
@@ -46,9 +42,6 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 import vn.hust.aims.service.dto.output.placeorder.UpdateMediaInOrderOutput;
 import vn.hust.aims.service.media.MediaService;
-import vn.hust.aims.subsystem.email.MailSender;
-import vn.hust.aims.subsystem.email.dto.input.SendInput;
-import vn.hust.aims.subsystem.email.provider.GmailSender;
 import vn.hust.aims.utils.TextEngineUtil;
 
 @Service
@@ -188,9 +181,19 @@ public class OrderService {
     return CancelOrderOutput.from("Cancelled order " + input.getOrderId() + " successfully");
   }
 
-  private Order getOrderById(String orderId) {
+  public Order getOrderById(String orderId) {
     return orderRepository.findById(orderId)
         .orElseThrow(() -> new OrderNotFoundException());
+  }
+
+  public void saveOrder(Order order) {
+    orderRepository.save(order);
+  }
+
+  public String getCustomerEmailFromOrder(String orderId) {
+    Order order = getOrderById(orderId);
+    DeliveryInfo deliveryInfo = order.getDeliveryInfo();
+    return deliveryInfo.getEmail();
   }
 
   private RushOrder getRushOrderById(String orderId) {

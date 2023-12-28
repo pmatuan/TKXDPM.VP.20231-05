@@ -1,0 +1,29 @@
+---
+import Layout from '../layouts/Layout.astro';
+import '../../assets/scss/astro-ecommerce.scss';
+import ComplexNavbar from "../components/complexNavbar";
+import OrderDetail from "../components/order/orderDetail";
+
+const paymentStatus = Astro.url.searchParams.get('paymentStatus')! || false;
+const orderId = Astro.url.searchParams.get('orderId')! || '';
+const amount = Astro.url.searchParams.get('amount')! || 0;
+const paymentTime = Astro.url.searchParams.get('paymentTime')! || '';
+const transactionId = Astro.url.searchParams.get('transactionId')! || '';
+const paymentMethod = Astro.url.searchParams.get('paymentMethod')! || '';
+
+Astro.cookies.set("cartId", "")
+
+---
+
+<Layout title="Chi tiết đơn hàng">
+  <main>
+    <ComplexNavbar/>
+
+    <div class="container mt-5">
+      <OrderDetail paymentStatus={paymentStatus} orderId={orderId} amount={amount}
+                   paymentTime={paymentTime} transactionId={transactionId} paymentMethod={paymentMethod}/>
+    </div>
+
+  </main>
+
+</Layout>

@@ -18,7 +18,8 @@ export default function TestimonialsFade({
     pageHeader: {
       backgroundImage: 'url(' + pageHeaderBgImg + ')',
       minHeight: pageHeaderMinVh,
-      borderRadius: pageHeaderRadius
+      borderRadius: pageHeaderRadius,
+      backgroundSize: 'cover'
     },
   } as const;
 
@@ -32,7 +33,9 @@ export default function TestimonialsFade({
               <div className="col-lg-8 col-sm-9 text-center mx-auto">
                 <h1 className="text-white mb-4">{title}</h1>
                 <p className="lead text-white mb-sm-6 mb-4">{full_description}</p>
-                <button className="btn btn-white btn-lg">Explore New Collection</button>
+                <a href="/aims-ecommerce/store/">
+                  <button className="btn btn-white btn-lg">Khám phá sản phẩm của chúng tôi</button>
+                </a>
               </div>
             </div>
           </div>

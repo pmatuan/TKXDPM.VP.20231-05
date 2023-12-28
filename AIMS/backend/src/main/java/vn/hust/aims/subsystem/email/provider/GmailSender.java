@@ -11,9 +11,8 @@ import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 import vn.hust.aims.constant.Constant;
 import vn.hust.aims.subsystem.email.MailSender;
-import vn.hust.aims.subsystem.email.dto.input.SendInput;
 
-@Service
+@Service("GMAIL")
 public class GmailSender implements MailSender {
 
   public JavaMailSender config(String config){
@@ -44,10 +43,10 @@ public class GmailSender implements MailSender {
   }
 
   @Override
-  public void send(SendInput input) {
-    JavaMailSender emailSender = this.config(input.getConfig());
+  public void send(String config, String destination, String title, String content) {
+    JavaMailSender emailSender = this.config(config);
     try {
-      MimeMessage message = createMimeMessage(input.getDestination(), input.getTitle(), input.getContent(), emailSender);
+      MimeMessage message = createMimeMessage(destination, title, content, emailSender);
       emailSender.send(message);
     }
     catch (Exception e){

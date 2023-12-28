@@ -6,5 +6,5 @@ import vn.hust.aims.entity.email.Sender;
 
 @Repository
 public interface SenderRepository extends JpaRepository<Sender, Long> {
-
+  Sender findByProvider(String provider);
 }

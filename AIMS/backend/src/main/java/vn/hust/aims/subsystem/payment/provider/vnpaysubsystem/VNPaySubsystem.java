@@ -1,17 +1,14 @@
 package vn.hust.aims.subsystem.payment.provider.vnpaysubsystem;
 
-import javax.servlet.http.HttpServletRequest;
+import org.springframework.beans.factory.annotation.Value;
 import vn.hust.aims.subsystem.payment.PaymentSubsystem;
 import vn.hust.aims.subsystem.payment.Provider;
-import vn.hust.aims.subsystem.payment.dto.input.PayOrderInput;
-import vn.hust.aims.subsystem.payment.dto.output.PayOrderOutput;
 
 @Provider("VNPAY")
 public class VNPaySubsystem implements PaymentSubsystem {
   // Mức độ cohesion: Functional Cohesion
   // Lớp này chứa một phương thức duy nhất và tất cả các thành phần đều liên quan chặt chẽ đến
   // chức năng thanh toán qua VNPay.
-
   private VNPayUtil vnPayUtil;
 
   public VNPaySubsystem(){
@@ -19,20 +16,19 @@ public class VNPaySubsystem implements PaymentSubsystem {
   }
 
   @Override
-  public PayOrderOutput payOrder(HttpServletRequest request, PayOrderInput input) {
+  public String payOrder(Double amount, String message) {
 
-    String returnUrl =
-        request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort();
+    String returnUrl = "http://localhost:8080/api/v1/payment/vnpay-return";
 
     // VNPaySubsystem - VNPayUtil: Data coupling
     // Phương thức payOrder của VNPaySubsystem được triển khai từ interface PaymentSubsystem,
     // trong đó có sử dụng VNPayUtil để xây dựng URL và trả về PayOrderOutput.
     // VNPaySubsystem truyền vừa đủ dữ liệu PayOrderInput và HttpServletRequest sang VNPayUtil.
-    String vnpayUrl = vnPayUtil.buildQueryUrl(input.getAmount(), input.getMessage(), returnUrl);
+    String vnpayUrl = vnPayUtil.buildQueryUrl(amount, message, returnUrl);
 
     // VNPaySubsystem - PayOrderOutput: Data coupling
     // VNPaySubsystem truyền dữ liệu vừa đủ cho PayOrderOutput để tạo thành url thanh toán trả về phía PaymentController.
-    return PayOrderOutput.fromUrl(vnpayUrl);
+    return vnpayUrl;
   }
 
 }

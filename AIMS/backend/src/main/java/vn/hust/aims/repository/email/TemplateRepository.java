@@ -6,5 +6,5 @@ import vn.hust.aims.entity.email.Template;
 
 @Repository
 public interface TemplateRepository extends JpaRepository<Template, Long> {
-
+  Template findByTitle(String title);
 }
