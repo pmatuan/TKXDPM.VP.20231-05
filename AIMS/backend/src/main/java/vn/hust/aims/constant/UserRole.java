@@ -1,24 +1,12 @@
 package vn.hust.aims.constant;
 
-public enum UserRole {
-    UNKNOWN("Unknown"),
-    CUSTOMER("Customer"),
-    SELLER("Seller"),
-    ADMIN("Admin");
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
 
-    private final String stringValue;
-
-    UserRole(String stringValue) {
-        this.stringValue = stringValue;
-    }
-
-    public static UserRole from(String stringValue) {
-        for (UserRole role: UserRole.values()) {
-            if (role.stringValue.equals(stringValue)) {
-                return role;
-            }
-        }
-
-        return UNKNOWN;
-    }
+public class UserRole {
+    public static final Set<String> roles = Collections.unmodifiableSet(
+            new HashSet<String>(Arrays.asList(new String[]{"admin", "seller"}))
+    );
 }
