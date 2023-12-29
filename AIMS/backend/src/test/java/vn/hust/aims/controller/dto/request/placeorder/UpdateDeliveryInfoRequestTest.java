@@ -97,38 +97,4 @@ class UpdateDeliveryInfoRequestTest {
     assertThrows(NotSupportRushDeliveryException.class, () -> updateDeliveryInfoRequest.toInput("orderId"));
   }
 
-  @Test
-  void testValidateRequest_hasProductSupportRushDelivery() {
-    updateDeliveryInfoRequest.setEmail("valid.email@gmail.com");
-    updateDeliveryInfoRequest.setPhoneNumber("0819235067");
-    updateDeliveryInfoRequest.setProvince("Hà Nội");
-
-    when(media1.getIsAbleToRushDelivery()).thenReturn(true);
-    when(media2.getIsAbleToRushDelivery()).thenReturn(false);
-
-    when(orderMedia1.getMedia()).thenReturn(media1);
-    when(orderMedia2.getMedia()).thenReturn(media2);
-
-    updateDeliveryInfoRequest.setIsOrderForRushDelivery(true);
-
-    assertDoesNotThrow(() -> updateDeliveryInfoRequest.toInput("orderId"));
-  }
-
-  @Test
-  void testValidateRequest_noProductSupportRushDelivery() {
-    updateDeliveryInfoRequest.setEmail("valid.email@gmail.com");
-    updateDeliveryInfoRequest.setPhoneNumber("0819235067");
-    updateDeliveryInfoRequest.setProvince("Hà Nội");
-
-    when(media1.getIsAbleToRushDelivery()).thenReturn(false);
-    when(media2.getIsAbleToRushDelivery()).thenReturn(false);
-
-    when(orderMedia1.getMedia()).thenReturn(media1);
-    when(orderMedia2.getMedia()).thenReturn(media2);
-
-    updateDeliveryInfoRequest.setIsOrderForRushDelivery(true);
-
-    assertThrows(NotSupportRushDeliveryException.class, () -> updateDeliveryInfoRequest.toInput("orderId"));
-  }
-
 }

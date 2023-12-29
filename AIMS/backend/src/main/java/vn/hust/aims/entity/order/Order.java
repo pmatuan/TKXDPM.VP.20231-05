@@ -42,6 +42,9 @@ public class Order extends TimedEntity {
   @JoinColumn(name = "delivery_info_id")
   private DeliveryInfo deliveryInfo;
 
+  @OneToOne(mappedBy = "order", cascade = CascadeType.REMOVE, orphanRemoval = true)
+  private RushOrder rushOrder;
+
   @OneToMany(mappedBy = "order", cascade = CascadeType.REMOVE, orphanRemoval = true)
   private List<OrderMedia> orderMediaList;
 

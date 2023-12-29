@@ -8,11 +8,13 @@ export const CreateUserModal = () => {
             aria-hidden="true"
         >
             <div
-                className="modal-dialog modal-dialog-centered modal-xl"
+                // className="modal-dialog modal-dialog-centered modal-xl"
+                className="modal-dialog modal-dialog-centered"
                 role="form"
             >
                 <div className="modal-content">
-                    <div className="card">
+                    <div className="card align-items-center">
+                    <h3>Create user</h3>
                         <div className="card-body d-block d-lg-flex p-4">
                             <form id="userForm">
                                 <table>
@@ -108,13 +110,16 @@ export function ViewUserModal({ user }: Props) {
             aria-hidden="true"
         >
             <div
-                className="modal-dialog modal-dialog-centered modal-xl"
+                // className="modal-dialog modal-dialog-centered modal-xl"
+                className="modal-dialog modal-dialog-centered"
                 role="form"
             >
                 <div className="modal-content">
-                    <div className="card">
+                    <div className="card align-items-center">
                         <div className="card-body d-block d-lg-flex p-4">
-                            <div className="w-100 w-lg-70 ps-lg-5 mt-4 mt-md-5">
+                            {/* <div className="w-100 w-lg-70 ps-lg-5 mt-4 mt-md-5"> */}
+                            <div className="w-100 ps-lg-5 mt-4 mt-md-5">
+                                <h3>User info</h3>
                                 <div className="d-flex align-items-start flex-column">
                                     <span>ID: {user.id}</span>
                                     <form>
@@ -151,16 +156,23 @@ export function ViewUserModal({ user }: Props) {
                                     </form>
 
 
-                                    <span>Password: ********<button className="btn btn-dark btn-sm mx-1">Change password</button></span>
+                                    <span>Password: <button className="btn btn-dark btn-sm mx-1 changePasswordBtn">Change password</button></span>
+
+                                    <form className="d-none">
+                                        <label htmlFor="newPassword">New password</label>
+                                        <input type="password" name="newPassword" id="newPassword" />
+                                    </form>
+
+                                    <button className="btn btn-dark btn-md mx-1 d-none submitPassword">Submit</button>
 
 
-                                    <span>Account state: {user.isBlocked === 1 ? 'Blocked' : 'Not blocked'} <button className="btn btn-dark btn-sm">Change</button></span>
+                                    <span>Account state: {user.isBlocked === 1 ? 'Blocked' : 'Not blocked'} <button className="btn btn-dark btn-sm blockedBtn">{user.isBlocked === 1 ? 'Unblock' : 'Block'}</button></span>
 
 
                                     <span>
-                                        <button className="btn btn-white btn-sm mx-1" data-bs-toggle="modal" data-bs-target={'#viewUserModal' + user.id}>Close</button>
-                                        <button className="btn btn-dark btn-sm mx-1">Edit</button>
-                                        {/* <button className="btn btn-dark btn-sm mx-1 display-hidden">Submit</button> */}
+                                        <button className="btn btn-white btn-md mx-1" data-bs-toggle="modal" data-bs-target={'#viewUserModal' + user.id}>Close</button>
+                                        <button className="btn btn-dark btn-md mx-1 edit" id={'edit' + user.id}>Edit</button>
+                                        <button className="btn btn-dark btn-md mx-1 d-none submit" id={'submit' + user.id}>Submit</button>
                                     </span>
                                 </div>
                             </div>

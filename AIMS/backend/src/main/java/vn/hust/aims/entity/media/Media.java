@@ -53,7 +53,7 @@ public class Media extends TimedEntity {
   @Column(name = "weight")
   protected Double weight;
 
-  @Column(name = "image_url")
+  @Column(name = "image_url", columnDefinition = "text")
   protected String imageUrl;
 
   @Column(name = "barcodeUrl")

@@ -76,7 +76,7 @@ public class UpdateDeliveryInfoRequest {
   }
 
   private void validateRushDelivery() {
-    if (isOrderForRushDelivery && !ProvinceEnum.fromString(province).equals(ProvinceEnum.HANOI)) {
+    if (!ProvinceEnum.fromString(province).equals(ProvinceEnum.HANOI)) {
       throw new NotSupportRushDeliveryException();
     }
   }

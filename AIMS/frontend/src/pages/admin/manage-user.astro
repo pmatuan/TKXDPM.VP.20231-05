@@ -19,7 +19,9 @@ const result = response.result;
     import {
         deleteUser,
         createUser,
-        getUser,
+        editUser,
+        changeBlockedState,
+        changePassword
     } from "../../components/admin/crudUtils";
 
     document
@@ -43,24 +45,95 @@ const result = response.result;
 
     Array.from(document.getElementsByClassName("infoButton")).forEach(
         (button) => {
-            button.setAttribute('data-bs-toggle', 'modal'),
-            button.setAttribute('data-bs-target', `#viewUserModal${button.id.slice(5)}`)
-            // button.addEventListener("click", async function (event) {
-            //     console.log(button.id.slice(5));
-            //     const user = await getUser(Number(button.id.slice(5)));
-            //     console.log("getUser", user);
-            //     document.getElementById(`viewUserModal${button.id.slice(5)}`)?.setAttribute('aria-hidden', 'false')
-            //     // let row = (event.target as Element).parentNode?.parentNode;
-            //     // let form = document.getElementById('userForm')
-            //     // let inputs = form?.getElementsByTagName('input')
-            //     // if (inputs) {
-            //     //     inputs[0].value = String(row?.querySelector('#name')?.textContent)
-            //     //     inputs[0].value = String(row?.querySelector('#name')?.textContent)
-            //     //     inputs[0].value = String(row?.querySelector('#name')?.textContent)
-            //     //     inputs[0].value = String(row?.querySelector('#name')?.textContent)
-            //     //     inputs[0].value = String(row?.querySelector('#name')?.textContent)
-            //     // }
-            // });
+            let currentUserId = Number(button.id.slice(5))
+            button.setAttribute("data-bs-toggle", "modal"),
+                button.setAttribute(
+                    "data-bs-target",
+                    `#viewUserModal${currentUserId}`
+                );
+
+            let editButton = document.getElementById(
+                `edit${currentUserId}`
+            );
+
+            let submitButton = document.getElementById(
+                `submit${currentUserId}`
+            );
+
+            let closeButton = editButton?.previousElementSibling;
+
+            let form =
+                editButton?.parentElement?.parentElement?.getElementsByTagName(
+                    "form"
+                )[0];
+
+            let changePasswordButton =
+                form?.nextElementSibling?.querySelector(".changePasswordBtn");
+
+            let blockedButton =
+                form?.parentElement?.querySelector(".blockedBtn");
+
+            let submitPasswordButton =
+                form?.parentElement?.querySelector(".submitPassword");
+
+            editButton?.addEventListener("click", () => {
+                toggleEditable(form);
+                changePasswordButton?.classList.add("d-none");
+                blockedButton?.classList.add("d-none");
+            });
+
+            submitButton?.addEventListener("click", () => {
+                toggleUneditable(form);
+                const user = {
+                    id: button.id.slice(5),
+                    name: (form?.querySelector("#name") as HTMLInputElement)
+                        .value,
+                    email: (form?.querySelector("#email") as HTMLInputElement)
+                        .value,
+                    phoneNumber: (
+                        form?.querySelector("#phoneNumber") as HTMLInputElement
+                    ).value,
+                    role: (form?.querySelector("#role") as HTMLInputElement)
+                        .value,
+                };
+                editUser(user);
+            });
+
+            let newPasswordForm = form?.nextElementSibling?.nextElementSibling
+
+            changePasswordButton?.addEventListener("click", () => {
+                form?.parentElement
+                    ?.querySelector(".edit")
+                    ?.classList.add("d-none");
+                form?.parentElement
+                    ?.querySelector(".submit")
+                    ?.classList.remove("d-none");
+                newPasswordForm?.classList.remove(
+                    "d-none"
+                );
+                changePasswordButton?.classList.add("d-none");
+                blockedButton?.classList.add("d-none");
+                submitButton?.classList.add("d-none");
+                submitPasswordButton?.classList.remove("d-none");
+            });
+
+            submitPasswordButton?.addEventListener('click', () => {
+                const newPassword = (newPasswordForm?.querySelector('#newPassword') as HTMLInputElement).value
+                changePassword(currentUserId, newPassword)
+            })
+
+            blockedButton?.addEventListener('click', () => {
+                let currentIsBlocked = blockedButton?.textContent
+                if (currentIsBlocked === 'Block') {
+                    changeBlockedState(currentUserId, 1)
+                } else {
+                    changeBlockedState(currentUserId, 0)
+                }
+            })
+
+            closeButton?.addEventListener("click", () => {
+                window.location.reload();
+            });
         }
     );
 
@@ -71,6 +144,26 @@ const result = response.result;
             });
         }
     );
+
+    function toggleEditable(form: any) {
+        form.querySelector("#name").removeAttribute("disabled");
+        form.querySelector("#email").removeAttribute("disabled");
+        form.querySelector("#phoneNumber").removeAttribute("disabled");
+        form.querySelector("#role").removeAttribute("disabled");
+        // console.log(form.parentElement.querySelector('.edit').classList)
+        form.parentElement.querySelector(".edit").classList.add("d-none");
+        form.parentElement.querySelector(".submit").classList.remove("d-none");
+    }
+
+    function toggleUneditable(form: any) {
+        form.querySelector("#name").disabled = "disabled";
+        form.querySelector("#email").disabled = "disabled";
+        form.querySelector("#phoneNumber").disabled = "disabled";
+        form.querySelector("#role").disabled = "disabled";
+        // console.log(form.parentElement.querySelector('.edit').classList)
+        form.parentElement.querySelector(".edit").classList.remove("d-none");
+        form.parentElement.querySelector(".submit").classList.add("d-none");
+    }
 </script>
 
 <Layout title="Manage user">

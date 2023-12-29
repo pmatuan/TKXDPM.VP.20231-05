@@ -2,6 +2,12 @@ import RushDeliveryInfo from "./rushDeliveryInfo";
 import CheckoutSingleItemDark from "../checkout/checkoutSingleItemDark";
 import {useEffect, useState} from "react";
 import OrderSummary from "../cart/orderSummary";
+import FormLabel from "@mui/material/FormLabel";
+import RadioGroup from "@mui/material/RadioGroup";
+import FormControlLabel from "@mui/material/FormControlLabel";
+import Radio from "@mui/material/Radio";
+import FormControl from "@mui/material/FormControl";
+import {PayPalScriptProvider, PayPalButtons} from "@paypal/react-paypal-js";
 
 interface OrderMedia {
   id: string;
@@ -22,14 +28,14 @@ interface OrderSummaryData {
     shippingFee: number;
     vat: number;
     total: number;
-  }
+  };
 }
 
 interface Props {
   orderId: string;
 }
 
-const BACKEND_URL = "http://localhost:8080/api/v1"
+const BACKEND_URL = "http://localhost:8080/api/v1";
 
 const provinces = [
   "Hà Nội",
@@ -88,35 +94,35 @@ const provinces = [
   "Hậu Giang",
   "Sóc Trăng",
   "Bạc Liêu",
-  "Cà Mau"
+  "Cà Mau",
 ];
 
 export default function CheckoutSummary({orderId}: Props) {
-
   const orderSummaryTmp: OrderSummaryData = {
     summary: {
       subtotal: 0,
       shippingFee: 0,
       vat: 0,
       total: 0,
-    }
+    },
   };
 
   const [orderProducts, setOrderProducts] = useState<OrderMedia[]>([]);
-  const [selectedCity, setSelectedCity] = useState("");
+  const [selectedProvince, setSelectedProvince] = useState("");
   const [summaryOrder, setSummaryOrder] = useState(orderSummaryTmp);
 
   const [recipientName, setRecipientName] = useState("");
   const [email, setEmail] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
-  const [deliveryCity, setDeliveryCity] = useState("");
+  const [deliveryProvince, setDeliveryProvince] = useState("");
   const [deliveryAddress, setDeliveryAddress] = useState("");
   const [isRushDelivery, setIsRushDelivery] = useState(false);
-  const [rushDeliveryTime, setRushDeliveryTime] = useState<Date>(new Date("Thu Nov 30 2023 17:09:46 GMT+0700 (Indochina Time)"));
+  const [rushDeliveryTime, setRushDeliveryTime] = useState<Date>(
+      new Date("Thu Nov 30 2023 17:09:46 GMT+0700 (Indochina Time)")
+  );
   const [rushDeliveryInstructions, setRushDeliveryInstructions] = useState("");
   const [canCheckOut, setCanCheckOut] = useState(false); // Updated this line
-
-
+  let paypalId = ""
   const initialize = async () => {
     try {
       const response = await fetch(BACKEND_URL + `/order/${orderId}`);
@@ -144,19 +150,18 @@ export default function CheckoutSummary({orderId}: Props) {
           shippingFee: order.deliveryFee != null ? order.deliveryFee : 0,
           vat: order.vat,
           total: order.total,
-        }
+        },
       };
 
       setOrderProducts(orderItems);
       setSummaryOrder(orderSummary);
-
     } catch (error) {
       console.error("Error fetching data:", error);
       // Handle error as needed
     }
   };
 
-  const handleChangeSelectedCity = async () => {
+  const handleChangeSelectedProvince = async () => {
     try {
       const response = await fetch(
           `${BACKEND_URL}/place-order/${orderId}/delivery-info`,
@@ -165,17 +170,17 @@ export default function CheckoutSummary({orderId}: Props) {
             headers: {
               "Content-Type": "application/json",
             },
-            body: JSON.stringify({ province: selectedCity }),
+            body: JSON.stringify({province: selectedProvince}),
           }
       );
 
       // If the API call is successful, update the shipping fee
       if (response.ok) {
-        setDeliveryCity(selectedCity);
+        setDeliveryProvince(selectedProvince);
         handleChangeShippingFee();
       }
     } catch (error) {
-      console.error("Error updating selected city:", error);
+      console.error("Error updating selected Province:", error);
       // Handle error as needed
     }
   };
@@ -203,9 +208,9 @@ export default function CheckoutSummary({orderId}: Props) {
     }
   };
 
-  const handleCheckout = async () => {
+  const updateOrderInfo = async () => {
     try {
-      const response = await fetch(
+      await fetch(
           `${BACKEND_URL}/place-order/${orderId}/delivery-info`,
           {
             method: "PUT",
@@ -216,44 +221,115 @@ export default function CheckoutSummary({orderId}: Props) {
               customerName: recipientName,
               email: email,
               phoneNumber: phoneNumber,
-              province: selectedCity,
+              province: selectedProvince,
               address: deliveryAddress,
               isOrderForRushDelivery: isRushDelivery,
               deliveryTime: rushDeliveryTime.toISOString(),
-              deliveryInstruction: rushDeliveryInstructions
+              deliveryInstruction: rushDeliveryInstructions,
             }),
           }
       );
-      if (response.ok){
-        console.log("Checkout successful")
-      }
-    } catch (error) {
-      console.error("Error updating selected city:", error);
-      // Handle error as needed
+    }
+    catch (error) {
+      console.error(error);
     }
   }
+
+  const handleCheckout = async (paymentMethod: string) => {
+    try {
+
+      const response = await fetch(
+          `${BACKEND_URL}/payment/payorder`,
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              orderId: orderId,
+              provider: paymentMethod
+            }),
+          }
+      );
+      const data = await response.json();
+      return data.result.url
+
+    } catch (error) {
+      console.error(error);
+      // Handle error as needed
+    }
+  };
+
+  const handleVNPayCheckout = async () => {
+    // await updateOrderInfo()
+    const url = await handleCheckout("VNPAY")
+    window.location.href = url
+  }
+
+  const handlePaypalCheckout = async () => {
+    try {
+      const id = await handleCheckout("PAYPAL");
+      paypalId = id;
+      console.log("paypalCheckoutID: " + paypalId)
+      return id;
+    } catch (error) {
+      console.error("Error:", error);
+    }
+  }
+
+
+  const onApprove = async () => {
+    try {
+      const id = paypalId;
+      const response = await fetch(
+          `${BACKEND_URL}/payment/paypal-return`,
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              id: id,
+              orderId: orderId,
+            }),
+          }
+      );
+
+      const url = await response.text();
+      window.location.href = url
+
+    } catch (error) {
+      console.error("Error:", error);
+    }
+  }
+
 
   useEffect(() => {
     initialize();
   }, []);
 
   useEffect(() => {
-    handleChangeSelectedCity();
-  }, [selectedCity]);
+    handleChangeSelectedProvince();
+  }, [selectedProvince]);
 
   useEffect(() => {
     const isFilled =
-        !!recipientName && !!email && !!phoneNumber && !!deliveryCity && !!deliveryAddress;
+        !!recipientName &&
+        !!email &&
+        !!phoneNumber &&
+        !!deliveryProvince &&
+        !!deliveryAddress;
 
     const isRushDeliveryFilled =
         isRushDelivery && !!rushDeliveryTime && !!rushDeliveryInstructions;
 
     setCanCheckOut(isFilled && (!isRushDelivery || isRushDeliveryFilled));
+    updateOrderInfo();
   }, [
     recipientName,
     email,
     phoneNumber,
-    deliveryCity,
+    deliveryProvince,
     deliveryAddress,
     isRushDelivery,
     rushDeliveryTime,
@@ -301,22 +377,21 @@ export default function CheckoutSummary({orderId}: Props) {
                     <label>Thành phố</label>
                     <select
                         className="form-control"
-                        value={selectedCity}
-                        onChange={(e) => setSelectedCity(e.target.value)}
+                        value={selectedProvince}
+                        onChange={(e) => setSelectedProvince(e.target.value)}
                     >
                       <option value="" disabled>
                         Chọn thành phố
                       </option>
 
-                      {provinces.map((city) => (
-                          <option key={city} value={city}>
-                            {city}
+                      {provinces.map((Province) => (
+                          <option key={Province} value={Province}>
+                            {Province}
                           </option>
                       ))}
                     </select>
                   </div>
                 </div>
-
 
                 <div className="col-8">
                   <div className="form-group">
@@ -337,11 +412,89 @@ export default function CheckoutSummary({orderId}: Props) {
                   setRushDeliveryTime={setRushDeliveryTime}
                   setRushDeliveryInstructions={setRushDeliveryInstructions}
               />
+
+              {/*<FormControl className="pt-4">*/}
+              {/*  <label>Phương thức thanh toán</label>*/}
+              {/*  <RadioGroup*/}
+              {/*      aria-labelledby="demo-radio-buttons-group-label"*/}
+              {/*      defaultValue="female"*/}
+              {/*      name="radio-buttons-group"*/}
+              {/*  >*/}
+              {/*    <FormControlLabel*/}
+              {/*        value="PAYPAL"*/}
+              {/*        control={<Radio/>}*/}
+              {/*        label={<img*/}
+              {/*            src="https://static-00.iconduck.com/assets.00/paypal-icon-2048x547-tu0aql1a.png"*/}
+              {/*            style={{width: "80px"}}/>}*/}
+              {/*        onClick={() => setPaymentMethod("PAYPAL")}/>*/}
+              {/*    <FormControlLabel*/}
+              {/*        value="VNPAY"*/}
+              {/*        control={<Radio/>}*/}
+              {/*        label={<img*/}
+              {/*            src="https://cdn.haitrieu.com/wp-content/uploads/2022/10/Logo-VNPAY-QR-1.png"*/}
+              {/*            style={{width: "100px"}}/>}*/}
+              {/*        onClick={() => setPaymentMethod("VNPAY")}/>*/}
+              {/*  </RadioGroup>*/}
+              {/*</FormControl>*/}
+
+              {/*{canCheckOut ? (*/}
+              {/*    <button*/}
+              {/*        className="btn btn-dark w-100 mt-4"*/}
+              {/*        onClick={handleCheckout}*/}
+              {/*    >*/}
+              {/*      Thanh toán*/}
+              {/*    </button>*/}
+              {/*) : (*/}
+              {/*    <button className="btn btn-dark w-100 h-2/3 mt-4" disabled>*/}
+              {/*      Thanh toán*/}
+              {/*    </button>*/}
+              {/*)}*/}
+              <div className="mt-4">
+                <label>Phương thức thanh toán</label>
+              </div>
+
               {canCheckOut ? (
-                  <button className="btn btn-dark w-100 mt-4" onClick={handleCheckout}>Thanh toán</button>
+                  <button
+                      className="btn w-100 mt-4"
+                      onClick={handleVNPayCheckout}
+                  >
+                    <img
+                        src="https://cdn.haitrieu.com/wp-content/uploads/2022/10/Logo-VNPAY-QR-1.png"
+                        style={{width: "100px"}}/>
+                  </button>
               ) : (
-                  <button className="btn btn-dark w-100 mt-4" disabled>Thanh toán</button>
+                  <button
+                      className="btn w-100 mt-4 disabled border-none"
+                  >
+                    <img
+                        src="https://cdn.haitrieu.com/wp-content/uploads/2022/10/Logo-VNPAY-QR-1.png"
+                        style={{width: "100px"}}/>
+                  </button>
               )}
+
+              {canCheckOut ? (
+                  <PayPalScriptProvider options={{
+                    clientId: "AY4ClMadd7o0YSd7Ix0vMehoXpUL4pv9SeO_E0Cht6ODzQuZOhl0WkUUR3chtMtDzo7sDGbdW3-RNE_i",
+                    'disable-funding': "credit,card"
+                  }}>
+                    <PayPalButtons
+                        createOrder={handlePaypalCheckout}
+                        onApprove={onApprove}
+                    />
+                  </PayPalScriptProvider>
+              ) : (
+                  <PayPalScriptProvider options={{
+                    clientId: "AY4ClMadd7o0YSd7Ix0vMehoXpUL4pv9SeO_E0Cht6ODzQuZOhl0WkUUR3chtMtDzo7sDGbdW3-RNE_i",
+                    'disable-funding': "credit,card"
+                  }}>
+                    <PayPalButtons
+                        createOrder={handlePaypalCheckout}
+                        onApprove={onApprove}
+                        disabled
+                    />
+                  </PayPalScriptProvider>
+              )}
+
             </div>
             <div className="col-12 col-lg-6 p-lg-5">
               {orderProducts.map((product, i) => {
@@ -371,5 +524,4 @@ export default function CheckoutSummary({orderId}: Props) {
         </section>
       </>
   );
-}
 }

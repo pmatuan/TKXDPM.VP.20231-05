@@ -1,5 +1,6 @@
 package vn.hust.aims.entity.order;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.time.Instant;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -28,6 +29,7 @@ public class RushOrder extends TimedEntity {
   @Id
   private String id;
 
+  @JsonIgnore
   @OneToOne
   @JoinColumn(name = "order_id")
   private Order order;

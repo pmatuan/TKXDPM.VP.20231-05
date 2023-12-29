@@ -15,8 +15,11 @@ import vn.hust.aims.entity.order.*;
 import vn.hust.aims.enumeration.OrderStateEnum;
 import vn.hust.aims.exception.CannotCancelOrderException;
 import vn.hust.aims.exception.CannotChangeOrderStateException;
+import vn.hust.aims.exception.NotSupportRushDeliveryException;
 import vn.hust.aims.exception.OrderMediaNotFoundException;
 import vn.hust.aims.exception.OrderNotFoundException;
+import vn.hust.aims.repository.email.SenderRepository;
+import vn.hust.aims.repository.email.TemplateRepository;
 import vn.hust.aims.repository.order.OrderMediaRepository;
 import vn.hust.aims.repository.order.OrderRepository;
 import vn.hust.aims.repository.order.RushOrderRepository;
@@ -40,6 +43,7 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 import vn.hust.aims.service.dto.output.placeorder.UpdateMediaInOrderOutput;
 import vn.hust.aims.service.media.MediaService;
+import vn.hust.aims.utils.TextEngineUtil;
 
 @Service
 @RequiredArgsConstructor
@@ -48,10 +52,13 @@ public class OrderService {
   private final OrderRepository orderRepository;
   private final OrderMediaRepository orderMediaRepository;
   private final RushOrderRepository rushOrderRepository;
+  private final SenderRepository senderRepository;
+  private final TemplateRepository templateRepository;
   private final CalculationService calculationService;
   private final DeliveryInfoService deliveryInfoService;
   private final MediaService mediaService;
   private final CartService cartService;
+  private final TextEngineUtil textEngineUtil;
 
   public CreateOrderOutput createOrderFromCart(CreateOrderInput input) {
     Cart cart = cartService.getCartById(input.getCartId());
@@ -69,8 +76,9 @@ public class OrderService {
   public GetOrderOutput getOrder(GetOrderInput input) {
 
     Order order = getOrderById(input.getOrderId());
+    RushOrder rushOrder = getRushOrderById(input.getOrderId());
 
-    return GetOrderOutput.from(order);
+    return GetOrderOutput.from(order, rushOrder);
   }
 
   public GetAllOrderOutput getAllOrder(Pageable pageable) {
@@ -174,9 +182,24 @@ public class OrderService {
     return CancelOrderOutput.from("Cancelled order " + input.getOrderId() + " successfully");
   }
 
-  private Order getOrderById(String orderId) {
+  public Order getOrderById(String orderId) {
     return orderRepository.findById(orderId)
         .orElseThrow(() -> new OrderNotFoundException());
+  }
+
+  public void saveOrder(Order order) {
+    orderRepository.save(order);
+  }
+
+  public String getCustomerEmailFromOrder(String orderId) {
+    Order order = getOrderById(orderId);
+    DeliveryInfo deliveryInfo = order.getDeliveryInfo();
+    return deliveryInfo.getEmail();
+  }
+
+  private RushOrder getRushOrderById(String orderId) {
+    return rushOrderRepository.findById(orderId)
+        .orElse(null);
   }
 
   private List<OrderMedia> mapCartMediaToOrderMedia(List<CartMedia> cartMediaList) {
@@ -229,11 +252,18 @@ public class OrderService {
   }
 
   private void updateOrderForRushDelivery(Order order, UpdateDeliveryInfoInput input) {
-    order.getOrderMediaList().forEach(orderMedia -> {
+    boolean hasRushDeliveryProduct = false;
+
+    for (OrderMedia orderMedia : order.getOrderMediaList()) {
       if (orderMedia.getMedia().getIsAbleToRushDelivery()) {
         orderMedia.setIsOrderForRushDelivery(true);
+        hasRushDeliveryProduct = true;
       }
-    });
+    }
+
+    if (!hasRushDeliveryProduct) {
+      throw new NotSupportRushDeliveryException();
+    }
 
     // data coupling
     RushOrder rushOrder = createRushOrder(order, input);

@@ -45,29 +45,33 @@ public class CalculationService {
       return null;
     }
 
-    String city = order.getDeliveryInfo().getCity();
-
-    Double rushDeliveryFee = calculateRushDeliveryFee(order.getOrderMediaList());
-
-    if (order.getSubtotal() > FREE_SHIP) {
-      return isInHanoi(city) ? rushDeliveryFee : 0.0;
-    }
+    String province = order.getDeliveryInfo().getProvince();
 
     Double maxWeight = order.getOrderMediaList().stream()
         .map(orderMedia -> orderMedia.getMedia().getWeight())
         .max(Double::compare)
         .orElse(0.0);
 
-    if (isInHanoi(city)) {
+    Double originalDeliveryFee;
+
+    if (order.getSubtotal() > FREE_SHIP) {
+      originalDeliveryFee = 0.0;
+    } else if (isInHanoi(province)) {
       // data coupling
-      return calculateFeeInHanoiOrHCM(maxWeight) + rushDeliveryFee;
-    } else if (isInHCM(city)) {
+      originalDeliveryFee = calculateFeeInHanoiOrHCM(maxWeight);
+    } else if (isInHCM(province)) {
       // data coupling
-      return calculateFeeInHanoiOrHCM(maxWeight);
+      originalDeliveryFee = calculateFeeInHanoiOrHCM(maxWeight);
     } else {
       // data coupling
-      return calculateFeeOutside(maxWeight);
+      originalDeliveryFee = calculateFeeOutside(maxWeight);
     }
+
+    if (order.getRushOrder() != null) {
+      return originalDeliveryFee + calculateRushDeliveryFee(order.getOrderMediaList());
+    }
+
+    return originalDeliveryFee;
   }
 
   public Double calculateTotal(Double subtotal, Double VAT) {
@@ -78,12 +82,12 @@ public class CalculationService {
     return subtotal + VAT + deliveryFee;
   }
 
-  private Boolean isInHanoi(String city) {
-    return city.equals(ProvinceEnum.HANOI.getStringValue());
+  private Boolean isInHanoi(String province) {
+    return province.equals(ProvinceEnum.HANOI.getStringValue());
   }
 
-  private Boolean isInHCM(String city) {
-    return city.equals(ProvinceEnum.HOCHIMINH.getStringValue());
+  private Boolean isInHCM(String province) {
+    return province.equals(ProvinceEnum.HOCHIMINH.getStringValue());
   }
 
   private Double calculateFeeInHanoiOrHCM(Double maxWeight) {
