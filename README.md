@@ -292,11 +292,16 @@ This is a Capstone's source code for Software Design and Construction project
 
 - Assigned tasks:
 
-  -
+  - Writing test cases for unit testing.
+  - Implementing the connection between the customer interface for order placement and entering delivery information with the backend.
 
 - Implementation details:
-  - ## Pull Request(s):
-  - ## Specific implementation details:
+  - Pull Request(s):
+    - [PR - Unit test](https://github.com/pmatuan/TKXDPM.VP.20231-05/pull/49)
+    - [PR - Place order](https://github.com/pmatuan/TKXDPM.VP.20231-05/pull/45)
+  - Specific implementation details:
+    - Wrote comprehensive test cases for unit tests.
+    - Implemented the connection between the customer interface and the backend for order placement and entering delivery information.
 
 </details>
 

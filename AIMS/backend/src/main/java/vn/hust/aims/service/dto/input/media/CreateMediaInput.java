@@ -4,10 +4,12 @@ import lombok.Data;
 import lombok.experimental.SuperBuilder;
 import vn.hust.aims.service.media.factory.MediaType;
 
+import java.util.Map;
+
 @Data
 @SuperBuilder
 public class CreateMediaInput {
-    private String jsonPayload;
+    private Map<String, Object> mediaInfo;
 
     private MediaType mediaType;
 }

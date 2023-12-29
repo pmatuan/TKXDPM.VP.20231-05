@@ -10,6 +10,7 @@ import javax.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 import lombok.experimental.SuperBuilder;
 import vn.hust.aims.enumeration.CoverType;
 
@@ -19,6 +20,7 @@ import vn.hust.aims.enumeration.CoverType;
 @AllArgsConstructor
 @NoArgsConstructor
 @SuperBuilder
+@ToString(callSuper=true)
 public class Book extends Media {
 
   @Column(name = "authors")
