@@ -34,8 +34,9 @@ export default function TestimonialsFade({
                 <h1 className="text-white mb-4">{title}</h1>
                 <p className="lead text-white mb-sm-6 mb-4">{full_description}</p>
                 <a href="/aims-ecommerce/store/">
-                  <button className="btn btn-white btn-lg">Khám phá sản phẩm của chúng tôi</button>
+                  <button className="btn btn-white btn-lg mx-1">Khám phá sản phẩm của chúng tôi</button>
                 </a>
+                <button className="btn btn-success btn-lg mx-1" id="goToManagerBtn">Trang dành cho người quản lý</button>
               </div>
             </div>
           </div>
