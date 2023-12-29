@@ -173,7 +173,7 @@ public class OrderService {
   }
 
   private void sendOrderConfirmationEmail(Order order, OrderStateEnum newState) {
-    String templateName = (newState == OrderStateEnum.ACCEPT) ? "Duyệt đơn hàng" : "Từ chối đơn hàng";
+    String templateName = (newState == OrderStateEnum.ACCEPT) ? "Đơn hàng đã được duyệt" : "Đơn hàng đã bị từ chối";
 
     List<Param> params = Arrays.asList(
         Param.builder().key("orderId").value(order.getId()).build(),
