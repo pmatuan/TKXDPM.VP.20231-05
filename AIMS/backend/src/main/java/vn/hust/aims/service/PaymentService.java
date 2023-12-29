@@ -82,7 +82,7 @@ public class PaymentService {
     mailService.send(
         SendEmailInput.builder()
             .status(input.getStatus())
-            .orderId(input.getOrderInfo())
+            .destination(orderService.getCustomerEmailFromOrder(input.getOrderInfo()))
             .templateName("Xác nhận đơn hàng")
             .params(params)
             .build()
@@ -157,7 +157,7 @@ public class PaymentService {
     mailService.send(
         SendEmailInput.builder()
             .status(true)
-            .orderId(input.getOrderId())
+            .destination(orderService.getCustomerEmailFromOrder(input.getOrderId()))
             .templateName("Xác nhận đơn hàng")
             .params(params)
             .build()

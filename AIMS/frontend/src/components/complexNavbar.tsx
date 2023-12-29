@@ -24,6 +24,11 @@ const ComplexNavbar = () => {
               Theo dõi đơn hàng
             </a>
           </li>
+          <li className="nav-item px-3 py-3 border-radius-sm d-flex align-items-center">
+            <a href="/aims-ecommerce/manage-order/" className="p-0 nav-link">
+              Quản lý đơn hàng
+            </a>
+          </li>
         </ul>
         <div className="collapse navbar-collapse mt-sm-0 mt-2 me-md-0 me-sm-4" id="navbar">
           <ul className="navbar-nav ms-md-auto  justify-content-end">

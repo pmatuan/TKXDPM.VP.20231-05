@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Đơn hàng đã được duyệt</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      line-height: 1.6;
+      margin: 0;
+      padding: 20px;
+      background-color: #f4f4f4;
+    }
+
+    .container {
+      max-width: 600px;
+      margin: 0 auto;
+      background-color: #ffffff;
+      padding: 20px;
+      border-radius: 5px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+
+    h1 {
+      color: #333;
+    }
+
+    p {
+      color: #555;
+    }
+
+    .footer {
+      margin-top: 20px;
+      padding-top: 10px;
+      border-top: 1px solid #ddd;
+      color: #888;
+      font-size: 12px;
+    }
+  </style>
+</head>
+<body>
+<div class="container">
+  <h1>Đơn hàng đã được duyệt</h1>
+  <p>
+    Cảm ơn bạn đã đặt hàng từ chúng tôi.
+  </p>
+  <p>Thông tin đơn hàng của bạn:</p>
+  <ul>
+    <li><strong>Mã đơn hàng:</strong> <span th:text="${orderId}"></span></li>
+  </ul>
+  <p>
+    Để theo dõi tình trạng đơn hàng của bạn, vui lòng theo dõi <a th:href="${trace_order_link}">tại đây</a>
+  </p>
+  <p>Cảm ơn bạn đã mua sắm tại cửa hàng chúng tôi!</p>
+  <div class="footer">
+    <p>Trân trọng,<br />AIMS</p>
+  </div>
+</div>
+</body>
+</html>
