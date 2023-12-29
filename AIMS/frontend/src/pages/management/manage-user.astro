@@ -13,7 +13,21 @@ const data = await fetch(
 );
 const response = await data.json();
 const result = response.result;
+
 ---
+
+<script>
+    const role = localStorage.getItem('role')
+    if (role) {
+        if (!role.includes('seller')) {
+            document.querySelector('#manageMedia')?.classList.add('d-none')
+            document.querySelector('#manageOrder')?.classList.add('d-none')
+        }
+        if (!role.includes('admin')) {
+            document.querySelector('#manageUser')?.classList.add('d-none')
+        }
+    }
+</script>
 
 <script>
     import {
@@ -21,13 +35,14 @@ const result = response.result;
         createUser,
         editUser,
         changeBlockedState,
-        changePassword
+        changePassword,
     } from "../../components/admin/crudUtils";
 
     document
         .getElementById("submitCreateUser")
         ?.addEventListener("click", async function (event) {
-            let form = (event.target as Element).parentNode;
+            // let form = (event.target as Element).parentNode;
+            let form = document.querySelector("#createUserForm");
             const user = {
                 name: (form?.querySelector("#name") as HTMLInputElement).value,
                 email: (form?.querySelector("#email") as HTMLInputElement)
@@ -45,16 +60,14 @@ const result = response.result;
 
     Array.from(document.getElementsByClassName("infoButton")).forEach(
         (button) => {
-            let currentUserId = Number(button.id.slice(5))
-            button.setAttribute("data-bs-toggle", "modal"),
-                button.setAttribute(
-                    "data-bs-target",
-                    `#viewUserModal${currentUserId}`
-                );
-
-            let editButton = document.getElementById(
-                `edit${currentUserId}`
+            let currentUserId = Number(button.id.slice(5));
+            button.setAttribute("data-bs-toggle", "modal");
+            button.setAttribute(
+                "data-bs-target",
+                `#viewUserModal${currentUserId}`
             );
+
+            let editButton = document.getElementById(`edit${currentUserId}`);
 
             let submitButton = document.getElementById(
                 `submit${currentUserId}`
@@ -67,23 +80,30 @@ const result = response.result;
                     "form"
                 )[0];
 
-            let changePasswordButton =
-                form?.nextElementSibling?.querySelector(".changePasswordBtn");
+            let changePasswordButton = document?.querySelector(
+                `#changePasswordBtn${currentUserId}`
+            );
 
-            let blockedButton =
-                form?.parentElement?.querySelector(".blockedBtn");
+            let blockedButton = document.querySelector(
+                `#blockedButton${currentUserId}`
+            );
 
-            let submitPasswordButton =
-                form?.parentElement?.querySelector(".submitPassword");
+            let submitPasswordButton = document?.querySelector(
+                `#submitPasswordButton${currentUserId}`
+            );
 
             editButton?.addEventListener("click", () => {
                 toggleEditable(form);
-                changePasswordButton?.classList.add("d-none");
-                blockedButton?.classList.add("d-none");
+                editButton?.classList.add("d-none");
+                submitButton?.classList.remove("d-none");
+                console.log(changePasswordButton);
+                // changePasswordButton?.classList.add("d-none");
+                (changePasswordButton as HTMLButtonElement).disabled = true;
+                (blockedButton as HTMLButtonElement).disabled = true;
             });
 
             submitButton?.addEventListener("click", () => {
-                toggleUneditable(form);
+                // toggleUneditable(form);
                 const user = {
                     id: button.id.slice(5),
                     name: (form?.querySelector("#name") as HTMLInputElement)
@@ -99,37 +119,37 @@ const result = response.result;
                 editUser(user);
             });
 
-            let newPasswordForm = form?.nextElementSibling?.nextElementSibling
+            let newPasswordForm = document.querySelector(
+                `#newPasswordForm${currentUserId}`
+            );
 
             changePasswordButton?.addEventListener("click", () => {
-                form?.parentElement
-                    ?.querySelector(".edit")
-                    ?.classList.add("d-none");
-                form?.parentElement
-                    ?.querySelector(".submit")
-                    ?.classList.remove("d-none");
-                newPasswordForm?.classList.remove(
-                    "d-none"
-                );
+                editButton?.classList.add("d-none");
+                newPasswordForm?.classList.remove("d-none");
                 changePasswordButton?.classList.add("d-none");
                 blockedButton?.classList.add("d-none");
                 submitButton?.classList.add("d-none");
                 submitPasswordButton?.classList.remove("d-none");
             });
 
-            submitPasswordButton?.addEventListener('click', () => {
-                const newPassword = (newPasswordForm?.querySelector('#newPassword') as HTMLInputElement).value
-                changePassword(currentUserId, newPassword)
-            })
+            submitPasswordButton?.addEventListener("click", () => {
+                const newPassword = (
+                    newPasswordForm?.querySelector(
+                        "#newPassword"
+                    ) as HTMLInputElement
+                ).value;
+                changePassword(currentUserId, newPassword);
+            });
 
-            blockedButton?.addEventListener('click', () => {
-                let currentIsBlocked = blockedButton?.textContent
-                if (currentIsBlocked === 'Block') {
-                    changeBlockedState(currentUserId, 1)
+            blockedButton?.addEventListener("click", () => {
+                let currentIsBlocked = blockedButton?.textContent;
+                console.log(currentIsBlocked)
+                if (currentIsBlocked === "Chặn") {
+                    changeBlockedState(currentUserId, 1);
                 } else {
-                    changeBlockedState(currentUserId, 0)
+                    changeBlockedState(currentUserId, 0);
                 }
-            })
+            });
 
             closeButton?.addEventListener("click", () => {
                 window.location.reload();
@@ -140,7 +160,9 @@ const result = response.result;
     Array.from(document.getElementsByClassName("deleteButton")).forEach(
         (button) => {
             button.addEventListener("click", () => {
-                deleteUser(Number(button.id.slice(7)));
+                if (confirm("Xác nhận xóa người dùng")) {
+                    deleteUser(Number(button.id.slice(7)));
+                }
             });
         }
     );
@@ -151,18 +173,8 @@ const result = response.result;
         form.querySelector("#phoneNumber").removeAttribute("disabled");
         form.querySelector("#role").removeAttribute("disabled");
         // console.log(form.parentElement.querySelector('.edit').classList)
-        form.parentElement.querySelector(".edit").classList.add("d-none");
-        form.parentElement.querySelector(".submit").classList.remove("d-none");
-    }
-
-    function toggleUneditable(form: any) {
-        form.querySelector("#name").disabled = "disabled";
-        form.querySelector("#email").disabled = "disabled";
-        form.querySelector("#phoneNumber").disabled = "disabled";
-        form.querySelector("#role").disabled = "disabled";
-        // console.log(form.parentElement.querySelector('.edit').classList)
-        form.parentElement.querySelector(".edit").classList.remove("d-none");
-        form.parentElement.querySelector(".submit").classList.add("d-none");
+        // form.parentElement.querySelector(".edit").classList.add("d-none");
+        // form.parentElement.querySelector(".submit").classList.remove("d-none");
     }
 </script>
 
@@ -179,7 +191,7 @@ const result = response.result;
                         class="btn btn-dark btn-md"
                         data-bs-toggle="modal"
                         data-bs-target="#createUserModal"
-                        id="createUserButton">Create user</button
+                        id="createUserButton">Tạo người dùng mới</button
                     >
                 </div>
             </div>
