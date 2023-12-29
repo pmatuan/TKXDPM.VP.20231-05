@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import vn.hust.aims.controller.dto.request.media.DeleteMediaBulkRequest;
 import vn.hust.aims.controller.dto.response.media.*;
 import vn.hust.aims.service.media.factory.MediaType;
@@ -51,17 +52,29 @@ public class MediaController {
         return ResponseUtil.toSuccessCommonResponse(GetMediaResponse.from(getMediaOutput));
     }
 
-    @PostMapping("")
-    public ResponseEntity<AimsCommonResponse<Object>> createMedia(@RequestParam String type,
-                                                             @RequestBody String jsonPayload) {
+    @PostMapping("/image")
+    public ResponseEntity<Object> testImage(@RequestParam(value = "file", required = false) MultipartFile file, @RequestParam Map<String, Object> body) {
+        System.out.println(file);
 
-        System.out.println(MediaType.from(type));
+        return ResponseEntity.ok(body);
+    }
+
+
+    @PostMapping("")
+    public ResponseEntity<AimsCommonResponse<Object>> createMedia(@RequestParam(value = "file", required = false) MultipartFile file, @RequestParam String mediaType, @RequestParam Map<String, Object> mediaInfo) {
+        if (file != null) {
+            String imageUrl = mediaService.createMediaImage(file);
+            mediaInfo.put("imageUrl", imageUrl);
+        }
+
+        mediaInfo.remove("mediaType");
 
         CreateMediaOutput createMediaOutput = mediaService.createMedia(CreateMediaInput.builder()
-                .jsonPayload(jsonPayload).mediaType(MediaType.from(type)).build());
+                .mediaInfo(mediaInfo).mediaType(MediaType.from(mediaType)).build());
 
         return ResponseUtil.toSuccessCommonResponse(CreateMediaResponse.from(createMediaOutput));
     }
+
 
     @DeleteMapping("")
     public ResponseEntity<AimsCommonResponse<Object>> deleteBulkMedia(@RequestBody DeleteMediaBulkRequest deleteMediaBulkRequest) {
@@ -79,9 +92,25 @@ public class MediaController {
     }
 
     @PatchMapping("/{id}")
-    public ResponseEntity<AimsCommonResponse<Object>> updateMedia(@PathVariable Long id, @RequestBody String jsonPayload) {
-        UpdateMediaOutput updateMediaOutput = mediaService.updateMedia(UpdateMediaInput.builder().id(id).jsonPayload(jsonPayload).build());
+    public ResponseEntity<AimsCommonResponse<Object>> updateMedia(@PathVariable Long id,
+                                                                  @RequestParam(value="file", required = false) MultipartFile file,
+                                                                  @RequestParam Map<String, Object> mediaInfo) {
+        if (file != null) {
+            String imageUrl = mediaService.createMediaImage(file);
+            mediaInfo.put("imageUrl", imageUrl);
+        }
+
+        System.out.println(mediaInfo);
+
+        UpdateMediaOutput updateMediaOutput = mediaService.updateMedia(UpdateMediaInput.builder().id(id).mediaInfo(mediaInfo).build());
 
         return ResponseUtil.toSuccessCommonResponse(UpdateMediaResponse.from(updateMediaOutput));
+    }
+
+    @GetMapping("/images/{image}")
+    public ResponseEntity<byte[]> getMediaImage(@PathVariable String image) {
+        byte[] imageBytes = mediaService.getMediaImage(image);
+
+        return ResponseEntity.ok().contentType(org.springframework.http.MediaType.IMAGE_JPEG).body(imageBytes);
     }
 }

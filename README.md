@@ -311,13 +311,16 @@ This is a Capstone's source code for Software Design and Construction project
 
 - Assigned tasks:
 
-  - 
+  - Change Instant to LocalDate
+  - Implement front end for media operations
 
 - Implementation details:
   - Pull Request(s):
-    - 
+    - [53](https://github.com/pmatuan/TKXDPM.VP.20231-05/pull/53)
+    - [46](https://github.com/pmatuan/TKXDPM.VP.20231-05/pull/46)
   - Specific implementation details:
-    - 
+    - Convert all files that use Instant to LocalDate class
+    - Implement the front end for media crud filter search
 
 </details>
 

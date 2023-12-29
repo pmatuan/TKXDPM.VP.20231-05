@@ -1,3 +1,4 @@
+
 # Database
 MYSQL_USERNAME: root
 MYSQL_PASSWORD: abc123
@@ -7,4 +8,5 @@ MYSQL_DB: aims
 
 # Server
 SERVER_PORT: 8080
+
 ACTIVE_PROFILE: dev

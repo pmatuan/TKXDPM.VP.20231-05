@@ -5,6 +5,7 @@ public enum ErrorCodeList {
   InvalidParameter("PARAM_4001", "Invalid Parameter"),
   CART_NOT_FOUND("CART_001", "Cart not found"),
   MEDIA_NOT_FOUND("MEDIA_001", "Media not found"),
+  MEDIA_IMAGE_NOT_FOUND("MEDIA_IMAGE_001", "Media image not found"),
   ORDER_NOT_FOUND("ORDER_001", "Order not found"),
   RUSH_ORDER_NOT_FOUND("RUSH_ORDER_001", "Rush order not found"),
   CART_MEDIA_NOT_FOUND("CART_MEDIA_001", "Cart media not found"),
