@@ -1,0 +1,10 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import Header from "../../components/layout-admin/Header.jsx";
+
+import BookForm from "../../components/media/form/BookForm";
+---
+
+<Layout title="Home">
+  <BookForm client:load />
+</Layout>

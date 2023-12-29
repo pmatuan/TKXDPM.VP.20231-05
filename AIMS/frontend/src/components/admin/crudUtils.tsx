@@ -1,24 +1,3 @@
-import { useEffect } from "react";
-
-// export async function createUserTest() {
-//     const data = await fetch("http://localhost:8080/api/v1/user/create", {
-//         method: "POST",
-//         headers: {
-//             'Content-type': 'application/json'
-//         },
-//         body: JSON.stringify({
-//             name: "test",
-//             email: "test",
-//             phoneNumber: "test",
-//             password: "test",
-//             role: "Customer",
-//         }),
-//     });
-
-//     const response = await data.json()
-//     const result = response.code
-// }
-
 export async function createUser(user: any) {
     const data = await fetch("http://localhost:8080/api/v1/user/create", {
         method: "POST",
@@ -30,12 +9,16 @@ export async function createUser(user: any) {
             email: user.email,
             phoneNumber: user.phoneNumber,
             password: user.password,
-            role: user.role,
+            role: user.role.toLowerCase(),
         }),
     });
 
     const response = await data.json()
     const result = response.code
+
+    if (result === 200) {
+        window.location.reload()
+    }
 }
 
 export async function getUser(userId: number) {
@@ -47,27 +30,55 @@ export async function getUser(userId: number) {
 }
 
 export async function editUser(user: any) {
-    var body = JSON.stringify({})
     const data = await fetch(`http://localhost:8080/api/v1/user/update/${user.id}`, {
         method: "PUT",
-        body: body
+        headers: {
+            'Content-type': 'application/json'
+        },
+        body: JSON.stringify({
+            name: user.name,
+            phoneNumber: user.phoneNumber,
+            email: user.email,
+            role: user.role.toLowerCase()
+        })
     })
+
+    const response = await data.json()
+    const result = response.code
+    if (result == 200) {
+        window.location.reload()
+    }
 }
 
 export async function changePassword(userId: number, password: string) {
     const data = await fetch(`http://localhost:8080/api/v1/user/changePassword`, {
         method: 'PUT',
+        headers: {
+            'Content-type': 'application/json'
+        },
         body: JSON.stringify({
             userId: userId,
             password: password
         })
     })
+
+    const response = await data.json()
+    const result = response.code
+    if (result == 200) {
+        window.location.reload()
+    }
 }
 
 export async function changeBlockedState(userId: number, setIsBlocked: number) {
     const data = await fetch(`http://localhost:8080/api/v1/user/changeBlockedState?userId=${userId}&setIsBlocked=${setIsBlocked}`, {
         method: 'PUT'
     })
+
+    const response = await data.json()
+    const result = response.code
+    if (result == 200) {
+        window.location.reload()
+    }
 }
 
 export async function deleteUser(userId: number) {

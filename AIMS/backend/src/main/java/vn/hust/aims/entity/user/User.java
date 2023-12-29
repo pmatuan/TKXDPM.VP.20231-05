@@ -16,6 +16,10 @@ import lombok.experimental.SuperBuilder;
 import vn.hust.aims.constant.UserRole;
 
 import javax.persistence.*;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Table(name = "user")
@@ -38,16 +42,22 @@ public class User {
     @Column(columnDefinition = "tinyint(1)")
     private Integer isBlocked;
     @Column
-    @Enumerated(EnumType.STRING)
-    private UserRole role;
+    private String role;
 
     @PrePersist
     void prePersist() {
         if (isBlocked == null) {
             isBlocked = 0;
         }
-        if (role == null) {
-            role = UserRole.CUSTOMER;
-        }
+    }
+
+    public Set<String> getUserRole() {
+        return Collections.unmodifiableSet(
+                new HashSet<String>(Arrays.asList(role.split(",")))
+        );
+    }
+
+    public void setUserRole(Set<String> role) {
+        this.role = String.join(",", role);
     }
 }
