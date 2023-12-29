@@ -455,7 +455,7 @@ export default function CheckoutSummary({orderId}: Props) {
 
               {canCheckOut ? (
                   <button
-                      className="btn w-100 mt-4"
+                      className="btn btn-white w-100 mt-4"
                       onClick={handleVNPayCheckout}
                   >
                     <img
@@ -464,7 +464,7 @@ export default function CheckoutSummary({orderId}: Props) {
                   </button>
               ) : (
                   <button
-                      className="btn w-100 mt-4 disabled border-none"
+                      className="btn btn-white w-100 mt-4 disabled border-none"
                   >
                     <img
                         src="https://cdn.haitrieu.com/wp-content/uploads/2022/10/Logo-VNPAY-QR-1.png"

@@ -5,12 +5,15 @@
 
 package vn.hust.aims.service;
 
+import java.util.Arrays;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import vn.hust.aims.entity.cart.Cart;
 import vn.hust.aims.entity.cart.CartMedia;
+import vn.hust.aims.entity.email.Param;
 import vn.hust.aims.entity.order.*;
 import vn.hust.aims.enumeration.OrderStateEnum;
 import vn.hust.aims.exception.CannotCancelOrderException;
@@ -24,6 +27,7 @@ import vn.hust.aims.repository.order.OrderMediaRepository;
 import vn.hust.aims.repository.order.OrderRepository;
 import vn.hust.aims.repository.order.RushOrderRepository;
 import vn.hust.aims.service.dto.input.cancelorder.CancelOrderInput;
+import vn.hust.aims.service.dto.input.email.SendEmailInput;
 import vn.hust.aims.service.dto.input.order.UpdateOrderStateInput;
 import vn.hust.aims.service.dto.input.placeorder.CreateOrderInput;
 import vn.hust.aims.service.dto.input.placeorder.DeleteMediaInOrderInput;
@@ -52,13 +56,13 @@ public class OrderService {
   private final OrderRepository orderRepository;
   private final OrderMediaRepository orderMediaRepository;
   private final RushOrderRepository rushOrderRepository;
-  private final SenderRepository senderRepository;
-  private final TemplateRepository templateRepository;
   private final CalculationService calculationService;
   private final DeliveryInfoService deliveryInfoService;
   private final MediaService mediaService;
   private final CartService cartService;
-  private final TextEngineUtil textEngineUtil;
+  private final MailService mailService;
+  @Value(value = "${url.frontend}")
+  private String frontendUrl;
 
   public CreateOrderOutput createOrderFromCart(CreateOrderInput input) {
     Cart cart = cartService.getCartById(input.getCartId());
@@ -144,24 +148,45 @@ public class OrderService {
   public UpdateOrderStateOutput updateOrderState(UpdateOrderStateInput input) {
     Order order = getOrderById(input.getOrderId());
 
-    OrderStateEnum newState = input.getState();
-    OrderStateEnum currentState = OrderStateEnum.from(order.getState());
+    checkOrderStateTransition(order, input.getState());
 
-    // Nếu currentState là Cancel hoặc Reject thì từ chối
-    // Dựa trên int value của state để quyết định cho phép đổi state hay không
-    // Nếu trạng thái hiện tại sau trạng thái mới thì không cho update
-    if (currentState.equals(OrderStateEnum.CANCEL)
-        || currentState.equals(OrderStateEnum.REJECT)
-        || currentState.getIntValue() >= newState.getIntValue()) {
-      throw new CannotChangeOrderStateException();
-    }
+    updateOrderState(order, input.getState());
 
-    order.setState(input.getState().getStringValue());
-    orderRepository.save(order);
+    sendOrderConfirmationEmail(order, input.getState());
 
     return UpdateOrderStateOutput.from(
-        "Updated order " + input.getOrderId() + " to state " + input.getState().getStringValue()
-            + " successfully"
+        "Updated order " + input.getOrderId() + " to state " + input.getState().getStringValue() + " successfully"
+    );
+  }
+
+  private void checkOrderStateTransition(Order order, OrderStateEnum newState) {
+    OrderStateEnum currentState = OrderStateEnum.from(order.getState());
+
+    if (currentState.getIntValue() >= newState.getIntValue()) {
+      throw new CannotChangeOrderStateException();
+    }
+  }
+
+  private void updateOrderState(Order order, OrderStateEnum newState) {
+    order.setState(newState.getStringValue());
+    orderRepository.save(order);
+  }
+
+  private void sendOrderConfirmationEmail(Order order, OrderStateEnum newState) {
+    String templateName = (newState == OrderStateEnum.ACCEPT) ? "Duyệt đơn hàng" : "Từ chối đơn hàng";
+
+    List<Param> params = Arrays.asList(
+        Param.builder().key("orderId").value(order.getId()).build(),
+        Param.builder().key("trace_order_link").value(frontendUrl + "/trace-order?orderId=" + order.getId()).build()
+    );
+
+    mailService.send(
+        SendEmailInput.builder()
+            .status(true)
+            .destination(getCustomerEmailFromOrder(order.getId()))
+            .templateName(templateName)
+            .params(params)
+            .build()
     );
   }
 
@@ -222,7 +247,7 @@ public class OrderService {
     Order order = Order.builder()
         .id(orderId)
         .orderMediaList(orderMediaList)
-        .state(OrderStateEnum.ORDER_PLACING.getStringValue())
+        .state(OrderStateEnum.PROCESSING.getStringValue())
         .subtotal(subtotal)
         .vat(VAT)
         .total(total)
@@ -290,18 +315,18 @@ public class OrderService {
     order.setDeliveryFee(deliveryFee);
 
     // data coupling
-    Double total = deliveryFee != null ? calculationService.calculateTotal(order.getSubtotal(), order.getVat(),
-        deliveryFee) : calculationService.calculateTotal(order.getSubtotal(), order.getVat());
+    Double total =
+        deliveryFee != null ? calculationService.calculateTotal(order.getSubtotal(), order.getVat(),
+            deliveryFee) : calculationService.calculateTotal(order.getSubtotal(), order.getVat());
     order.setTotal(total);
 
     orderRepository.save(order);
   }
 
   private void updateOrderMediaQuantity(OrderMedia orderMedia, Order order, Integer quantity) {
-    if (quantity == 0){
+    if (quantity == 0) {
       deleteOrderMediaFromRepository(orderMedia, order);
-    }
-    else {
+    } else {
       orderMedia.setQuantity(quantity);
       orderMediaRepository.save(orderMedia);
     }

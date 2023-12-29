@@ -2,13 +2,10 @@ package vn.hust.aims.enumeration;
 
 public enum OrderStateEnum {
   UNKNOWN(0, "UNKNOWN"),
-  ORDER_PLACING(1, "ORDER_PLACING"),
-  PROCESSING(2, "PROCESSING"),
-  CANCEL(3, "CANCEL"),
-  REJECT(3, "REJECT"),
-  PREPARING(3, "PREPARING"),
-  SHIPPED(4, "SHIPPED"),
-  DELIVERED(5, "DELIVERED");
+  PROCESSING(1, "PROCESSING"),
+  CANCEL(2, "CANCEL"),
+  REJECT(2, "REJECT"),
+  ACCEPT(2, "ACCEPT");
 
   private final int intValue;
 

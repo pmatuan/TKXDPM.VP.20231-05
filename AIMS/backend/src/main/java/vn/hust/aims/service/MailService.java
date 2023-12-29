@@ -17,7 +17,6 @@ import vn.hust.aims.utils.TextEngineUtil;
 public class MailService {
 
   private final ApplicationContext applicationContext;
-  private final OrderService orderService;
   private final SenderRepository senderRepository;
   private final TemplateRepository templateRepository;
   private final TextEngineUtil textEngineUtil;
@@ -35,7 +34,7 @@ public class MailService {
 
     String renderedTitle = textEngineUtil.renderTemplate(template.getTitle(), input.getParams());
     String renderedContent = textEngineUtil.renderTemplate(template.getContent(), input.getParams());
-    String destination = orderService.getCustomerEmailFromOrder(input.getOrderId());
+    String destination = input.getDestination();
 
     mailSender.send(sender.getConfig(), destination, renderedTitle, renderedContent);
 

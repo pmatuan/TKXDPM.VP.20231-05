@@ -28,7 +28,6 @@ public class PaymentController {
   // Mọi phương thức và thuộc tính đều được thiết kế để hỗ trợ chức năng thanh toán.
 
   private final PaymentService paymentService;
-  private final MailService mailService;
 
   // PaymentController - PayOrderRequest: Data coupling
   // Lớp PaymentController nhận dữ liệu từ client đến hệ thống qua đối tượng PayOrderRequest .
@@ -54,9 +53,6 @@ public class PaymentController {
   @GetMapping("/vnpay-return")
   public String handleVNPayReturn(VNPayTransactionRequest request){
     VNPayTransactionOutput output = paymentService.saveVNPayTransaction(request.toInput());
-//    mailService.send(request.toSendEmailInput()); // gửi mail cần trừu tượng hoá
-    // send mail
-    // redirect to frontend ?
 
     return "redirect:" + output.getUrl() ;
 
