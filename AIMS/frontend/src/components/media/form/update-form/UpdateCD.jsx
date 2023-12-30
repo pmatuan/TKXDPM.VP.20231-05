@@ -1,91 +1,87 @@
-import React, { useState } from "react";
 import { Form } from "react-final-form";
 import MediaField from "../../media-field/MediaField.jsx";
-import DVDField from "../../media-field/DVDField.jsx";
+import CDField from "../../media-field/CDField.jsx";
 
 const validate = (values) => {
   const errors = {};
 
   if (!values.title) {
-    errors.title = "Bắt buộc";
-  }
-  if (!values.imageUrl) {
-    errors.imageUrl = "Bắt buộc";
-  }
-
-  if (!values.disFormat) {
-    errors.disFormat = "Bắt buộc";
+    errors.title = "Required";
   }
 
   if (!values.value) {
-    errors.value = "Bắt buộc";
+    errors.value = "Required";
   } else if (isNaN(values.value) || values.value <= 0) {
-    errors.value = "Không hợp lệ";
+    errors.value = "Invalid";
   }
 
   if (!values.price) {
-    errors.price = "Bắt buộc";
+    errors.price = "Required";
   } else if (isNaN(values.price) || values.price <= 0) {
-    errors.price = "Không hợp lệ";
+    errors.price = "Invalid";
   }
 
   if (!values.quantityInStock) {
-    errors.quantityInStock = "Bắt buộc";
+    errors.quantityInStock = "Required";
   } else {
     const quantityAsNumber = parseInt(values.quantityInStock, 10);
-
     if (
       isNaN(quantityAsNumber) ||
       !Number.isInteger(quantityAsNumber) ||
       quantityAsNumber < 0
     ) {
-      errors.quantityInStock = "Không hợp lệ";
+      errors.quantityInStock = "Invalid";
     }
   }
   if (!values.releaseDate) {
-    errors.releaseDate = "Bắt buộc";
+    errors.releaseDate = "Required";
   }
   if (!values.importDate) {
-    errors.importDate = "Bắt buộc";
+    errors.importDate = "Required";
   }
   return errors;
 };
 
-export default function AddDVD() {
-  const [isLoading, setIsLoading] = useState("Điền thông tin vào biểu mẫu");
-
+export default function UpdateCD({ initialValuesProps, setUpdateStatus }) {
   function onSubmit(values, form) {
-    const postData = async () => {
+    const patchData = async () => {
       try {
-        setIsLoading("Đang thêm...");
-        const image = values.imageUrl[0];
-
-        delete values.imageUrl;
-
+        setUpdateStatus("Updating...");
         const formData = new FormData();
-        Object.keys(values).forEach((key) => formData.append(key, values[key]));
-        formData.append("file", image);
+        if (!values.imageUrl) {
+          values.imageUrl = initialValuesProps.imageUrl;
+          Object.keys(values).forEach((key) =>
+            formData.append(key, values[key])
+          );
+        } else {
+          const image = values.imageUrl[0];
+          formData.append("file", image);
+          Object.keys(values).forEach((key) =>
+            formData.append(key, values[key])
+          );
+        }
 
         const response = await fetch(
-          "http://127.0.0.1:8080/api/v1/media?mediaType=dvd",
+          `http://127.0.0.1:8080/api/v1/media/${values.id}`,
           {
-            method: "POST",
+            method: "PATCH",
             body: formData,
           }
         );
 
         if (response.ok) {
-          form.reset();
-          setIsLoading("Thêm thành công");
+          setUpdateStatus("Updated Success!");
+          initialValuesProps = values;
         } else if (!response.ok) {
           throw new Error("Network response was not ok");
         }
       } catch (error) {
-        console.error("Error sending POST request:", error);
+        console.error("Error sending PACTH request:", error);
       } finally {
+        setUpdateStatus("Updated Success!");
       }
     };
-    postData();
+    patchData();
   }
   return (
     <div
@@ -96,16 +92,10 @@ export default function AddDVD() {
         borderRadius: "10px",
       }}
     >
-      <div>
-        <pre style={{ color: "green" }}>{isLoading}</pre>
-      </div>
       <Form
         onSubmit={onSubmit}
         validate={validate}
-        initialValues={{
-          isAbleToRushDelivery: false,
-          category: "dvd",
-        }}
+        initialValues={initialValuesProps}
         render={({ handleSubmit, form, submitting, pristine, values }) => (
           <form onSubmit={handleSubmit}>
             <div className="row">
@@ -113,7 +103,7 @@ export default function AddDVD() {
                 <MediaField />
               </div>
               <div className="col-md-6">
-                <DVDField />
+                <CDField />
               </div>
             </div>
 
@@ -123,7 +113,7 @@ export default function AddDVD() {
                 className="btn btn-primary"
                 disabled={submitting || pristine}
               >
-                Submit
+                Update
               </button>
               <button
                 type="button"

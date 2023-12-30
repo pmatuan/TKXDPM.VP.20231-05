@@ -1,16 +1,17 @@
 ---
-import Layout from "../../layouts/Layout.astro";
-import Header from "../../components/layout-admin/Header";
-import AddCD from "../../components/media/form/add-form/AddCD.jsx";
+import Layout from "../../../layouts/Layout.astro";
+import Header from "../../../components/admin-media/Header";
+import AddCD from "../../../components/media/form/add-form/AddCD.jsx";
 ---
 
-<Layout title="Them san pham">
-  <Header />
+<Layout title="Add CD">
   <main>
+    <Header />
+
     <h2
       style="font-family:Times New Roman Bold; color: #3498db; background-color: #ecf0f1; padding: 10px; text-align: center; border-radius: 8px; box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);"
     >
-      Create New CD
+      Tạo CD mới
     </h2>
     <AddCD client:load />
   </main>

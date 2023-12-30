@@ -7,61 +7,78 @@ const validate = (values) => {
   const errors = {};
 
   if (!values.title) {
-    errors.title = "Required";
+    errors.title = "Bắt buộc";
+  }
+  if (!values.imageUrl) {
+    errors.imageUrl = "Bắt buộc";
   }
 
   if (!values.value) {
-    errors.value = "Required";
+    errors.value = "Bắt buộc";
   } else if (isNaN(values.value) || values.value <= 0) {
     errors.value = "Invalid";
   }
 
   if (!values.price) {
-    errors.price = "Required";
+    errors.price = "Bắt buộc";
   } else if (isNaN(values.price) || values.price <= 0) {
-    errors.price = "Invalid";
+    errors.price = "Không hợp lệ";
   }
 
   if (!values.quantityInStock) {
-    errors.quantityInStock = "Required";
-  } else if (
-    Number.isInteger(values.quantityInStock) ||
-    values.quantityInStock < 0
-  ) {
-    errors.quantityInStock = "Invalid";
+    errors.quantityInStock = "Bắt buộc";
+  } else {
+    const quantityAsNumber = parseInt(values.quantityInStock, 10);
+
+    if (
+      isNaN(quantityAsNumber) ||
+      !Number.isInteger(quantityAsNumber) ||
+      quantityAsNumber < 0
+    ) {
+      errors.quantityInStock = "Không hợp lệ";
+    }
+  }
+  if (!values.releaseDate) {
+    errors.releaseDate = "Bắt buộc";
+  }
+  if (!values.importDate) {
+    errors.importDate = "Bắt buộc";
   }
   return errors;
 };
 
 export default function AddCD() {
-  const [isLoading, setIsLoading] = useState("start");
-  const [initialValues, setInitialValues] = useState({});
-  function onSubmit(values) {
-    console.log(JSON.stringify(values));
+  const [isLoading, setIsLoading] = useState("Điền thông tin vào biểu mẫu");
+
+  function onSubmit(values, form) {
     const postData = async () => {
       try {
-        setIsLoading(true);
+        setIsLoading("Đang thêm...");
+        const image = values.imageUrl[0];
+
+        delete values.imageUrl;
+
+        const formData = new FormData();
+        Object.keys(values).forEach((key) => formData.append(key, values[key]));
+        formData.append("file", image);
 
         const response = await fetch(
-          "http://127.0.0.1:8080/api/v1/media?type=cd",
+          "http://127.0.0.1:8080/api/v1/media?mediaType=cd",
           {
             method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify(values),
+            body: formData,
           }
         );
 
-        if (response.oke) {
-          setInitialValues({ isAbleToRushDelivery: false });
+        if (response.ok) {
+          form.reset();
+          setIsLoading("Thêm thành công");
         } else if (!response.ok) {
           throw new Error("Network response was not ok");
         }
       } catch (error) {
         console.error("Error sending POST request:", error);
       } finally {
-        setIsLoading(false);
       }
     };
     postData();
@@ -76,22 +93,16 @@ export default function AddCD() {
       }}
     >
       <div>
-        {isLoading == "start" ? (
-          <p>Fill in the form</p>
-        ) : isLoading ? (
-          <p>Loading...</p>
-        ) : (
-          <pre style={{ color: "green" }}>Success!</pre>
-        )}
+        <pre style={{ color: "green" }}>{isLoading}</pre>
       </div>
       <Form
         onSubmit={onSubmit}
         validate={validate}
-        initialValues={{ isAbleToRushDelivery: false }}
+        initialValues={{ isAbleToRushDelivery: false, category: "cd" }}
         render={({ handleSubmit, form, submitting, pristine, values }) => (
           <form onSubmit={handleSubmit}>
             <div className="row">
-              <div className="col-md-6" style={{ "padding-left": "0px" }}>
+              <div className="col-md-6" style={{ paddingLeft: "0px" }}>
                 <MediaField />
               </div>
               <div className="col-md-6">
@@ -116,7 +127,6 @@ export default function AddCD() {
                 Reset
               </button>
             </div>
-            <pre>{JSON.stringify(values, 0, 2)}</pre>
           </form>
         )}
       />
