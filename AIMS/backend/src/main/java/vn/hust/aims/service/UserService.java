@@ -100,18 +100,6 @@ public class UserService {
             throw new NullEmailException();
         }
 
-
-        List<Param> params = Arrays.asList();
-
-        mailService.send(
-                SendEmailInput.builder()
-                        .status(true)
-                        .templateName("Test")
-                        .destination(user.getEmail())
-                        .params(params)
-                        .build()
-        );
-
         User tmp = userRepository.findByEmail(input.getEmail())
                 .orElseThrow(EmailNotFoundException::new);
 
@@ -124,6 +112,16 @@ public class UserService {
         user.setPhoneNumber(input.getPhoneNumber());
         user.setRole(input.getRole());
 
+        List<Param> params = Arrays.asList();
+
+        mailService.send(
+                SendEmailInput.builder()
+                        .status(true)
+                        .templateName("Cập nhật thông tin")
+                        .destination(user.getEmail())
+                        .params(params)
+                        .build()
+        );
 
         userRepository.save(user);
 
@@ -141,6 +139,17 @@ public class UserService {
 
         validatePassword(input.getPassword());
         user.setPassword(input.getPassword());
+
+        List<Param> params = Arrays.asList();
+
+        mailService.send(
+                SendEmailInput.builder()
+                        .status(true)
+                        .templateName("Đổi mật khẩu")
+                        .destination(user.getEmail())
+                        .params(params)
+                        .build()
+        );
 
         userRepository.save(user);
 
