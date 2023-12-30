@@ -7,7 +7,7 @@ const Header = () => (
         <div className="d-flex align-items-center">
           <span className="text-dark px-3 text-lg font-weight-bold me-4">
             <a
-              href="/aims-ecommerce/admin/home"
+              href="/aims-ecommerce/admin/media/home"
               className="p-0 nav-link"
               style={{ fontSize: "24px" }}
             >
@@ -18,13 +18,8 @@ const Header = () => (
       </nav>
       <ul className="navbar-nav d-none d-lg-flex">
         <li className="nav-item px-3 py-3 border-radius-sm d-flex align-items-center">
-          <a href="/aims-ecommerce/admin/home" className="p-0 nav-link">
+          <a href="/aims-ecommerce/admin/media/home" className="p-0 nav-link">
             Quản lý sản phẩm
-          </a>
-        </li>
-        <li className="nav-item px-3 py-3 border-radius-sm d-flex align-items-center">
-          <a href="/aims-ecommerce/trace-order/" className="p-0 nav-link">
-            Quản lý đơn hàng
           </a>
         </li>
       </ul>

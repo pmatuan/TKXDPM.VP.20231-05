@@ -1,0 +1,10 @@
+---
+import Layout from "../layouts/Layout.astro";
+
+import MediaCustomer from "../components/customer-media/mediaCustomer";
+const cartId = Astro.cookies.get("cartId").value;
+---
+
+<Layout title="Cửa hàng">
+  <main><MediaCustomer cartId={cartId} client:load /></main>
+</Layout>
