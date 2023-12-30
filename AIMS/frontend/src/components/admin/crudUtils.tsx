@@ -16,7 +16,24 @@ export async function createUser(user: any) {
     const response = await data.json()
     const result = response.code
 
-    if (result === 200) {
+    console.log(response)
+
+    switch(result) {
+        case "EMAIL_001":
+            alert("Email trống hoặc không hợp lệ")
+            break
+        case "PASSWORD_001":
+            alert("Mật khẩu không được để trống")
+            break
+        case "ROLE_001":
+            alert("Chưa chọn vai trò")
+            break
+        case "EMAIL_002":
+            alert("Email đã được sử dụng cho một tài khoản khác")
+    }
+
+    if (result == 200) {
+        alert("Tạo mới người dùng thành công")
         window.location.reload()
     }
 }
@@ -44,8 +61,22 @@ export async function editUser(user: any) {
     })
 
     const response = await data.json()
+    console.log(response)
     const result = response.code
+
+    switch(result) {
+        case "ROLE_001":
+            alert("Chọn ít nhất 1 vai trò")
+            break
+        case "EMAIL_001":
+            alert("Email không được để trống")
+            break
+        case "EMAIL_002":
+            alert("Email đã được sử dụng cho một tài khoản khác")
+    }
+
     if (result == 200) {
+        alert("Chỉnh sửa thành công")
         window.location.reload()
     }
 }
@@ -63,8 +94,16 @@ export async function changePassword(userId: number, password: string) {
     })
 
     const response = await data.json()
+
+    console.log(response)
+
     const result = response.code
+    if (result == 'PASSWORD_001') {
+        alert("Mật khẩu không được để trống")
+    }
+
     if (result == 200) {
+        alert("Đổi mật khẩu thành công")
         window.location.reload()
     }
 }
@@ -75,8 +114,16 @@ export async function changeBlockedState(userId: number, setIsBlocked: number) {
     })
 
     const response = await data.json()
+    console.log(setIsBlocked)
+    console.log(response)
     const result = response.code
+    
     if (result == 200) {
+        if (setIsBlocked == 1) {
+            alert("Chặn thành công")
+        } else {
+            alert("Bỏ chặn thành công")
+        }
         window.location.reload()
     }
 }
@@ -87,7 +134,7 @@ export async function deleteUser(userId: number) {
         method: "DELETE",
     });
 
-    console.log(data)
+    const response = await data.json()
 
     window.location.reload()
 }

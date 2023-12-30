@@ -1,20 +1,10 @@
 ---
 import Layout from '../layouts/Layout.astro';
-import data from '../../src/data.json';
 import '../../assets/scss/astro-ecommerce.scss';
 import OrderSummaries from '../components/order/orderSummaries';
-import OrderSearchBox from '../components/order/orderSearchBox';
 import ComplexNavbar from "../components/complexNavbar";
 
-let orderProducts = [];
-
-data.orders[0].products.forEach(productDetails => {
-  data.products.forEach(product => {
-    if (product.id == productDetails.id) {
-      orderProducts.push(product);
-    }
-  });
-})
+const orderIdUrl = Astro.url.searchParams.get('orderId')! || '';
 ---
 
 <Layout title="Theo dõi đơn hàng">
@@ -22,11 +12,7 @@ data.orders[0].products.forEach(productDetails => {
     <ComplexNavbar />
 
     <div class="container mt-5">
-      <div class="flex justify-center mb-4">
-        <OrderSearchBox client:load/>
-      </div>
-
-      <OrderSummaries order={data.orders[2]} products={orderProducts} client:load/>
+      <OrderSummaries orderIdUrl={orderIdUrl} client:load/>
     </div>
 
   </main>

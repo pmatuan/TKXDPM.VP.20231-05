@@ -5,6 +5,15 @@ import ShoppingCart from '../components/cart/shoppingCart';
 import ComplexNavbar from "../components/complexNavbar";
 
 const BACKEND_URL = "http://localhost:8080/api/v1" // TODO: do chưa load được từ env nên dùng tạm
+
+if (!Astro.cookies.has("cartId")) {
+  const response = await fetch(BACKEND_URL + `/cart`);
+  const data = await response.json();
+  const cartId = data.result.cartId;
+
+  Astro.cookies.set("cartId", cartId);
+}
+
 const cartId = Astro.cookies.get("cartId").value;
 console.log("cartId: " + cartId)
 

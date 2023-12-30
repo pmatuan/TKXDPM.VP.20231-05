@@ -1,4 +1,4 @@
-package vn.hust.aims.service.dto.input.cancelorder;
+package vn.hust.aims.service.dto.input.order;
 
 import lombok.Data;
 import lombok.experimental.SuperBuilder;
