@@ -5,12 +5,16 @@
 
 package vn.hust.aims.service;
 
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import vn.hust.aims.constant.Constant;
 import vn.hust.aims.entity.cart.Cart;
 import vn.hust.aims.entity.cart.CartMedia;
 import vn.hust.aims.entity.email.Param;
@@ -21,20 +25,20 @@ import vn.hust.aims.exception.CannotChangeOrderStateException;
 import vn.hust.aims.exception.NotSupportRushDeliveryException;
 import vn.hust.aims.exception.OrderMediaNotFoundException;
 import vn.hust.aims.exception.OrderNotFoundException;
-import vn.hust.aims.repository.email.SenderRepository;
-import vn.hust.aims.repository.email.TemplateRepository;
 import vn.hust.aims.repository.order.OrderMediaRepository;
 import vn.hust.aims.repository.order.OrderRepository;
 import vn.hust.aims.repository.order.RushOrderRepository;
-import vn.hust.aims.service.dto.input.cancelorder.CancelOrderInput;
 import vn.hust.aims.service.dto.input.email.SendEmailInput;
+import vn.hust.aims.service.dto.input.order.CancelOrderInput;
+import vn.hust.aims.service.dto.input.order.RequestCancelOrderInput;
 import vn.hust.aims.service.dto.input.order.UpdateOrderStateInput;
 import vn.hust.aims.service.dto.input.placeorder.CreateOrderInput;
 import vn.hust.aims.service.dto.input.placeorder.DeleteMediaInOrderInput;
 import vn.hust.aims.service.dto.input.order.GetOrderInput;
 import vn.hust.aims.service.dto.input.placeorder.UpdateDeliveryInfoInput;
 import vn.hust.aims.service.dto.input.placeorder.UpdateMediaInOrderInput;
-import vn.hust.aims.service.dto.output.cancelorder.CancelOrderOutput;
+import vn.hust.aims.service.dto.output.order.CancelOrderOutput;
+import vn.hust.aims.service.dto.output.order.RequestCancelOrderOutput;
 import vn.hust.aims.service.dto.output.order.GetAllOrderOutput;
 import vn.hust.aims.service.dto.output.order.UpdateOrderStateOutput;
 import vn.hust.aims.service.dto.output.placeorder.CreateOrderOutput;
@@ -47,7 +51,7 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 import vn.hust.aims.service.dto.output.placeorder.UpdateMediaInOrderOutput;
 import vn.hust.aims.service.media.MediaService;
-import vn.hust.aims.utils.TextEngineUtil;
+import vn.hust.aims.utils.TimeUtils;
 
 @Service
 @RequiredArgsConstructor
@@ -159,34 +163,11 @@ public class OrderService {
     );
   }
 
-  private void checkOrderStateTransition(Order order, OrderStateEnum newState) {
-    OrderStateEnum currentState = OrderStateEnum.from(order.getState());
-
-    if (currentState.getIntValue() >= newState.getIntValue()) {
-      throw new CannotChangeOrderStateException();
-    }
-  }
-
-  private void updateOrderState(Order order, OrderStateEnum newState) {
-    order.setState(newState.getStringValue());
-    orderRepository.save(order);
-  }
-
-  private void sendOrderConfirmationEmail(Order order, OrderStateEnum newState) {
-    String templateName = (newState == OrderStateEnum.ACCEPT) ? "Đơn hàng đã được duyệt" : "Đơn hàng đã bị từ chối";
-
-    List<Param> params = Arrays.asList(
-        Param.builder().key("orderId").value(order.getId()).build(),
-        Param.builder().key("trace_order_link").value(frontendUrl + "/trace-order?orderId=" + order.getId()).build()
-    );
-
-    mailService.send(
-        SendEmailInput.builder()
-            .status(true)
-            .destination(getCustomerEmailFromOrder(order.getId()))
-            .templateName(templateName)
-            .params(params)
-            .build()
+  public RequestCancelOrderOutput requestCancelOrder(RequestCancelOrderInput input){
+    Order order = getOrderById(input.getOrderId());
+    sendCancelOrderRequestEmail(order);
+    return RequestCancelOrderOutput.from(
+        "Request cancel order " + input.getOrderId() + " sent"
     );
   }
 
@@ -204,7 +185,14 @@ public class OrderService {
 
     // TODO: redirect to refund
 
-    return CancelOrderOutput.from("Cancelled order " + input.getOrderId() + " successfully");
+    sendCancelOrderSuccessEmail(order);
+
+    orderRepository.save(order);
+
+    String return_url = frontendUrl + "/cancel-order";
+
+    return CancelOrderOutput.from(return_url + "?orderId=" + order.getId()
+        + "&cancelTime=" + Instant.now());
   }
 
   public Order getOrderById(String orderId) {
@@ -332,6 +320,71 @@ public class OrderService {
     }
   }
 
+  private void sendCancelOrderRequestEmail(Order order){
+    String templateName = "Xác nhận hủy đơn hàng";
+
+    List<Param> params = Arrays.asList(
+        Param.builder().key("orderId").value(order.getId()).build(),
+        Param.builder().key("confirm_cancel_order_link").value("http://localhost:8080/api/v1/order/" + order.getId() + "/cancel").build()
+    );
+
+    mailService.send(
+        SendEmailInput.builder()
+            .status(true)
+            .destination(getCustomerEmailFromOrder(order.getId()))
+            .templateName(templateName)
+            .params(params)
+            .build()
+    );
+  }
+
+  private void sendCancelOrderSuccessEmail(Order order){
+    String templateName = "Hủy đơn hàng thành công";
+
+    List<Param> params = Arrays.asList(
+        Param.builder().key("orderId").value(order.getId()).build()
+    );
+
+    mailService.send(
+        SendEmailInput.builder()
+            .status(true)
+            .destination(getCustomerEmailFromOrder(order.getId()))
+            .templateName(templateName)
+            .params(params)
+            .build()
+    );
+  }
+
+  private void checkOrderStateTransition(Order order, OrderStateEnum newState) {
+    OrderStateEnum currentState = OrderStateEnum.from(order.getState());
+
+    if (currentState.getIntValue() >= newState.getIntValue()) {
+      throw new CannotChangeOrderStateException();
+    }
+  }
+
+  private void updateOrderState(Order order, OrderStateEnum newState) {
+    order.setState(newState.getStringValue());
+    orderRepository.save(order);
+  }
+
+  private void sendOrderConfirmationEmail(Order order, OrderStateEnum newState) {
+    String templateName = (newState == OrderStateEnum.ACCEPT) ? "Đơn hàng đã được duyệt" : "Đơn hàng đã bị từ chối";
+
+    List<Param> params = Arrays.asList(
+        Param.builder().key("orderId").value(order.getId()).build(),
+        Param.builder().key("trace_order_link").value(frontendUrl + "/trace-order?orderId=" + order.getId()).build()
+    );
+
+    mailService.send(
+        SendEmailInput.builder()
+            .status(true)
+            .destination(getCustomerEmailFromOrder(order.getId()))
+            .templateName(templateName)
+            .params(params)
+            .build()
+    );
+  }
 }
 
 // Design principle

@@ -11,12 +11,17 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import vn.hust.aims.controller.dto.request.order.GetAllOrderRequest;
 import vn.hust.aims.controller.dto.request.order.UpdateOrderStateRequest;
+import vn.hust.aims.controller.dto.response.order.RequestCancelOrderResponse;
 import vn.hust.aims.controller.dto.response.order.GetAllOrderResponse;
 import vn.hust.aims.controller.dto.response.order.GetOrderResponse;
 import vn.hust.aims.controller.dto.response.order.UpdateOrderStateResponse;
 import vn.hust.aims.response.AimsCommonResponse;
 import vn.hust.aims.service.OrderService;
+import vn.hust.aims.service.dto.input.order.CancelOrderInput;
+import vn.hust.aims.service.dto.input.order.RequestCancelOrderInput;
 import vn.hust.aims.service.dto.input.order.GetOrderInput;
+import vn.hust.aims.service.dto.output.order.CancelOrderOutput;
+import vn.hust.aims.service.dto.output.order.RequestCancelOrderOutput;
 import vn.hust.aims.service.dto.output.order.GetAllOrderOutput;
 import vn.hust.aims.service.dto.output.order.GetOrderOutput;
 import vn.hust.aims.service.dto.output.order.UpdateOrderStateOutput;
@@ -55,6 +60,33 @@ public class OrderController {
     return ResponseUtil.toSuccessCommonResponse(
         GetOrderResponse.from(output)
     );
+  }
+
+  @GetMapping("/{orderId}/request-cancel")
+  public ResponseEntity<AimsCommonResponse<Object>> requestCancelOrder(@PathVariable String orderId) {
+
+    RequestCancelOrderOutput output = orderService.requestCancelOrder(
+        RequestCancelOrderInput.builder()
+            .orderId(orderId)
+            .build()
+    );
+
+    // data coupling
+    return ResponseUtil.toSuccessCommonResponse(
+        RequestCancelOrderResponse.from(output)
+    );
+  }
+
+  @GetMapping("/{orderId}/cancel")
+  public String cancelOrder(@PathVariable String orderId) {
+
+    CancelOrderOutput output = orderService.cancelOrder(
+        CancelOrderInput.builder()
+            .orderId(orderId)
+            .build()
+    );
+
+    return "redirect:" + output.getUrl();
   }
 
   @PutMapping("/{orderId}/state")

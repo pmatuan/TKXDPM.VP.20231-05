@@ -1,0 +1,29 @@
+---
+import Layout from '../layouts/Layout.astro';
+import '../../assets/scss/astro-ecommerce.scss';
+import ComplexNavbar from "../components/complexNavbar";
+import OrderDetailCancel from "../components/order/orderDetailCancel";
+
+const orderId = Astro.url.searchParams.get('orderId')! || '';
+let cancelTime = Astro.url.searchParams.get('cancelTime')! || '';
+const convertDate = (originalDate: string) => {
+  const dateObject = new Date(originalDate);
+  const options = { year: 'numeric', month: 'long', day: 'numeric' };
+  const formattedDateString = dateObject.toLocaleString('vi-VN', options);
+  return formattedDateString
+}
+cancelTime = convertDate(cancelTime)
+
+---
+
+<Layout title="Huỷ đơn hàng thành công">
+  <main>
+    <ComplexNavbar/>
+
+    <div class="container mt-5">
+      <OrderDetailCancel orderId={orderId} cancelTime={cancelTime} />
+    </div>
+
+  </main>
+
+</Layout>
