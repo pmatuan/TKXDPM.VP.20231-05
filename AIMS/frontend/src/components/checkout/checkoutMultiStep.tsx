@@ -2,11 +2,6 @@ import RushDeliveryInfo from "./rushDeliveryInfo";
 import CheckoutSingleItemDark from "../checkout/checkoutSingleItemDark";
 import {useEffect, useState} from "react";
 import OrderSummary from "../cart/orderSummary";
-import FormLabel from "@mui/material/FormLabel";
-import RadioGroup from "@mui/material/RadioGroup";
-import FormControlLabel from "@mui/material/FormControlLabel";
-import Radio from "@mui/material/Radio";
-import FormControl from "@mui/material/FormControl";
 import {PayPalScriptProvider, PayPalButtons} from "@paypal/react-paypal-js";
 
 interface OrderMedia {

@@ -1,4 +1,4 @@
-package vn.hust.aims.service.dto.output.cancelorder;
+package vn.hust.aims.service.dto.output.order;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -9,12 +9,12 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
-public class CancelOrderOutput {
+public class RequestCancelOrderOutput {
 
   private String message;
 
-  public static CancelOrderOutput from(String message) {
-    return CancelOrderOutput.builder()
+  public static RequestCancelOrderOutput from(String message) {
+    return RequestCancelOrderOutput.builder()
         .message(message)
         .build();
   }

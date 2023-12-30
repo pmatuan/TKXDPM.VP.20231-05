@@ -33,6 +33,7 @@
     "react-dom": "^18.2.0",
     "react-final-form": "^6.5.9",
     "react-router-dom": "^6.21.1",
+    "sweetalert2": "^11.10.2",
     "typescript-cookie": "^1.0.6"
   },
   "devDependencies": {
