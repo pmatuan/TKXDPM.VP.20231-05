@@ -9,7 +9,7 @@ import vn.hust.aims.entity.email.Param;
 @SuperBuilder
 public class SendEmailInput {
   private Boolean status;
-  private String orderId;
+  private String destination;
   private String templateName;
   private List<Param> params;
 }

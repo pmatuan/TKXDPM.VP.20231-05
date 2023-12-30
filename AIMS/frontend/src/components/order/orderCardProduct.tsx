@@ -58,18 +58,18 @@ export default function OrderCardProduct({
               <b>Quantity:</b> {quantity}
             </p>
           </div>
-          <div className="col-12 col-md-6 col-lg-3 mt-md-4 mt-lg-0">
-            <h5 className="text-base">Delivery Address</h5>
-            <p className="text-sm mb-0 opacity-8 pe-md-7">{address}</p>
+
+
+          <div className="col-12 col-md-6 col-lg-1 mt-4 mt-lg-0">
           </div>
-          <div className="col-12 col-md-6 col-lg-2 mt-4 mt-lg-0">
-            <h5 className="text-base">Shipping updates</h5>
+
+          <div className="col-12 col-md-6 col-lg-4 mt-md-4 mt-lg-0">
+            <h5 className="text-base">Delivery Info</h5>
+            <p className="text-sm mb-0 opacity-8 pe-md-7">{address}</p>
             <p className="text-sm mb-2 opacity-8">{email}</p>
             <p className="text-sm opacity-8">{phoneNumber}</p>
-            <a className="btn btn-white btn-sm" href="#">
-              Edit
-            </a>
           </div>
+
         </div>
         <div className="mt-4">
           <h6 className="text-center">Preparing to ship on March 24, 2021</h6>

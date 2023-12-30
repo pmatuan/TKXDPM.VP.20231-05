@@ -28,6 +28,10 @@ public enum ErrorCodeList {
   INVALID_BLOCKED_STATE("BLOCKED_STATE_001", "setIsBlocked value must be 0 or 1"),
   PRICE_CHANGE_LIMIT_EXCEEDED("CHANGE_001", "Exceeded daily price change limit"),
   UPDATE_DELETE_LIMIT_EXCEEDED("CHANGE_002", "Exceeded daily update or delete limit")
+  EMAIL_NOT_FOUND("LOGIN_001", "email not found"),
+  WRONG_PASSWORD("LOGIN_002", "wrong password"),
+  EMAIL_EXISTS("EMAIL_002", "Cannot create user: email already exists"),
+  EMPTY_NAME("NAME_001", "Name cannot be empty")
   ;
 
 

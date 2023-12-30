@@ -28,6 +28,7 @@ import vn.hust.aims.subsystem.payment.ProviderType;
 import vn.hust.aims.service.dto.input.payment.PayOrderInput;
 import vn.hust.aims.service.dto.output.payment.PayOrderOutput;
 import vn.hust.aims.subsystem.payment.provider.paypalsubsystem.PaypalSubsystem;
+import vn.hust.aims.utils.TimeUtils;
 
 @Service
 @RequiredArgsConstructor
@@ -82,7 +83,7 @@ public class PaymentService {
     mailService.send(
         SendEmailInput.builder()
             .status(input.getStatus())
-            .orderId(input.getOrderInfo())
+            .destination(orderService.getCustomerEmailFromOrder(input.getOrderInfo()))
             .templateName("Xác nhận đơn hàng")
             .params(params)
             .build()
@@ -139,7 +140,7 @@ public class PaymentService {
         .paymentMethod("PAYPAL")
         .status(true)
         .amount(amount) // Do VNPAY lúc trả về * 100 số tiền thực
-        .timestamp(convertToInstant(paymentTime))
+        .timestamp(TimeUtils.convertToInstant(paymentTime))
         .build();
 
     Order order = orderService.getOrderById(input.getOrderId());
@@ -157,7 +158,7 @@ public class PaymentService {
     mailService.send(
         SendEmailInput.builder()
             .status(true)
-            .orderId(input.getOrderId())
+            .destination(orderService.getCustomerEmailFromOrder(input.getOrderId()))
             .templateName("Xác nhận đơn hàng")
             .params(params)
             .build()
@@ -167,13 +168,6 @@ public class PaymentService {
         return_url + "?paymentStatus=true" + "&orderId=" + input.getOrderId()
             + "&amount=" + amount + "&paymentTime=" + paymentTime
             + "&transactionId=" + transactionId + "&paymentMethod=" + "Paypal");
-  }
-
-  private Instant convertToInstant(String paymentTime) {
-    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss'Z'");
-    LocalDateTime localDateTime = LocalDateTime.parse(paymentTime, formatter);
-    Instant instant = localDateTime.toInstant(Constant.VIETNAM_ZONE_OFFSET);
-    return instant;
   }
 
 }

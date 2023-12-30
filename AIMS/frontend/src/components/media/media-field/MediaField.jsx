@@ -4,25 +4,24 @@ import FileField from "../custom-field/customFileField.jsx";
 export default function MediaField() {
   return (
     <>
-      <InputField name="title" type="text" label="Title" />
-      <InputField name="category" type="text" label="Category" />
-      <InputField name="value" type="number" label="Value" />
-      <InputField name="price" type="number" label="Price" />
+      <InputField name="title" type="text" label="Tiêu đề" />
+      <InputField name="value" type="number" label="Giá trị" />
+      <InputField name="price" type="number" label="Giá bán" />
       <InputField
         name="quantityInStock"
         type="number"
-        label="Quantity In Stock"
+        label="Số lượng trong kho"
       />
       <InputField
         name="isAbleToRushDelivery"
         type="checkbox"
-        label="Is Able To Rush Delivery"
+        label="Có thể giao nhanh"
       />
-      <InputField name="weight" label="Weight" />
-      <FileField name="imageFile" label="Image " />
-      <FileField name="barCodeFile" label="BarCode " />
-      <InputField name="description" type="text" label="Description" />
-      <InputField name="importDate" type="date" label="Import Date" />
+      <InputField name="weight" label="Cân nặng" />
+      <FileField name="imageUrl" label="Hình ảnh" />
+      <InputField name="barcodeUrl" label="Mã code" />
+      <InputField name="description" type="text" label="Mô tả" />
+      <InputField name="importDate" type="date" label="Ngày nhập kho" />
     </>
   );
 }

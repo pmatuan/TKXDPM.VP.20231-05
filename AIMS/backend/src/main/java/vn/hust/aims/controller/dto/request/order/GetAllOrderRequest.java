@@ -7,6 +7,15 @@ import org.springdoc.api.annotations.ParameterObject;
 @ParameterObject
 public class GetAllOrderRequest {
   private Integer page;
-
   private Integer size;
+
+  public GetAllOrderRequest() {
+    this.page = 0;
+    this.size = 30;
+  }
+
+  public GetAllOrderRequest(Integer page, Integer size) {
+    this.page = page;
+    this.size = size;
+  }
 }
