@@ -7,12 +7,20 @@ import OrderDetail from "../components/order/orderDetail";
 const paymentStatus = Astro.url.searchParams.get('paymentStatus')! || false;
 const orderId = Astro.url.searchParams.get('orderId')! || '';
 const amount = Astro.url.searchParams.get('amount')! || 0;
-const paymentTime = Astro.url.searchParams.get('paymentTime')! || '';
+let paymentTime = Astro.url.searchParams.get('paymentTime')! || '';
 const transactionId = Astro.url.searchParams.get('transactionId')! || '';
 const paymentMethod = Astro.url.searchParams.get('paymentMethod')! || '';
 
 Astro.cookies.set("cartId", "")
 
+const convertDate = (originalDate: string) => {
+  const dateObject = new Date(originalDate);
+  const options = { year: 'numeric', month: 'long', day: 'numeric' };
+  const formattedDateString = dateObject.toLocaleString('vi-VN', options);
+  return formattedDateString
+}
+
+paymentTime = convertDate(paymentTime)
 ---
 
 <Layout title="Chi tiết đơn hàng">

@@ -41,7 +41,7 @@ export default function MediaFiltersForm(props) {
           value={searchTerm}
           onChange={handleSearchTermChange}
           className="form-control"
-          placeholder="Type title to search..."
+          placeholder="Nhập vào tiêu đề ..."
           style={{ borderWidth: "4px" }}
         />
       </form>

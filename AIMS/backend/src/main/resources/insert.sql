@@ -119,12 +119,12 @@ INSERT INTO sender (config, provider)
 VALUES ('{"mail": {"host": "smtp.gmail.com", "port": "587", "password": "gwpp vehb oqnr mkvk", "username": "chamsockhachhangaims@gmail.com", "properties": {"mail": {"mime": {"charset": "UTF"}, "smtp": {"auth": true, "starttls": {"enable": true, "required": true}}}}, "default-encoding": "UTF-8"}}', 'GMAIL')
 
     INSERT INTO template (title, content, required_parameters)
-VALUES ('Xác nhận giao hàng', '<!DOCTYPE html>
+VALUES ('Xác nhận đơn hàng', '<!DOCTYPE html>
 <html lang="vi" xmlns:th="http://www.thymeleaf.org">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Xác nhận Giao hàng</title>
+  <title>Xác nhận đơn hàng</title>
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -188,7 +188,7 @@ VALUES ('Xác nhận hủy đơn hàng', '<!DOCTYPE html>
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Xác nhận Hủy Đơn Hàng</title>
+  <title>Xác nhận huỷ đơn hàng</title>
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -253,7 +253,7 @@ VALUES ('Hủy đơn hàng thành công', '<!DOCTYPE html>
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Xác nhận Hủy Đơn Hàng</title>
+  <title>Hủy đơn hàng thành công</title>
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -311,3 +311,296 @@ VALUES ('Hủy đơn hàng thành công', '<!DOCTYPE html>
 </div>
 </body>
 </html>', '["orderId"]');
+
+INSERT INTO template (title, content, required_parameters)
+VALUES ('Đơn hàng đã được duyệt', '<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Đơn hàng đã được duyệt</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      line-height: 1.6;
+      margin: 0;
+      padding: 20px;
+      background-color: #f4f4f4;
+    }
+
+    .container {
+      max-width: 600px;
+      margin: 0 auto;
+      background-color: #ffffff;
+      padding: 20px;
+      border-radius: 5px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+
+    h1 {
+      color: #333;
+    }
+
+    p {
+      color: #555;
+    }
+
+    .footer {
+      margin-top: 20px;
+      padding-top: 10px;
+      border-top: 1px solid #ddd;
+      color: #888;
+      font-size: 12px;
+    }
+  </style>
+</head>
+<body>
+<div class="container">
+  <h1>Đơn hàng đã được duyệt</h1>
+  <p>
+    Cảm ơn bạn đã đặt hàng từ chúng tôi.
+  </p>
+  <p>Thông tin đơn hàng của bạn:</p>
+  <ul>
+    <li><strong>Mã đơn hàng:</strong> <span th:text="${orderId}"></span></li>
+  </ul>
+  <p>
+    Để theo dõi tình trạng đơn hàng của bạn, vui lòng theo dõi <a th:href="${trace_order_link}">tại đây</a>
+  </p>
+  <p>Cảm ơn bạn đã mua sắm tại cửa hàng chúng tôi!</p>
+  <div class="footer">
+    <p>Trân trọng,<br />AIMS</p>
+  </div>
+</div>
+</body>
+</html>
+', '["orderId", "trace_order_link"]');
+
+INSERT INTO template (title, content, required_parameters)
+VALUES ('Đơn hàng đã bị từ chối', '<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Đơn hàng đã bị từ chối</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      line-height: 1.6;
+      margin: 0;
+      padding: 20px;
+      background-color: #f4f4f4;
+    }
+
+    .container {
+      max-width: 600px;
+      margin: 0 auto;
+      background-color: #ffffff;
+      padding: 20px;
+      border-radius: 5px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+
+    h1 {
+      color: #333;
+    }
+
+    p {
+      color: #555;
+    }
+
+    .footer {
+      margin-top: 20px;
+      padding-top: 10px;
+      border-top: 1px solid #ddd;
+      color: #888;
+      font-size: 12px;
+    }
+  </style>
+</head>
+<body>
+<div class="container">
+  <h1>Đơn hàng bị từ chối</h1>
+  <p>
+    Rất tiếc nhưng đơn hàng của bạn đã bị từ chối.
+  </p>
+  <p>Cảm ơn bạn đã mua sắm tại cửa hàng chúng tôi!</p>
+  <div class="footer">
+    <p>Trân trọng,<br />AIMS</p>
+  </div>
+</div>
+</body>
+</html>
+', '[""]');
+
+INSERT INTO template (title, content, required_parameters)
+VALUES ('Trạng thái tài khoản', '<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title th:text="${blockedState}"></title>
+    <style>
+        body {
+          font-family: Arial, sans-serif;
+          line-height: 1.6;
+          margin: 0;
+          padding: 20px;
+          background-color: #f4f4f4;
+        }
+
+        .container {
+          max-width: 600px;
+          margin: 0 auto;
+          background-color: #ffffff;
+          padding: 20px;
+          border-radius: 5px;
+          box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+          color: #333;
+        }
+
+        p {
+          color: #555;
+        }
+
+        .footer {
+          margin-top: 20px;
+          padding-top: 10px;
+          border-top: 1px solid #ddd;
+          color: #888;
+          font-size: 12px;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>Tài khoản của bạn đã <span th:text="${blockedState}"></span></h1>
+    <p>
+        Một quản trị viên đã <span th:text="${action}"></span> tài khoản của bạn.
+    </p>
+    <p>
+        Để biết thêm chi tiết về hành động này, vui lòng liên hệ với chúng tôi bằng cách trả lời email này.
+    </p>
+    <p>Cảm ơn bạn đã sử dụng nền tảng bán hàng của chúng tôi!</p>
+    <div class="footer">
+        <p>Trân trọng,<br />AIMS</p>
+    </div>
+</div>
+</body>
+</html>
+', '["blockedState", "action"]');
+
+INSERT INTO template (title, content, required_parameters)
+VALUES ('Đổi mật khẩu', '<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Mật khẩu của bạn đã được thay đổi</title>
+    <style>
+        body {
+          font-family: Arial, sans-serif;
+          line-height: 1.6;
+          margin: 0;
+          padding: 20px;
+          background-color: #f4f4f4;
+        }
+
+        .container {
+          max-width: 600px;
+          margin: 0 auto;
+          background-color: #ffffff;
+          padding: 20px;
+          border-radius: 5px;
+          box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+          color: #333;
+        }
+
+        p {
+          color: #555;
+        }
+
+        .footer {
+          margin-top: 20px;
+          padding-top: 10px;
+          border-top: 1px solid #ddd;
+          color: #888;
+          font-size: 12px;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>Mật khẩu của bạn đã được thay đổi</h1>
+    <p>Một quản trị viên đã thay đổi mật khẩu tài khoản của bạn.</p>
+    <p>Nếu bạn có thắc mắc về sự thay đổi này, vui lòng liên hệ với chúng tôi bằng cách trả lời email này.</p>
+    <p>Cảm ơn bạn đã sử dụng nền tảng bán hàng của chúng tôi!</p>
+    <div class="footer">
+        <p>Trân trọng,<br />AIMS</p>
+    </div>
+</div>
+</body>
+</html>
+', '[""]');
+
+INSERT INTO template (title, content, required_parameters)
+VALUES ('Cập nhật thông tin', '<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Thông tin người dùng đã được thay đổi</title>
+    <style>
+        body {
+          font-family: Arial, sans-serif;
+          line-height: 1.6;
+          margin: 0;
+          padding: 20px;
+          background-color: #f4f4f4;
+        }
+
+        .container {
+          max-width: 600px;
+          margin: 0 auto;
+          background-color: #ffffff;
+          padding: 20px;
+          border-radius: 5px;
+          box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+          color: #333;
+        }
+
+        p {
+          color: #555;
+        }
+
+        .footer {
+          margin-top: 20px;
+          padding-top: 10px;
+          border-top: 1px solid #ddd;
+          color: #888;
+          font-size: 12px;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>Thông tin người dùng đã được thay đổi</h1>
+    <p>Một quản trị viên đã thay đổi thông tin tài khoản của bạn.</p>
+    <p>Nếu bạn có thắc mắc về sự thay đổi này, vui lòng liên hệ với chúng tôi bằng cách trả lời email này.</p>
+    <p>Cảm ơn bạn đã sử dụng nền tảng bán hàng của chúng tôi!</p>
+    <div class="footer">
+        <p>Trân trọng,<br />AIMS</p>
+    </div>
+</div>
+</body>
+</html>
+', '[""]');

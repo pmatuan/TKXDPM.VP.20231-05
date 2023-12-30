@@ -1,9 +1,53 @@
-const Media = ({ props }) => {
-  const { title, price, quantity, photo, category } = props;
+import { set } from "date-fns";
+import React, { useState } from "react";
+
+const Media = ({
+  props,
+  onDelete,
+  setUpdateMedia,
+  setMediaUpdateId,
+  setDeleteIds,
+  selectStatus,
+}) => {
+  const { id, title, price, quantity, photo, category } = props;
+  const [isChecked, setIsChecked] = useState(false);
+
+  function handleOnClickDelete() {
+    async function deleteMediaData(ids) {
+      try {
+        const apiUrl = "http://127.0.0.1:8080/api/v1/media";
+
+        const requestOptions = {
+          method: "DELETE",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ ids }),
+        };
+
+        const response = await fetch(apiUrl, requestOptions);
+
+        if (!response.ok) {
+          throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+
+        const responseData = await response.json();
+        console.log("Delete response:", responseData);
+
+        onDelete(id);
+
+        return responseData;
+      } catch (error) {
+        console.error("Error deleting media:", error.message);
+      }
+    }
+
+    const ids = [id];
+    deleteMediaData(ids);
+  }
 
   return (
     <div
-      className="media"
       style={{
         border: "1px solid #ccc",
         padding: "10px",
@@ -14,28 +58,71 @@ const Media = ({ props }) => {
       }}
     >
       <img
-        src={photo}
+        src={`http://127.0.0.1:8080/api/v1/media/images/${photo}`}
         alt={title}
-        className="mr-3"
-        style={{ width: "100px", height: "100px", objectFit: "cover" }}
+        // className="mr-3"
+        style={{
+          width: "100px",
+          height: "100px",
+          objectFit: "cover",
+          display: "block",
+          margin: "auto",
+        }}
       />
       <div className="media-body">
-        <h6>Title: {title}</h6>
-        <div>Price: ${price}</div>
-        <div>Quantity: {quantity}</div>
-        <div>Category: {category}</div>
-        <button
-          className="btn btn-primary"
-          style={{ backgroundColor: "#D3E0EA", color: "black" }}
-        >
-          View Detail
-        </button>
-        <button
-          className="btn btn-danger ml-2"
-          style={{ backgroundColor: "#FFECDB", color: "black" }}
-        >
-          Delete
-        </button>
+        <h5 style={{ textAlign: "center", lineHeight: "2.5" }}>{title}</h5>
+        <p style={{ paddingLeft: "20px" }}>
+          <div>Giá: {price}đ</div>
+          <div>Số lượng: {quantity}</div>
+          <div>Loại: {category}</div>
+        </p>
+
+        <div style={{ display: "flex", gap: "5px", alignItems: "center" }}>
+          <button
+            className="btn btn-primary"
+            style={{
+              backgroundColor: "#D3E0EA",
+              color: "black",
+            }}
+            onClick={() => {
+              setUpdateMedia(true);
+              setMediaUpdateId(id);
+            }}
+          >
+            Cập nhật
+          </button>
+          <button
+            className="btn btn-danger ml-2"
+            style={{ backgroundColor: "#FFECDB", color: "black" }}
+            onClick={() => {
+              handleOnClickDelete();
+            }}
+          >
+            Xóa
+          </button>
+          {selectStatus && (
+            <input
+              type="checkbox"
+              checked={isChecked}
+              onChange={() => {
+                setIsChecked(!isChecked);
+                if (isChecked) {
+                  setDeleteIds((prevIds) =>
+                    prevIds.filter((prevId) => prevId !== id)
+                  );
+                } else {
+                  setDeleteIds((prevIds) => [...prevIds, id]);
+                }
+              }}
+              style={{
+                verticalAlign: "middle",
+
+                width: "20px", // Độ rộng của checkbox
+                height: "20px", // Độ cao của checkbox
+              }}
+            />
+          )}
+        </div>
       </div>
     </div>
   );

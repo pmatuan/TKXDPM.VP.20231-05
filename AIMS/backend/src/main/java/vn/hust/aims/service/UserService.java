@@ -15,21 +15,31 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import vn.hust.aims.constant.UserRole;
-import vn.hust.aims.entity.order.Order;
+
+import vn.hust.aims.entity.email.Param;
+import vn.hust.aims.entity.user.User;
+import vn.hust.aims.exception.*;
+import vn.hust.aims.repository.user.UserRepository;
+import vn.hust.aims.service.dto.input.email.SendEmailInput;
+import vn.hust.aims.service.dto.input.user.ChangeUserPasswordInput;
+import vn.hust.aims.service.dto.input.user.CreateUserInput;
+import vn.hust.aims.service.dto.input.user.GetUserInput;
+import vn.hust.aims.service.dto.input.user.UpdateUserInput;
+
 import vn.hust.aims.entity.user.User;
 import vn.hust.aims.exception.*;
 import vn.hust.aims.repository.user.UserRepository;
 import vn.hust.aims.service.dto.input.user.*;
-import vn.hust.aims.service.dto.output.order.GetAllOrderOutput;
+
 import vn.hust.aims.service.dto.output.user.*;
 
-import java.lang.reflect.Field;
 import java.util.*;
 
 @Service
 @RequiredArgsConstructor
 public class UserService {
     private final UserRepository userRepository;
+    private final MailService mailService;
 
     //-------------GET----------------
 
@@ -58,7 +68,7 @@ public class UserService {
     }
 
     private User createUserToDatabase(CreateUserInput input) {
-        validateCreateUserInput(input.getEmail(), input.getPassword(), input.getRole());
+        validateUserInput(input.getName(), input.getEmail(), input.getPassword(), input.getRole());
 
         User user = User.builder()
                 .name(input.getName())
@@ -84,14 +94,34 @@ public class UserService {
     private User updateUserToDatabase(Long userId, UpdateUserInput input) {
         User user = getUserById(userId);
 
-        user.setName(input.getName() != null ? input.getName() : user.getName());
-        user.setEmail(input.getEmail() != null ? input.getEmail() : user.getEmail());
-        user.setPhoneNumber(input.getPhoneNumber() != null ? input.getPhoneNumber() : user.getPhoneNumber());
+        validateUserInput(input.getName(),  input.getRole());
 
-        if (input.getRole() != null) {
-            validateRole(input.getRole());
-            user.setRole(input.getRole());
+        if (input.getEmail().isBlank()) {
+            throw new NullEmailException();
         }
+
+        User tmp = userRepository.findByEmail(input.getEmail())
+                .orElseThrow(EmailNotFoundException::new);
+
+        if (tmp.getId() != userId) {
+            throw new EmailExistsException();
+        }
+
+        user.setName(input.getName());
+        user.setEmail(input.getEmail());
+        user.setPhoneNumber(input.getPhoneNumber());
+        user.setRole(input.getRole());
+
+        List<Param> params = Arrays.asList();
+
+        mailService.send(
+                SendEmailInput.builder()
+                        .status(true)
+                        .templateName("Cập nhật thông tin")
+                        .destination(user.getEmail())
+                        .params(params)
+                        .build()
+        );
 
         userRepository.save(user);
 
@@ -110,6 +140,17 @@ public class UserService {
         validatePassword(input.getPassword());
         user.setPassword(input.getPassword());
 
+        List<Param> params = Arrays.asList();
+
+        mailService.send(
+                SendEmailInput.builder()
+                        .status(true)
+                        .templateName("Đổi mật khẩu")
+                        .destination(user.getEmail())
+                        .params(params)
+                        .build()
+        );
+
         userRepository.save(user);
 
         return user;
@@ -124,6 +165,31 @@ public class UserService {
 
         validateIsBlocked(isBlocked);
         user.setIsBlocked(isBlocked);
+
+        String blockedState;
+        String action;
+
+        if (isBlocked == 1) {
+            blockedState = "bị chặn";
+            action = "chặn";
+        } else {
+            blockedState = "được bỏ chặn";
+            action = "bỏ chặn";
+        }
+
+        List<Param> params = Arrays.asList(
+                Param.builder().key("blockedState").value(blockedState).build(),
+                Param.builder().key("action").value(action).build()
+        );
+
+        mailService.send(
+                SendEmailInput.builder()
+                        .status(true)
+                        .templateName("Trạng thái tài khoản")
+                        .destination(user.getEmail())
+                        .params(params)
+                        .build()
+        );
 
         userRepository.save(user);
 
@@ -147,15 +213,30 @@ public class UserService {
 
     //---------------VALIDATE-----------------
 
-    private void validateCreateUserInput(String email, String password, String role) {
+    private void validateUserInput(String name, String email, String password, String role) {
+        validateName(name);
         validateEmail(email);
         validatePassword(password);
         validateRole(role);
     }
 
+    private void validateUserInput(String name, String role) {
+        validateName(name);
+        validateRole(role);
+    }
+
+    private void validateName(String name) {
+        if (name.isBlank()) {
+            throw new EmptyNameException();
+        }
+    }
+
     private void validateEmail(String email) {
         if (email == null || email.isEmpty()) {
             throw new NullEmailException();
+        }
+        if (userRepository.findByEmail(email).isPresent()) {
+            throw new EmailExistsException();
         }
     }
 
@@ -169,11 +250,6 @@ public class UserService {
         Set<String> roles = Collections.unmodifiableSet(
                 new HashSet<String>(Arrays.asList(role.split(",")))
         );
-
-        System.out.println(roles);
-        System.out.println(UserRole.roles);
-        System.out.println(roles.isEmpty());
-        System.out.println(UserRole.roles.containsAll(roles));
 
         if (roles.isEmpty() || !UserRole.roles.containsAll(roles)) {
             throw new InvalidRoleException();
