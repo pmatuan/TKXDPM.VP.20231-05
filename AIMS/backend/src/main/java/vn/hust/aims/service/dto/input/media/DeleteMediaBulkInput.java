@@ -8,5 +8,6 @@ import java.util.List;
 @Data
 @Builder
 public class DeleteMediaBulkInput {
+    private Long authorId;
     List<Long> ids;
 }

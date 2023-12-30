@@ -77,7 +77,7 @@ public class MediaService {
 
         Instant now = Instant.now();
 
-        List<Changelog> listChangelog = changelogRepository.findAllByTimestampAfter(now.minus(24, ChronoUnit.HOURS));
+        List<Changelog> listChangelog = changelogRepository.findAllByAuthorIdAndTimestampAfter(deleteMediaBulkInput.getAuthorId(), now.minus(1, ChronoUnit.DAYS));
 
         if (deleteMediaBulkInput.getIds().size() + listChangelog.size() > 30) {
             throw new UpdateDeleteLimitExceededException();
@@ -99,7 +99,7 @@ public class MediaService {
     }
 
     public UpdateMediaOutput updateMedia(UpdateMediaInput updateMediaInput) {
-        Long id = updateMediaInput.getId();
+        Long id = updateMediaInput.getMediaId();
 
         Media mediaEntity = mediaRepository.getReferenceById(id);
 
@@ -115,7 +115,7 @@ public class MediaService {
                 .timestamp(now)
                 .build();
 
-        List<Changelog> listChangelog = changelogRepository.findAllByTimestampAfter(now.minus(10, ChronoUnit.SECONDS));
+        List<Changelog> listChangelog = changelogRepository.findAllByAuthorIdAndTimestampAfter(updateMediaInput.getAuthorId(), now.minus(1, ChronoUnit.DAYS));
 
         if (listChangelog.size() > 29) {
             throw new UpdateDeleteLimitExceededException();
@@ -123,7 +123,7 @@ public class MediaService {
             if (!Objects.equals(mediaEntity.getPrice(), toUpdate.getPrice())) {
                 changelog.setIsPriceChange(1);
 
-                List<Changelog> listPriceChange = changelogRepository.findAllByChangedMediaIdAndTimestampAfterAndIsPriceChange(id, now.minus(2, ChronoUnit.MINUTES), 1);
+                List<Changelog> listPriceChange = changelogRepository.findAllByChangedMediaIdAndTimestampAfterAndIsPriceChange(id, now.minus(1, ChronoUnit.DAYS), 1);
                 if (listPriceChange.size() > 1) {
                     throw new PriceChangeLimitExceededException();
                 }

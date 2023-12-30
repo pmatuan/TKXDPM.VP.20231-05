@@ -22,9 +22,8 @@ public class Changelog {
     @Column(name = "timestamp")
     private Instant timestamp;
 
-//    TODO: incorporate author id from session
-//    @Column(name = "authorId")
-//    private Long authorId;
+    @Column(name = "authorId")
+    private Long authorId;
 
     @Column(name = "changedMediaId")
     private Long changedMediaId;

@@ -9,6 +9,7 @@ import java.util.Map;
 @Data
 @SuperBuilder
 public class UpdateMediaInput {
-    private Long id;
+    private Long authorId;
+    private Long MediaId;
     private Map<String, Object> mediaInfo;
 }

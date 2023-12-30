@@ -11,5 +11,5 @@ import java.util.Optional;
 @Repository
 public interface ChangelogRepository extends JpaRepository<Changelog, Long> {
     public List<Changelog> findAllByChangedMediaIdAndTimestampAfterAndIsPriceChange(Long changedMediaId, Instant timestamp, Integer isPriceChange);
-    public List<Changelog> findAllByTimestampAfter(Instant timestamp); // TODO: add change author id
+    public List<Changelog> findAllByAuthorIdAndTimestampAfter(Long authorId, Instant timestamp); // TODO: add change author id
 }

@@ -1,14 +1,12 @@
 package vn.hust.aims.controller;
 
 import lombok.AllArgsConstructor;
-
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import vn.hust.aims.controller.dto.request.media.DeleteMediaBulkRequest;
 import vn.hust.aims.controller.dto.response.media.*;
-import vn.hust.aims.service.media.factory.MediaType;
 import vn.hust.aims.response.AimsCommonResponse;
 import vn.hust.aims.service.dto.input.media.CreateMediaInput;
 import vn.hust.aims.service.dto.input.media.GetAllMediaInput;
@@ -16,6 +14,7 @@ import vn.hust.aims.service.dto.input.media.GetMediaInput;
 import vn.hust.aims.service.dto.input.media.UpdateMediaInput;
 import vn.hust.aims.service.dto.output.media.*;
 import vn.hust.aims.service.media.MediaService;
+import vn.hust.aims.service.media.factory.MediaType;
 import vn.hust.aims.utils.ResponseUtil;
 
 import java.util.Map;
@@ -93,7 +92,8 @@ public class MediaController {
 
     @PatchMapping("/{id}")
     public ResponseEntity<AimsCommonResponse<Object>> updateMedia(@PathVariable Long id,
-                                                                  @RequestParam(value="file", required = false) MultipartFile file,
+                                                                  @RequestParam(value = "authorId") Long authorId,
+                                                                  @RequestParam(value = "file", required = false) MultipartFile file,
                                                                   @RequestParam Map<String, Object> mediaInfo) {
         if (file != null) {
             String imageUrl = mediaService.createMediaImage(file);
@@ -102,7 +102,12 @@ public class MediaController {
 
         System.out.println(mediaInfo);
 
-        UpdateMediaOutput updateMediaOutput = mediaService.updateMedia(UpdateMediaInput.builder().id(id).mediaInfo(mediaInfo).build());
+        UpdateMediaOutput updateMediaOutput = mediaService.updateMedia(UpdateMediaInput.builder()
+                .MediaId(id)
+                .authorId(authorId)
+                .mediaInfo(mediaInfo)
+                .build()
+        );
 
         return ResponseUtil.toSuccessCommonResponse(UpdateMediaResponse.from(updateMediaOutput));
     }
