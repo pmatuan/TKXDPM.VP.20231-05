@@ -13,12 +13,12 @@ export default function UserTable({
             <table className="table">
                 <thead>
                     <tr>
-                        <th scope="col" className="text-secondary text-xs font-weight-bold border-light ps-2">Name</th>
+                        <th scope="col" className="text-secondary text-xs font-weight-bold border-light ps-2">Họ và tên</th>
                         <th scope="col" className="text-secondary text-xs font-weight-bold border-light ps-2">Email</th>
-                        <th scope="col" className="text-secondary text-xs font-weight-bold border-light ps-2">Phone number</th>
-                        <th scope="col" className="text-secondary text-xs font-weight-bold border-light ps-2">Role</th>
+                        <th scope="col" className="text-secondary text-xs font-weight-bold border-light ps-2">Số điện thoại</th>
+                        <th scope="col" className="text-secondary text-xs font-weight-bold border-light ps-2">Vai trò</th>
                         {/* <th scope="col" className="text-secondary text-xs font-weight-bold border-light ps-2 text-end">Details</th> */}
-                        <th scope="col" className="text-secondary text-xs font-weight-bold border-light ps-2">Action</th>
+                        <th scope="col" className="text-secondary text-xs font-weight-bold border-light ps-2 text-center">Thao tác</th>
                     </tr>
                 </thead>
                 <tbody>
