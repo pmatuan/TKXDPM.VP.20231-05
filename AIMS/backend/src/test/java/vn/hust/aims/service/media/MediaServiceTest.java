@@ -8,6 +8,7 @@ import org.mockito.InjectMocks;
 import org.mockito.junit.jupiter.MockitoExtension;
 import vn.hust.aims.entity.media.Media;
 import vn.hust.aims.exception.QuantityNotEnoughException;
+import vn.hust.aims.service.MediaService;
 
 @ExtendWith(MockitoExtension.class)
 class MediaServiceTest {

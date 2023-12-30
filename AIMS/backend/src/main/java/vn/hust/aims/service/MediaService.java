@@ -1,4 +1,4 @@
-package vn.hust.aims.service.media;
+package vn.hust.aims.service;
 
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Example;
@@ -13,9 +13,9 @@ import vn.hust.aims.repository.media.ChangelogRepository;
 import vn.hust.aims.repository.media.MediaRepository;
 import vn.hust.aims.service.dto.input.media.*;
 import vn.hust.aims.service.dto.output.media.*;
-import vn.hust.aims.service.media.factory.MediaFactoryBuilder;
-import vn.hust.aims.service.media.factory.MediaFactoryInterface;
-import vn.hust.aims.service.media.factory.MediaType;
+import vn.hust.aims.entity.media.factory.MediaFactoryBuilder;
+import vn.hust.aims.entity.media.factory.MediaFactoryInterface;
+import vn.hust.aims.enumeration.MediaType;
 import vn.hust.aims.utils.JsonMapper;
 
 import java.io.IOException;
