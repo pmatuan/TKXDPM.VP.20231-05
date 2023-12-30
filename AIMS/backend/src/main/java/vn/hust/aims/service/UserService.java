@@ -15,10 +15,22 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import vn.hust.aims.constant.UserRole;
+
+import vn.hust.aims.entity.email.Param;
+import vn.hust.aims.entity.user.User;
+import vn.hust.aims.exception.*;
+import vn.hust.aims.repository.user.UserRepository;
+import vn.hust.aims.service.dto.input.email.SendEmailInput;
+import vn.hust.aims.service.dto.input.user.ChangeUserPasswordInput;
+import vn.hust.aims.service.dto.input.user.CreateUserInput;
+import vn.hust.aims.service.dto.input.user.GetUserInput;
+import vn.hust.aims.service.dto.input.user.UpdateUserInput;
+
 import vn.hust.aims.entity.user.User;
 import vn.hust.aims.exception.*;
 import vn.hust.aims.repository.user.UserRepository;
 import vn.hust.aims.service.dto.input.user.*;
+
 import vn.hust.aims.service.dto.output.user.*;
 
 import java.util.*;
@@ -27,6 +39,7 @@ import java.util.*;
 @RequiredArgsConstructor
 public class UserService {
     private final UserRepository userRepository;
+    private final MailService mailService;
 
     //-------------GET----------------
 
@@ -99,6 +112,17 @@ public class UserService {
         user.setPhoneNumber(input.getPhoneNumber());
         user.setRole(input.getRole());
 
+        List<Param> params = Arrays.asList();
+
+        mailService.send(
+                SendEmailInput.builder()
+                        .status(true)
+                        .templateName("Cập nhật thông tin")
+                        .destination(user.getEmail())
+                        .params(params)
+                        .build()
+        );
+
         userRepository.save(user);
 
         return user;
@@ -116,6 +140,17 @@ public class UserService {
         validatePassword(input.getPassword());
         user.setPassword(input.getPassword());
 
+        List<Param> params = Arrays.asList();
+
+        mailService.send(
+                SendEmailInput.builder()
+                        .status(true)
+                        .templateName("Đổi mật khẩu")
+                        .destination(user.getEmail())
+                        .params(params)
+                        .build()
+        );
+
         userRepository.save(user);
 
         return user;
@@ -130,6 +165,31 @@ public class UserService {
 
         validateIsBlocked(isBlocked);
         user.setIsBlocked(isBlocked);
+
+        String blockedState;
+        String action;
+
+        if (isBlocked == 1) {
+            blockedState = "bị chặn";
+            action = "chặn";
+        } else {
+            blockedState = "được bỏ chặn";
+            action = "bỏ chặn";
+        }
+
+        List<Param> params = Arrays.asList(
+                Param.builder().key("blockedState").value(blockedState).build(),
+                Param.builder().key("action").value(action).build()
+        );
+
+        mailService.send(
+                SendEmailInput.builder()
+                        .status(true)
+                        .templateName("Trạng thái tài khoản")
+                        .destination(user.getEmail())
+                        .params(params)
+                        .build()
+        );
 
         userRepository.save(user);
 
