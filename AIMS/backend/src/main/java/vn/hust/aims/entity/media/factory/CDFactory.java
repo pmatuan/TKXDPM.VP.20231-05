@@ -1,4 +1,4 @@
-package vn.hust.aims.service.media.factory;
+package vn.hust.aims.entity.media.factory;
 
 import vn.hust.aims.entity.media.CD;
 import vn.hust.aims.entity.media.Media;

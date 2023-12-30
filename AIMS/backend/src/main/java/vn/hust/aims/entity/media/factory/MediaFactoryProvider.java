@@ -1,4 +1,4 @@
-package vn.hust.aims.service.media.factory;
+package vn.hust.aims.entity.media.factory;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

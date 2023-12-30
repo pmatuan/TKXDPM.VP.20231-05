@@ -1,9 +1,10 @@
-package vn.hust.aims.service.media.factory;
+package vn.hust.aims.entity.media.factory;
 
 
 import org.reflections.Reflections;
 import org.reflections.scanners.Scanners;
 import org.reflections.util.ConfigurationBuilder;
+import vn.hust.aims.enumeration.MediaType;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;

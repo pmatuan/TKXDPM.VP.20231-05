@@ -13,8 +13,8 @@ import vn.hust.aims.service.dto.input.media.GetAllMediaInput;
 import vn.hust.aims.service.dto.input.media.GetMediaInput;
 import vn.hust.aims.service.dto.input.media.UpdateMediaInput;
 import vn.hust.aims.service.dto.output.media.*;
-import vn.hust.aims.service.media.MediaService;
-import vn.hust.aims.service.media.factory.MediaType;
+import vn.hust.aims.service.MediaService;
+import vn.hust.aims.enumeration.MediaType;
 import vn.hust.aims.utils.ResponseUtil;
 
 import java.util.Map;

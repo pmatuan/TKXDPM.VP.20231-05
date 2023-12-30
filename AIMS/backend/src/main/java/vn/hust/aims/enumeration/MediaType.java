@@ -1,4 +1,4 @@
-package vn.hust.aims.service.media.factory;
+package vn.hust.aims.enumeration;
 
 public enum MediaType {
     MEDIA("MEDIA"),
