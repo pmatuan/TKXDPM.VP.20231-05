@@ -1,30 +1,32 @@
 package vn.hust.aims.service.media;
 
 import lombok.AllArgsConstructor;
-import org.apache.commons.lang3.SerializationUtils;
-import org.springframework.beans.BeanUtils;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+import vn.hust.aims.entity.media.Changelog;
 import vn.hust.aims.entity.media.Media;
-import vn.hust.aims.exception.GetImageException;
-import vn.hust.aims.exception.MediaNotFoundException;
-import vn.hust.aims.exception.QuantityNotEnoughException;
-import vn.hust.aims.service.media.factory.MediaType;
+import vn.hust.aims.exception.*;
+import vn.hust.aims.repository.media.ChangelogRepository;
 import vn.hust.aims.repository.media.MediaRepository;
 import vn.hust.aims.service.dto.input.media.*;
 import vn.hust.aims.service.dto.output.media.*;
-import vn.hust.aims.service.media.factory.MediaFactoryInterface;
 import vn.hust.aims.service.media.factory.MediaFactoryBuilder;
+import vn.hust.aims.service.media.factory.MediaFactoryInterface;
+import vn.hust.aims.service.media.factory.MediaType;
 import vn.hust.aims.utils.JsonMapper;
 
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
+import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.UUID;
 
 
@@ -32,6 +34,7 @@ import java.util.UUID;
 @AllArgsConstructor
 public class MediaService {
     private final MediaRepository mediaRepository;
+    private final ChangelogRepository changelogRepository;
     private final String uploadPath = System.getProperty("user.dir") + "/src/main/java/vn/hust/aims/service/media/images";
 
     public CreateMediaOutput createMedia(CreateMediaInput createMediaInput) {
@@ -42,11 +45,13 @@ public class MediaService {
         mediaRepository.save(media);
         return CreateMediaOutput.from("Create success");
     }
+
     public GetMediaOutput getMedia(GetMediaInput getMediaInput) {
         Media media = mediaRepository.findById(getMediaInput.getId()).orElseThrow(MediaNotFoundException::new);
 
         return GetMediaOutput.builder().media(media).build();
     }
+
     public GetAllMediaOutput getAllMedia(GetAllMediaInput getAllMediaInput) {
 
         Map<String, Object> filterMap = getAllMediaInput.getFilterMap();
@@ -55,7 +60,7 @@ public class MediaService {
         String type = getAllMediaInput.getType();
 
         Media media = MediaFactoryBuilder.get(MediaType.from(type))
-                                        .build(JsonMapper.writeValueAsString(filterMap));
+                .build(JsonMapper.writeValueAsString(filterMap));
 
         PageRequest pageRequest = PageRequest.of(page, size);
 
@@ -70,13 +75,31 @@ public class MediaService {
             return DeleteMediaBulkOutput.from("Delete all success");
         }
 
+        Instant now = Instant.now();
+
+        List<Changelog> listChangelog = changelogRepository.findAllByAuthorIdAndTimestampAfter(deleteMediaBulkInput.getAuthorId(), now.minus(1, ChronoUnit.DAYS));
+
+        if (deleteMediaBulkInput.getIds().size() + listChangelog.size() > 30) {
+            throw new UpdateDeleteLimitExceededException();
+        }
+
+        for (Long id: deleteMediaBulkInput.getIds()) {
+            Changelog changelog = Changelog.builder()
+                    .timestamp(now)
+                    .changedMediaId(id)
+                    .isPriceChange(0)
+                    .build();
+            
+            changelogRepository.save(changelog);
+        }
+
         mediaRepository.deleteAllById(deleteMediaBulkInput.getIds());
 
         return DeleteMediaBulkOutput.from("Delete bulk success");
     }
 
     public UpdateMediaOutput updateMedia(UpdateMediaInput updateMediaInput) {
-        Long id = updateMediaInput.getId();
+        Long id = updateMediaInput.getMediaId();
 
         Media mediaEntity = mediaRepository.getReferenceById(id);
 
@@ -85,6 +108,32 @@ public class MediaService {
         Media toUpdate = mediaFactoryInterface.build(JsonMapper.writeValueAsString(updateMediaInput.getMediaInfo()));
         toUpdate.setId(id);
 
+        Instant now = Instant.now();
+
+        Changelog changelog = Changelog.builder()
+                .changedMediaId(id)
+                .timestamp(now)
+                .build();
+
+        List<Changelog> listChangelog = changelogRepository.findAllByAuthorIdAndTimestampAfter(updateMediaInput.getAuthorId(), now.minus(1, ChronoUnit.DAYS));
+
+        if (listChangelog.size() > 29) {
+            throw new UpdateDeleteLimitExceededException();
+        } else {
+            if (!Objects.equals(mediaEntity.getPrice(), toUpdate.getPrice())) {
+                changelog.setIsPriceChange(1);
+
+                List<Changelog> listPriceChange = changelogRepository.findAllByChangedMediaIdAndTimestampAfterAndIsPriceChange(id, now.minus(1, ChronoUnit.DAYS), 1);
+                if (listPriceChange.size() > 1) {
+                    throw new PriceChangeLimitExceededException();
+                }
+            } else {
+                changelog.setIsPriceChange(0);
+            }
+        }
+
+        changelogRepository.save(changelog);
+
         mediaRepository.save(toUpdate);
 
         return UpdateMediaOutput.from("Update success");
@@ -92,7 +141,7 @@ public class MediaService {
 
     public String createMediaImage(MultipartFile file) {
         try {
-            String filename = UUID.randomUUID()+ "_" + file.getOriginalFilename();
+            String filename = UUID.randomUUID() + "_" + file.getOriginalFilename();
 
             Path filePath = Paths.get(uploadPath, filename);
 

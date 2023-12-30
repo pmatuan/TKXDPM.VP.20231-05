@@ -13,9 +13,13 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class DeleteMediaBulkRequest {
+    private Long authorId;
     private List<Long> ids;
 
     public DeleteMediaBulkInput toInput() {
-        return DeleteMediaBulkInput.builder().ids(this.ids).build();
+        return DeleteMediaBulkInput.builder()
+                .authorId(authorId)
+                .ids(this.ids)
+                .build();
     }
 }
