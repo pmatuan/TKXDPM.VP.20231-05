@@ -25,7 +25,9 @@ public enum ErrorCodeList {
   NULL_EMAIL("EMAIL_001", "Email must not be null"),
   NULL_PASSWORD("PASSWORD_001", "Password must not be null"),
   INVALID_ROLE("ROLE_001", "User role has not been set or is invalid"),
-  INVALID_BLOCKED_STATE("BLOCKED_STATE_001", "setIsBlocked value must be 0 or 1")
+  INVALID_BLOCKED_STATE("BLOCKED_STATE_001", "setIsBlocked value must be 0 or 1"),
+  PRICE_CHANGE_LIMIT_EXCEEDED("CHANGE_001", "Exceeded daily price change limit"),
+  UPDATE_DELETE_LIMIT_EXCEEDED("CHANGE_002", "Exceeded daily update or delete limit")
   ;
 
 
