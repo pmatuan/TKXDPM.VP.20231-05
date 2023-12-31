@@ -22,12 +22,12 @@ public class LoginServiceImpl implements LoginService {
         }
 
         User user = userRepository.findByEmail(input.getEmail())
-                .orElseThrow(EmailNotFoundException::new);
+            .orElseThrow(EmailNotFoundException::new);
 
         if (!input.getPassword().equals(user.getPassword())) {
             throw new WrongPasswordException();
         }
 
-        return LoginOutput.from(user.getRole());
+        return LoginOutput.from(user.getId(), user.getRole());
     }
 }
