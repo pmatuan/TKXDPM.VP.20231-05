@@ -4,6 +4,14 @@ import AdminNavbar from '../components/admin/adminNavbar';
 import '../../assets/scss/astro-ecommerce.scss';
 
 ---
+<script>
+    const role = localStorage.getItem("role")
+    if (role?.includes("seller")) {
+        location.href = "management/home"
+    } else {
+        location.href = "management/manage-user"
+    }
+</script>
 <Layout title='Admin'>
     <main>
         <AdminNavbar />

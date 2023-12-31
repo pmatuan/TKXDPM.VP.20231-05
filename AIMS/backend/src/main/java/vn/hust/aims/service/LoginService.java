@@ -28,6 +28,6 @@ public class LoginService {
             throw new WrongPasswordException();
         }
 
-        return LoginOutput.from(user.getRole());
+        return LoginOutput.from(user.getId(), user.getRole());
     }
 }

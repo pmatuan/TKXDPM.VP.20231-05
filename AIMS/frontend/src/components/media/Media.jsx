@@ -55,6 +55,8 @@ const Media = ({
         display: "inline-block",
         borderWidth: "3px",
         borderRadius: "10px",
+        width: "300px",
+        height: "320px"
       }}
     >
       <img
@@ -69,21 +71,21 @@ const Media = ({
           margin: "auto",
         }}
       />
-      <div className="media-body">
-        <h5 style={{ textAlign: "center", lineHeight: "2.5" }}>{title}</h5>
+      <div className="media-body overflow-hidden">
+        <h5 className="chip-value scrolled text-nowrap" style={{ textAlign: "center", lineHeight: "2.5" }}>{title}</h5>
         <p style={{ paddingLeft: "20px" }}>
           <div>Giá: {price}đ</div>
           <div>Số lượng: {quantity}</div>
           <div>Loại: {category}</div>
         </p>
 
-        <div style={{ display: "flex", gap: "5px", alignItems: "center" }}>
+        <div className="align-items-center" style={{ display: "flex", gap: "5px" }}>
           <button
-            className="btn btn-primary"
-            style={{
-              backgroundColor: "#D3E0EA",
-              color: "black",
-            }}
+            className="btn btn-dark"
+            // style={{
+            //   backgroundColor: "#D3E0EA",
+            //   color: "black",
+            // }}
             onClick={() => {
               setUpdateMedia(true);
               setMediaUpdateId(id);
@@ -91,9 +93,10 @@ const Media = ({
           >
             Cập nhật
           </button>
+          <div className="flex-grow-1"></div>
           <button
-            className="btn btn-danger ml-2"
-            style={{ backgroundColor: "#FFECDB", color: "black" }}
+            className="btn btn-outline-danger ml-2"
+            // style={{ backgroundColor: "#FFECDB", color: "black" }}
             onClick={() => {
               handleOnClickDelete();
             }}
