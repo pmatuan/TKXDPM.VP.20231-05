@@ -24,8 +24,10 @@ export async function login(
         break;
     } 
 
+    const id = response.result.id;
     const role = response.result.role;
 
+    localStorage.setItem("id", id)
     localStorage.setItem("role", role)
 
     if (role.includes("seller")) {

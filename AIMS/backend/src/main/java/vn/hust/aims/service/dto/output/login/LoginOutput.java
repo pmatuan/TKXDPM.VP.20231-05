@@ -10,11 +10,13 @@ import lombok.experimental.SuperBuilder;
 @NoArgsConstructor
 @AllArgsConstructor
 public class LoginOutput {
+    private Long id;
     private String role;
     private String status;
 
-    public static LoginOutput from(String role) {
+    public static LoginOutput from(Long id, String role) {
         return LoginOutput.builder()
+                .id(id)
                 .role(role)
                 .build();
     }
