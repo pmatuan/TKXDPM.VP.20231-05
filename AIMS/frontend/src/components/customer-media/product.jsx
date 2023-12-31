@@ -54,7 +54,7 @@ export default function Product({
         <div className="height-200">
           <img
             className="w-100 h-100 p-4 rounded-top"
-            src={`http://127.0.0.1:8080/api/v1/media/images/${imageUrl}`}
+            src={imageUrl.startsWith("http") ? imageUrl : `http://127.0.0.1:8080/api/v1/media/images/${imageUrl}`}
           />
         </div>
         <div className={`${classList} d-flex flex-column align-items-center`}>
