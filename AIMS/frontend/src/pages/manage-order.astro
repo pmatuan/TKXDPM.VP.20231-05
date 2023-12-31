@@ -18,7 +18,9 @@ const data = await response.json()
 
 const rawOrderList = data.result.content;
 
-const orderList = rawOrderList.map(order => ({
+const orderList = rawOrderList
+.filter(order => order.deliveryInfo && order.paymentTransaction) // Filter out orders with null deliveryInfo or paymentTransaction
+.map(order => ({
   id: order.id,
   products: order.orderMediaList.map(orderMedia => ({
     id: orderMedia.id,
@@ -31,13 +33,14 @@ const orderList = rawOrderList.map(order => ({
   customerName: order.deliveryInfo.customerName,
   email: order.deliveryInfo.email,
   date: convertDate(order.createdAt),
-  paymentMethod: (order && order.paymentTransaction && order.paymentTransaction.paymentMethod) ? order.paymentTransaction.paymentMethod : '',
+  paymentMethod: order.paymentTransaction.paymentMethod || '', // Use default value if paymentMethod is null
   phoneNumber: order.deliveryInfo.phoneNumber,
   subtotal: order.subtotal,
   deliveryFee: order.deliveryFee,
   total: order.total,
   state: order.state,
 }));
+
 
 ---
 
