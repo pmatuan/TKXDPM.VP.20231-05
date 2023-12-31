@@ -12,4 +12,6 @@ public class Constant {
 
   public static final String VIETNAM_OFFSET_ID = "+07:00";
   public static final ZoneOffset VIETNAM_ZONE_OFFSET = ZoneOffset.of(VIETNAM_OFFSET_ID);
+
+  public static final String UTF_8_ENCODING = "UTF-8";
 }

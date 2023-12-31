@@ -10,10 +10,8 @@ import javax.persistence.Id;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.Table;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
+
+import lombok.*;
 import lombok.experimental.SuperBuilder;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
@@ -27,6 +25,7 @@ import vn.hust.aims.entity.TimedEntity;
 @AllArgsConstructor
 @NoArgsConstructor
 @SuperBuilder
+@ToString
 public class Media extends TimedEntity {
 
   @Id
@@ -54,7 +53,7 @@ public class Media extends TimedEntity {
   @Column(name = "weight")
   protected Double weight;
 
-  @Column(name = "image_url")
+  @Column(name = "image_url", columnDefinition = "text")
   protected String imageUrl;
 
   @Column(name = "barcodeUrl")

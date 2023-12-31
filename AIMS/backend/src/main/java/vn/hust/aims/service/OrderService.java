@@ -1,285 +1,49 @@
-/*
-  Functional cohesion: hầu hết các thành phần của lớp này đều hướng đến việc thực hiện một trách nhiệm chung rõ ràng là tính toán hóa đơn. Mỗi phương thức sử dụng kết quả của phương thức khác theo một quy trình.
-  Các thành phần updateOrderForRushDelivery, createRushOrder, rushOrderRepository có thể được tách ra 1 lớp riêng để tăng cohesion.
-*/
-
 package vn.hust.aims.service;
 
-import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.stereotype.Service;
-import vn.hust.aims.entity.cart.Cart;
-import vn.hust.aims.entity.cart.CartMedia;
-import vn.hust.aims.entity.order.*;
-import vn.hust.aims.enumeration.OrderStateEnum;
-import vn.hust.aims.exception.CannotCancelOrderException;
-import vn.hust.aims.exception.CannotChangeOrderStateException;
-import vn.hust.aims.exception.OrderMediaNotFoundException;
-import vn.hust.aims.exception.OrderNotFoundException;
-import vn.hust.aims.repository.order.OrderMediaRepository;
-import vn.hust.aims.repository.order.OrderRepository;
-import vn.hust.aims.repository.order.RushOrderRepository;
-import vn.hust.aims.service.dto.input.cancelorder.CancelOrderInput;
+import vn.hust.aims.entity.order.Order;
+import vn.hust.aims.service.dto.input.order.CancelOrderInput;
+import vn.hust.aims.service.dto.input.order.GetOrderInput;
+import vn.hust.aims.service.dto.input.order.RequestCancelOrderInput;
 import vn.hust.aims.service.dto.input.order.UpdateOrderStateInput;
+import vn.hust.aims.service.dto.input.payment.RefundInput;
 import vn.hust.aims.service.dto.input.placeorder.CreateOrderInput;
 import vn.hust.aims.service.dto.input.placeorder.DeleteMediaInOrderInput;
-import vn.hust.aims.service.dto.input.order.GetOrderInput;
 import vn.hust.aims.service.dto.input.placeorder.UpdateDeliveryInfoInput;
 import vn.hust.aims.service.dto.input.placeorder.UpdateMediaInOrderInput;
-import vn.hust.aims.service.dto.output.cancelorder.CancelOrderOutput;
+import vn.hust.aims.service.dto.output.order.CancelOrderOutput;
 import vn.hust.aims.service.dto.output.order.GetAllOrderOutput;
+import vn.hust.aims.service.dto.output.order.GetOrderOutput;
+import vn.hust.aims.service.dto.output.order.RequestCancelOrderOutput;
 import vn.hust.aims.service.dto.output.order.UpdateOrderStateOutput;
 import vn.hust.aims.service.dto.output.placeorder.CreateOrderOutput;
 import vn.hust.aims.service.dto.output.placeorder.DeleteMediaInOrderOutput;
-import vn.hust.aims.service.dto.output.order.GetOrderOutput;
 import vn.hust.aims.service.dto.output.placeorder.UpdateDeliveryInfoOutput;
-
-import java.util.List;
-import java.util.UUID;
-import java.util.stream.Collectors;
 import vn.hust.aims.service.dto.output.placeorder.UpdateMediaInOrderOutput;
-import vn.hust.aims.service.media.MediaService;
 
-@Service
-@RequiredArgsConstructor
-public class OrderService {
+public interface OrderService {
 
-  private final OrderRepository orderRepository;
-  private final OrderMediaRepository orderMediaRepository;
-  private final RushOrderRepository rushOrderRepository;
-  private final CalculationService calculationService;
-  private final DeliveryInfoService deliveryInfoService;
-  private final MediaService mediaService;
-  private final CartService cartService;
+  CreateOrderOutput createOrderFromCart(CreateOrderInput input);
 
-  public CreateOrderOutput createOrderFromCart(CreateOrderInput input) {
-    Cart cart = cartService.getCartById(input.getCartId());
+  GetOrderOutput getOrder(GetOrderInput input);
 
-    List<OrderMedia> orderMediaList = mapCartMediaToOrderMedia(cart.getCartMediaList());
+  GetAllOrderOutput getAllOrder(Pageable pageable);
 
-    // data coupling
-    Order order = createOrder(orderMediaList);
+  UpdateDeliveryInfoOutput updateDeliveryInfo(UpdateDeliveryInfoInput input);
 
-    // data coupling
-    return CreateOrderOutput.from(order.getId());
-  }
+  UpdateMediaInOrderOutput updateOrderMedia(UpdateMediaInOrderInput input);
 
+  DeleteMediaInOrderOutput deleteOrderMedia(DeleteMediaInOrderInput input);
 
-  public GetOrderOutput getOrder(GetOrderInput input) {
+  UpdateOrderStateOutput updateOrderState(UpdateOrderStateInput input);
 
-    Order order = getOrderById(input.getOrderId());
+  RequestCancelOrderOutput requestCancelOrder(RequestCancelOrderInput input);
 
-    return GetOrderOutput.from(order);
-  }
+  CancelOrderOutput cancelOrder(CancelOrderInput input);
 
-  public GetAllOrderOutput getAllOrder(Pageable pageable) {
-    Page<Order> orderPage = orderRepository.getAllOrderPage(pageable);
-    return GetAllOrderOutput.from(orderPage);
-  }
+  Order getOrderById(String orderId);
 
-  public UpdateDeliveryInfoOutput updateDeliveryInfo(UpdateDeliveryInfoInput input) {
+  void saveOrder(Order order);
 
-    Order order = getOrderById(input.getOrderId());
-
-    // data coupling
-    DeliveryInfo deliveryInfo = deliveryInfoService.createDeliveryInfo(input);
-    order.setDeliveryInfo(deliveryInfo);
-
-    if (Boolean.TRUE.equals(input.getIsOrderForRushDelivery())) {
-      // data coupling
-      updateOrderForRushDelivery(order, input);
-    }
-
-    // data coupling
-    updateOrder(order);
-
-    return UpdateDeliveryInfoOutput.from(
-        "Update delivery info to order " + input.getOrderId() + " successfully");
-  }
-
-  public UpdateMediaInOrderOutput updateOrderMedia(UpdateMediaInOrderInput input) {
-
-    Order order = getOrderById(input.getOrderId());
-
-    // stamp coupling: only the media list of order is used: fix
-    OrderMedia orderMedia = findOrderMediaById(order.getOrderMediaList(), input.getOrderMediaId());
-
-    // data coupling
-    mediaService.validateQuantityInStock(orderMedia.getMedia(), input.getQuantity());
-    // data coupling
-    updateOrderMediaQuantity(orderMedia, order, input.getQuantity());
-    // data coupling
-    updateOrder(order);
-
-    return UpdateMediaInOrderOutput.from(
-        "Update quantity order media " + input.getOrderMediaId() + " to " + input.getQuantity()
-            + " successfully");
-  }
-
-  public DeleteMediaInOrderOutput deleteOrderMedia(DeleteMediaInOrderInput input) {
-
-    Order order = getOrderById(input.getOrderId());
-
-    // stamp coupling: only the media list of order is used: fix
-    OrderMedia orderMedia = findOrderMediaById(order.getOrderMediaList(), input.getOrderMediaId());
-
-    // data coupling
-    deleteOrderMediaFromRepository(orderMedia, order);
-    // data coupling
-    updateOrder(order);
-
-    return DeleteMediaInOrderOutput.from(
-        "Deleted order media " + input.getOrderMediaId() + " successfully");
-  }
-
-  public UpdateOrderStateOutput updateOrderState(UpdateOrderStateInput input) {
-    Order order = getOrderById(input.getOrderId());
-
-    OrderStateEnum newState = input.getState();
-    OrderStateEnum currentState = OrderStateEnum.from(order.getState());
-
-    // Nếu currentState là Cancel hoặc Reject thì từ chối
-    // Dựa trên int value của state để quyết định cho phép đổi state hay không
-    // Nếu trạng thái hiện tại sau trạng thái mới thì không cho update
-    if (currentState.equals(OrderStateEnum.CANCEL)
-        || currentState.equals(OrderStateEnum.REJECT)
-        || currentState.getIntValue() >= newState.getIntValue()) {
-      throw new CannotChangeOrderStateException();
-    }
-
-    order.setState(input.getState().getStringValue());
-    orderRepository.save(order);
-
-    return UpdateOrderStateOutput.from(
-        "Updated order " + input.getOrderId() + " to state " + input.getState().getStringValue()
-            + " successfully"
-    );
-  }
-
-  public CancelOrderOutput cancelOrder(CancelOrderInput input) {
-    Order order = getOrderById(input.getOrderId());
-
-    OrderStateEnum currentState = OrderStateEnum.from(order.getState());
-    OrderStateEnum cancelState = OrderStateEnum.CANCEL;
-
-    if (currentState.getIntValue() >= cancelState.getIntValue()) {
-      throw new CannotCancelOrderException();
-    }
-
-    order.setState(cancelState.getStringValue());
-
-    // TODO: redirect to refund
-
-    return CancelOrderOutput.from("Cancelled order " + input.getOrderId() + " successfully");
-  }
-
-  private Order getOrderById(String orderId) {
-    return orderRepository.findById(orderId)
-        .orElseThrow(() -> new OrderNotFoundException());
-  }
-
-  private List<OrderMedia> mapCartMediaToOrderMedia(List<CartMedia> cartMediaList) {
-    return cartMediaList.stream()
-        .map(OrderMedia::from)
-        .collect(Collectors.toList());
-  }
-
-  private Order createOrder(List<OrderMedia> orderMediaList) {
-
-    String orderId = UUID.randomUUID().toString();
-
-    // data coupling
-    Double subtotal = calculationService.calculateOrderMediaSubtotal(orderMediaList);
-    // data coupling
-    Double VAT = calculationService.calculateVAT(subtotal);
-    // data coupling
-    Double total = calculationService.calculateTotal(subtotal, VAT);
-
-    Order order = Order.builder()
-        .id(orderId)
-        .orderMediaList(orderMediaList)
-        .state(OrderStateEnum.ORDER_PLACING.getStringValue())
-        .subtotal(subtotal)
-        .vat(VAT)
-        .total(total)
-        .build();
-    orderRepository.save(order);
-
-    orderMediaList.forEach(orderMedia -> orderMedia.setOrder(order));
-    orderMediaRepository.saveAll(orderMediaList);
-
-    return order;
-  }
-
-  private RushOrder createRushOrder(Order order, UpdateDeliveryInfoInput input) {
-    return RushOrder.builder()
-        .id(order.getId())
-        .order(order)
-        .deliveryTime(input.getDeliveryTime())
-        .deliveryInstruction(input.getDeliveryInstruction())
-        .build();
-  }
-
-  private OrderMedia findOrderMediaById(List<OrderMedia> orderMediaList, Long orderMediaId) {
-    return orderMediaList.stream()
-        .filter(orderMedia -> orderMedia.getId().equals(orderMediaId))
-        .findFirst()
-        .orElseThrow(() -> new OrderMediaNotFoundException());
-  }
-
-  private void updateOrderForRushDelivery(Order order, UpdateDeliveryInfoInput input) {
-    order.getOrderMediaList().forEach(orderMedia -> {
-      if (orderMedia.getMedia().getIsAbleToRushDelivery()) {
-        orderMedia.setIsOrderForRushDelivery(true);
-      }
-    });
-
-    // data coupling
-    RushOrder rushOrder = createRushOrder(order, input);
-    rushOrderRepository.save(rushOrder);
-  }
-
-  private void deleteOrderMediaFromRepository(OrderMedia orderMedia, Order order) {
-    orderMediaRepository.delete(orderMedia);
-    order.removeOrderMedia(orderMedia);
-  }
-
-  private void updateOrder(Order order) {
-
-    // data coupling
-    Double subtotal = calculationService.calculateOrderMediaSubtotal(order.getOrderMediaList());
-    order.setSubtotal(subtotal);
-
-    // data coupling
-    Double VAT = calculationService.calculateVAT(subtotal);
-    order.setVat(VAT);
-
-    // data coupling
-    Double deliveryFee = calculationService.calculateDeliveryFee(order);
-    order.setDeliveryFee(deliveryFee);
-
-    // data coupling
-    Double total = deliveryFee != null ? calculationService.calculateTotal(order.getSubtotal(), order.getVat(),
-        deliveryFee) : calculationService.calculateTotal(order.getSubtotal(), order.getVat());
-    order.setTotal(total);
-
-    orderRepository.save(order);
-  }
-
-  private void updateOrderMediaQuantity(OrderMedia orderMedia, Order order, Integer quantity) {
-    if (quantity == 0){
-      deleteOrderMediaFromRepository(orderMedia, order);
-    }
-    else {
-      orderMedia.setQuantity(quantity);
-      orderMediaRepository.save(orderMedia);
-    }
-  }
-
+  String getCustomerEmailFromOrder(String orderId);
 }
-
-// Design principle
-// - SRP: Không thoả mãn, vì lớp làm nhiều nhiệm vụ
-// - OCP: Thoả mãn, khi cần mở rộng có thể viết thêm phương thức vào mà không ảnh hưởng các phương thức khác
-// - DIP: Không thoả mãn, vì phụ thuộc vào các lớp service khác

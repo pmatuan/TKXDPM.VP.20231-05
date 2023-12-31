@@ -10,6 +10,7 @@ import javax.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 import lombok.experimental.SuperBuilder;
 import vn.hust.aims.enumeration.DiscFormat;
 
@@ -19,6 +20,7 @@ import vn.hust.aims.enumeration.DiscFormat;
 @AllArgsConstructor
 @NoArgsConstructor
 @SuperBuilder
+@ToString(callSuper=true)
 public class DVD extends Media {
 
   @Enumerated(EnumType.STRING)

@@ -12,6 +12,7 @@ public interface OrderRepository extends JpaRepository<Order, String> {
   @Query("""
       select o
       from Order o
+      order by o.createdAt desc
     """)
   Page<Order> getAllOrderPage(Pageable pageable);
 }

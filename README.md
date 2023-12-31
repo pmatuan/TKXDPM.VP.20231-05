@@ -253,3 +253,91 @@ This is a Capstone's source code for Software Design and Construction project
 
 </details>
 </details>
+
+<details>
+  <summary>W13: 19/12/2023~25/12/2023 </summary>
+<br>
+
+<details>
+<summary>Phan Minh Anh Tuấn</summary>
+<br>
+
+- Assigned Tasks:
+
+  - Connect the frontend to the backend of the order section (cart and order).
+  - Save cartId to cookie.
+  - Fix CORS in backend.
+
+- Implementation Details:
+
+  - Pull Request(s):
+
+    - [PR #39](https://github.com/pmatuan/TKXDPM.VP.20231-05/pull/39)
+    - [PR #41](https://github.com/pmatuan/TKXDPM.VP.20231-05/pull/41)
+    - [PR #42](https://github.com/pmatuan/TKXDPM.VP.20231-05/pull/42)
+    - [PR #43](https://github.com/pmatuan/TKXDPM.VP.20231-05/pull/43)
+    - [PR #44](https://github.com/pmatuan/TKXDPM.VP.20231-05/pull/44)
+
+  - Specific Implementation Details:
+
+    - Connect the frontend to the backend of the order section (cart and order).
+    - Initial cartId and save it to cookie if user don't have cart before.
+    - Fix CORS in backend by add CorsConfig class.
+
+</details>
+
+<details>
+<summary>Nguyễn Thị Hoài Linh</summary>
+<br>
+
+- Assigned tasks:
+
+  - Writing test cases for unit testing.
+  - Implementing the connection between the customer interface for order placement and entering delivery information with the backend.
+
+- Implementation details:
+  - Pull Request(s):
+    - [PR - Unit test](https://github.com/pmatuan/TKXDPM.VP.20231-05/pull/49)
+    - [PR - Place order](https://github.com/pmatuan/TKXDPM.VP.20231-05/pull/45)
+  - Specific implementation details:
+    - Wrote comprehensive test cases for unit tests.
+    - Implemented the connection between the customer interface and the backend for order placement and entering delivery information.
+
+</details>
+
+<details>
+<summary>Ngô Thị Lam</summary>
+<br>
+
+- Assigned tasks:
+
+  - Change Instant to LocalDate
+  - Implement front end for media operations
+
+- Implementation details:
+  - Pull Request(s):
+    - [53](https://github.com/pmatuan/TKXDPM.VP.20231-05/pull/53)
+    - [46](https://github.com/pmatuan/TKXDPM.VP.20231-05/pull/46)
+  - Specific implementation details:
+    - Convert all files that use Instant to LocalDate class
+    - Implement the front end for media crud filter search
+
+</details>
+
+<details>
+<summary>Vũ Minh Long</summary>
+<br>
+
+- Assigned tasks:
+
+  - Implement front-end code for user management.
+
+- Implementation details:
+  - Pull Request(s):
+    - [PR #47](https://github.com/pmatuan/TKXDPM.VP.20231-05/pull/47)
+  - Specific implementation details:
+    - Implement admin menu for user management.
+    - Edit user hasn't been fully implemented.
+
+</details>
+</details>
