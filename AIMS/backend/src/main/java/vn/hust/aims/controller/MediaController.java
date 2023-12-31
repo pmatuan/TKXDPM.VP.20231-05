@@ -7,6 +7,8 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import vn.hust.aims.controller.dto.request.media.DeleteMediaBulkRequest;
 import vn.hust.aims.controller.dto.response.media.*;
+import vn.hust.aims.exception.AimsException;
+import vn.hust.aims.exception.ErrorCodeList;
 import vn.hust.aims.response.AimsCommonResponse;
 import vn.hust.aims.service.dto.input.media.CreateMediaInput;
 import vn.hust.aims.service.dto.input.media.GetAllMediaInput;
@@ -92,7 +94,6 @@ public class MediaController {
 
     @PatchMapping("/{id}")
     public ResponseEntity<AimsCommonResponse<Object>> updateMedia(@PathVariable Long id,
-                                                                  @RequestParam(value = "authorId") Long authorId,
                                                                   @RequestParam(value = "file", required = false) MultipartFile file,
                                                                   @RequestParam Map<String, Object> mediaInfo) {
         if (file != null) {
@@ -102,11 +103,15 @@ public class MediaController {
 
         System.out.println(mediaInfo);
 
+        Long authorId = Long.getLong((String) mediaInfo.get("authorId"));
+        mediaInfo.remove("authorId");
+
+
         UpdateMediaOutput updateMediaOutput = mediaService.updateMedia(UpdateMediaInput.builder()
-                .MediaId(id)
-                .authorId(authorId)
-                .mediaInfo(mediaInfo)
-                .build()
+                    .MediaId(id)
+                    .authorId(authorId)
+                    .mediaInfo(mediaInfo)
+                    .build()
         );
 
         return ResponseUtil.toSuccessCommonResponse(UpdateMediaResponse.from(updateMediaOutput));

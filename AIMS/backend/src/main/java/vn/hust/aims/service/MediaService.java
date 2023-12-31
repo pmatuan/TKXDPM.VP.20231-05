@@ -96,6 +96,7 @@ public class MediaService {
         for (Long id: deleteMediaBulkInput.getIds()) {
             Changelog changelog = Changelog.builder()
                     .timestamp(now)
+                    .authorId(deleteMediaBulkInput.getAuthorId())
                     .changedMediaId(id)
                     .isPriceChange(0)
                     .build();
@@ -115,6 +116,8 @@ public class MediaService {
 
         MediaFactoryInterface mediaFactoryInterface = MediaFactoryBuilder.get(MediaType.from(mediaEntity.getCategory()));
 
+        updateMediaInput.getMediaInfo().put("createdAt", mediaEntity.getCreatedAt());
+
         Media toUpdate = mediaFactoryInterface.build(JsonMapper.writeValueAsString(updateMediaInput.getMediaInfo()));
         toUpdate.setId(id);
 
@@ -127,7 +130,7 @@ public class MediaService {
 
         List<Changelog> listChangelog = changelogRepository.findAllByAuthorIdAndTimestampAfter(updateMediaInput.getAuthorId(), now.minus(1, ChronoUnit.DAYS));
 
-        if (listChangelog.size() > 29) {
+        if (listChangelog.size() > 30) {
             throw new UpdateDeleteLimitExceededException();
         } else {
             if (!Objects.equals(mediaEntity.getPrice(), toUpdate.getPrice())) {
@@ -143,6 +146,8 @@ public class MediaService {
         }
 
         changelogRepository.save(changelog);
+
+        System.out.println(toUpdate);
 
         mediaRepository.save(toUpdate);
 
