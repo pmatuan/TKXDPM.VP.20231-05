@@ -167,12 +167,14 @@ export default function HomeAdmin() {
           <MediaFiltersForm onSubmit={handleFiltersChange} />
           <div style={{ position: "relative", display: "inline-block" }}>
             <button
+              className="btn btn-dark mt-3"
               style={{ marginLeft: "30px", borderRadius: "5px" }}
               onClick={handleMenuVisible}
             >
               Tạo Media
             </button>
             <button
+              className="btn btn-dark mt-3"
               style={{ marginLeft: "30px", borderRadius: "5px" }}
               onClick={() => {
                 handleSelectMedias();
@@ -181,6 +183,7 @@ export default function HomeAdmin() {
               Chọn nhiều sản phẩm
             </button>
             <button
+              className="btn btn-dark mt-3"
               style={{ marginLeft: "30px", borderRadius: "5px" }}
               onClick={() => {
                 handleDeleteMedia();

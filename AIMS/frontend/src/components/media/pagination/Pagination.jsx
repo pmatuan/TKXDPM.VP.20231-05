@@ -30,14 +30,20 @@ export default function Pagination(props) {
       }}
     >
       <button
+        className="btn btn-dark"
         style={{ borderRadius: "5px" }}
         disabled={page <= 0}
         onClick={() => handlePageChange(page - 1)}
       >
         Prev
       </button>
-      <button style={{ borderRadius: "5px" }}>{page}</button>
+
+      <button className="btn btn-close-white mx-1" style={{ borderRadius: "5px" }}>{page}</button>
+
+
+      
       <button
+        className="btn btn-dark"
         style={{ borderRadius: "5px" }}
         disabled={page >= totalPages - 1}
         onClick={() => handlePageChange(page + 1)}

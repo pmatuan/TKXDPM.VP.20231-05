@@ -20,7 +20,7 @@ public class MediaFactoryBuilder {
 
     public static void registerMediaFactoryClasses() {
         Reflections reflections = new Reflections(new ConfigurationBuilder()
-                .forPackages("vn.hust.aims.service.media.factory")
+                .forPackages("vn.hust.aims.entity.media.factory")
                 .addScanners(Scanners.SubTypes));
 
         Set<Class<? extends MediaFactoryInterface>> mediaFactoryClasses = reflections.getSubTypesOf(

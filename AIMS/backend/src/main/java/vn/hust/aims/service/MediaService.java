@@ -64,7 +64,17 @@ public class MediaService {
 
         PageRequest pageRequest = PageRequest.of(page, size);
 
-        Page<Media> mediaPage = mediaRepository.findAll(Example.of(media), pageRequest);
+        Page<Media> mediaPage;
+
+        if (media.getTitle() == null) {
+            mediaPage = mediaRepository.findAll(Example.of(media), pageRequest);
+        } else {
+            mediaPage = mediaRepository.findAllByTitleContaining(media.getTitle(), pageRequest);
+        }
+
+//        System.out.println(media.getTitle() == null);
+//        System.out.println(media.getTitle().isEmpty());
+        // mediaPage = mediaRepository.findAll(Example.of(media), pageRequest);
 
         return GetAllMediaOutput.builder().mediaPage(mediaPage).build();
     }
