@@ -50,7 +50,7 @@ export default function OrderDetail({
                 </tr>
                 </tbody>
               </table>
-              <a href="/aims-ecommerce/" className="btn btn-dark btn-primary">Về trang chủ</a>
+              <a href="/aims-ecommerce/store/" className="btn btn-dark btn-primary">Tiếp tục mua sắm</a>
             </div>
           </div>
         </div>

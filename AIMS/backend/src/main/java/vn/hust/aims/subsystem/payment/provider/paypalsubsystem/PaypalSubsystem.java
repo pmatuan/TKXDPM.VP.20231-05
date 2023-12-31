@@ -7,6 +7,7 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
+import vn.hust.aims.entity.order.Order;
 import vn.hust.aims.subsystem.payment.PaymentSubsystem;
 import vn.hust.aims.subsystem.payment.Provider;
 
@@ -54,6 +55,11 @@ public class PaypalSubsystem implements PaymentSubsystem {
       return null;
     }
 
+  }
+
+  @Override
+  public String refund(Order order) {
+    return null;
   }
 
   public Object capturePayment(String orderId) {

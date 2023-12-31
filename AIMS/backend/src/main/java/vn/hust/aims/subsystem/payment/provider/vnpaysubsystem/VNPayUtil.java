@@ -16,6 +16,9 @@ import java.util.TimeZone;
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 import javax.servlet.http.HttpServletRequest;
+import lombok.AllArgsConstructor;
+import org.springframework.http.*;
+import org.springframework.web.client.RestTemplate;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -27,11 +30,13 @@ public class VNPayUtil {
   // Mức độ cohesion: Functional Cohesion
   // Lớp này chứa các phương thức liên quan đến chức năng tương tác và xử lý dữ liệu cho thanh toán qua VNPay.
 
+  private final RestTemplate restTemplate;
   private VNPayConfig vnPayConfig;
 
   public VNPayUtil() {
-    vnPayConfig = new VNPayConfig("ORRJM9BG",
-        "IXGFEGJRHNESWTQMSJOUEMDCUTJNOVME"); // TODO: Load from application.properties
+    this.vnPayConfig = new VNPayConfig("ORRJM9BG",
+        "IXGFEGJRHNESWTQMSJOUEMDCUTJNOVME");
+    this.restTemplate = new RestTemplate();
   }
 
   public static String hashAllFields(Map<String, String> fields, String vnp_HashSecret) {
@@ -172,6 +177,65 @@ public class VNPayUtil {
     } else {
       return -1;
     }
+  }
+
+  public String buildRefundQueryUrl(Double amount, String vnp_OrderInfo, String transactionId,
+      String vnp_TransactionDate) {
+    Map<String, String> vnp_Params = new HashMap<>();
+
+    String[] parts = transactionId.split("-");
+    String vnp_TransactionNo = parts[0];
+    String vnp_TxnRef = parts[1];
+
+    String vnp_RequestId = vnPayConfig.getRandomNumber(8);
+    vnp_Params.put("vnp_RequestId", vnp_RequestId);
+    vnp_Params.put("vnp_Version", vnPayConfig.getVnp_Version());
+    vnp_Params.put("vnp_Command", "refund");
+    vnp_Params.put("vnp_TmnCode", vnPayConfig.getVnp_TmnCode());
+    vnp_Params.put("vnp_TransactionType", "02");
+    vnp_Params.put("vnp_TxnRef", vnp_TxnRef); // TODO: có thể có vấn đề ở đây
+    vnp_Params.put("vnp_Amount", String.valueOf((int) (amount * 100))); // VNPay cần int chỗ này
+    vnp_Params.put("vnp_OrderInfo", vnp_OrderInfo);
+    vnp_Params.put("vnp_TransactionNo", vnp_TransactionNo);
+    vnp_Params.put("vnp_TransactionDate", vnp_TransactionDate);
+    vnp_Params.put("vnp_CreateBy", "user");
+
+    Calendar cld = Calendar.getInstance(TimeZone.getTimeZone("Etc/GMT+7"));
+    SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMddHHmmss");
+    String vnp_CreateDate = formatter.format(cld.getTime());
+    vnp_Params.put("vnp_CreateDate", vnp_CreateDate);
+
+    vnp_Params.put("vnp_IpAddr", vnPayConfig.getVnp_IpAddr());
+
+    List<String> fieldNames = new ArrayList<>(vnp_Params.keySet());
+    Collections.sort(fieldNames);
+
+    String hash_Data = String.join("|", vnp_Params.get("vnp_RequestId"),
+        vnp_Params.get("vnp_Version"), vnp_Params.get("vnp_Command"), vnp_Params.get("vnp_TmnCode"),
+        vnp_Params.get("vnp_TransactionType"), vnp_Params.get("vnp_TxnRef"),
+        vnp_Params.get("vnp_Amount"), vnp_Params.get("vnp_TransactionNo"),
+        vnp_Params.get("vnp_TransactionDate"),
+        vnp_Params.get("vnp_CreateBy"), vnp_Params.get("vnp_CreateDate"),
+        vnp_Params.get("vnp_IpAddr"), vnp_Params.get("vnp_OrderInfo"));
+    System.out.println(hash_Data);
+    String vnp_SecureHash = hmacSHA512(vnPayConfig.getVnp_HashSecret(), hash_Data);
+    System.out.println(vnp_SecureHash);
+    vnp_Params.put("vnp_SecureHash", vnp_SecureHash);
+
+    HttpHeaders headers = new HttpHeaders();
+    headers.setContentType(MediaType.APPLICATION_JSON);
+    HttpEntity<Map<String, String>> requestEntity = new HttpEntity<>(vnp_Params, headers);
+
+    ResponseEntity<String> responseEntity = restTemplate.exchange(
+        vnPayConfig.getVnp_RefundUrl(),
+        HttpMethod.POST,
+        requestEntity,
+        String.class
+    );
+
+    String responseBody = responseEntity.getBody();
+
+    return responseBody;
   }
 }
 // Design principles - Kết quả kiểm tra các nguyên tắc liên quan:

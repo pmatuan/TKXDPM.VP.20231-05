@@ -31,7 +31,7 @@ const orderList = rawOrderList.map(order => ({
   customerName: order.deliveryInfo.customerName,
   email: order.deliveryInfo.email,
   date: convertDate(order.createdAt),
-  paymentMethod: order.paymentTransaction.paymentMethod,
+  paymentMethod: (order && order.paymentTransaction && order.paymentTransaction.paymentMethod) ? order.paymentTransaction.paymentMethod : '',
   phoneNumber: order.deliveryInfo.phoneNumber,
   subtotal: order.subtotal,
   deliveryFee: order.deliveryFee,

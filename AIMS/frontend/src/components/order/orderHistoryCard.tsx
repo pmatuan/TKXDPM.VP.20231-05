@@ -81,6 +81,29 @@ export default function OrderHistoryCard({order, onOrderStateChange}: Props) {
                 <p className="text-sm mb-0">Tổng tiền</p>
                 <h6>{order.total}{order.paymentMethod === "Paypal" ? " USD" : " đồng"}</h6>
               </div>
+              <div className="d-flex d-md-block justify-content-between p-4">
+                <p className="text-sm mb-1">Phương thức thanh toán</p>
+                {order.paymentMethod === '' ? (
+                    <span></span>
+                ) : (
+                    <>
+                      {order.paymentMethod === "PAYPAL" ? (
+                          <img
+                              src="https://upload.wikimedia.org/wikipedia/commons/thumb/3/39/PayPal_logo.svg/2560px-PayPal_logo.svg.png"
+                              style={{ width: "80px" }}
+                              alt="PayPal Logo"
+                          />
+                      ) : (
+                          <img
+                              src="https://cdn.haitrieu.com/wp-content/uploads/2022/10/Logo-VNPAY-QR-1.png"
+                              style={{ width: "80px" }}
+                              alt="VNPAY Logo"
+                          />
+                      )}
+                    </>
+                )}
+
+              </div>
             </div>
             <button
                 className="btn btn-dark btn-sm mb-md-0 ms-4 md-md-0 me-4"

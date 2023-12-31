@@ -70,19 +70,42 @@ export default function OrderInfo({order}: Props) {
         <div className="shadow-xs border rounded-3 mb-5">
           <div className="d-block d-md-flex justify-content-between align-items-center">
             <div className="d-block d-md-flex">
-              <div className="d-flex d-md-block justify-content-between p-4 me-md-4">
+              <div className="d-flex d-md-block justify-content-between p-3 me-md-4">
                 <p className="text-sm mb-0">Mã đơn hàng</p>
                 <h6>{order.id}</h6>
               </div>
-              <div className="d-flex d-md-block justify-content-between p-4 me-md-4">
+              <div className="d-flex d-md-block justify-content-between p-3 me-md-4">
                 <p className="text-sm mb-0">Ngày đặt hàng</p>
                 <h6>{order.date}</h6>
               </div>
-              <div className="d-flex d-md-block justify-content-between p-4">
+              <div className="d-flex d-md-block justify-content-between p-3">
                 <p className="text-sm mb-0">Tổng tiền</p>
                 <h6>{order.total}{order.paymentMethod === "Paypal" ? " USD" : " đồng"}</h6>
               </div>
-              <div className="d-flex d-md-block justify-content-between p-4">
+              <div className="d-flex d-md-block justify-content-between p-3">
+                <p className="text-sm mb-1">Phương thức thanh toán</p>
+                {order.paymentMethod === '' ? (
+                    <span></span>
+                ) : (
+                    <>
+                      {order.paymentMethod === "PAYPAL" ? (
+                          <img
+                              src="https://upload.wikimedia.org/wikipedia/commons/thumb/3/39/PayPal_logo.svg/2560px-PayPal_logo.svg.png"
+                              style={{ width: "80px" }}
+                              alt="PayPal Logo"
+                          />
+                      ) : (
+                          <img
+                              src="https://cdn.haitrieu.com/wp-content/uploads/2022/10/Logo-VNPAY-QR-1.png"
+                              style={{ width: "80px" }}
+                              alt="VNPAY Logo"
+                          />
+                      )}
+                    </>
+                )}
+
+              </div>
+              <div className="d-flex d-md-block justify-content-between p-3">
                 <p className="text-sm mb-0">Trạng thái</p>
                 <h6>{getStateVietnamese(order.state)}</h6>
               </div>
