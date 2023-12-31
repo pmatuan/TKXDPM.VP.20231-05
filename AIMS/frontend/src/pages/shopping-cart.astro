@@ -2,60 +2,48 @@
 import Layout from '../layouts/Layout.astro';
 import '../../assets/scss/astro-ecommerce.scss';
 import ShoppingCart from '../components/cart/shoppingCart';
-import ComplexNavbar from '../components/complexNavbar';
+import ComplexNavbar from "../components/complexNavbar";
 
-const BACKEND_URL = 'http://localhost:8080/api/v1'; // TODO: Load from env variable
+const BACKEND_URL = "http://localhost:8080/api/v1" // TODO: do chưa load được từ env nên dùng tạm
 
-const getCartId = async () => {
-  if (!Astro.cookies.has('cartId')) {
-    const response = await fetch(`${BACKEND_URL}/cart`);
-    const data = await response.json();
-    const cartId = data.result.cartId;
-    Astro.cookies.set('cartId', cartId);
-  }
+if (!Astro.cookies.has("cartId")) {
+  const response = await fetch(BACKEND_URL + `/cart`);
+  const data = await response.json();
+  const cartId = data.result.cartId;
+  Astro.cookies.set("cartId", cartId);
+}
 
-  return Astro.cookies.get('cartId').value;
-};
+const cartId = Astro.cookies.get("cartId").value;
+console.log("cartId: " + cartId)
 
-const fetchCart = async (cartId) => {
-  let response = await fetch(`${BACKEND_URL}/cart/${cartId}`);
+let response = await fetch(BACKEND_URL + `/cart/${cartId}`)
 
-  if (!response.ok) {
-    const newResponse = await fetch(`${BACKEND_URL}/cart`);
-    const newData = await newResponse.json();
-    const newCartId = newData.result.cartId;
-    Astro.cookies.set('cartId', newCartId);
-    response = await fetch(`${BACKEND_URL}/cart/${newCartId}`);
-  }
+if (!response.ok){
+  response = await fetch(BACKEND_URL + `/cart`);
+  const data = await response.json();
+  const cartId = data.result.cartId;
+  Astro.cookies.set("cartId", cartId);
+  response = await fetch(BACKEND_URL + `/cart/${cartId}`)
+}
 
-  return response.json();
-};
+const data = await response.json()
 
-const fetchCartItems = async () => {
-  const cartId = await getCartId();
-  const data = await fetchCart(cartId);
-  return data.result.cart.cartMediaList.map((cartMedia) => ({
-    id: cartMedia.id,
-    imageUrl: cartMedia.media.imageUrl,
-    category: cartMedia.media.category,
-    title: cartMedia.media.title,
-    price: cartMedia.media.price,
-    quantityInStock: cartMedia.media.quantityInStock,
-    subtotal: cartMedia.media.price * cartMedia.quantity,
-    quantity: cartMedia.quantity,
-  }));
-};
+const cartMediaList = data.result.cart.cartMediaList
 
-const initializeCart = async () => {
-  const cartItems = await fetchCartItems();
-  return { cartItems, cartId: Astro.cookies.get('cartId').value };
-};
-
-const { cartItems, cartId } = await initializeCart();
+const cartItems = cartMediaList.map(cartMedia => ({
+  id: cartMedia.id,
+  imageUrl: cartMedia.media.imageUrl,
+  category: cartMedia.media.category,
+  title: cartMedia.media.title,
+  price: cartMedia.media.price,
+  quantityInStock: cartMedia.media.quantityInStock,
+  subtotal: cartMedia.media.price * cartMedia.quantity,
+  quantity: cartMedia.quantity,
+}));
 
 ---
 <Layout title="Giỏ hàng">
-	<main>
+  <main>
     <ComplexNavbar />
     <div class="container mt-5 pb-6">
       <ShoppingCart products = {cartItems} cartId = {cartId} client:load/>

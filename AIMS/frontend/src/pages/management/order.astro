@@ -1,8 +1,8 @@
 ---
-import Layout from '../layouts/Layout.astro';
-import '../../assets/scss/astro-ecommerce.scss';
-import OrderHistory from '../components/order/orderHistory';
-import ComplexNavbar from "../components/complexNavbar";
+import Layout from '../../layouts/Layout.astro';
+import '../../../assets/scss/astro-ecommerce.scss';
+import OrderHistory from '../../components/order/orderHistory';
+import AdminNavbar from "../../components/admin/adminNavbar";
 
 const convertDate = (originalDate: string) => {
   const dateObject = new Date(originalDate);
@@ -44,9 +44,22 @@ const orderList = rawOrderList
 
 ---
 
+<script>
+  const role = localStorage.getItem('role')
+  if (role) {
+    if (!role.includes('seller')) {
+      document.querySelector('#manageMedia')?.classList.add('d-none')
+      document.querySelector('#manageOrder')?.classList.add('d-none')
+    }
+    if (!role.includes('admin')) {
+      document.querySelector('#manageUser')?.classList.add('d-none')
+    }
+  }
+</script>
+
 <Layout title="Danh sách đơn hàng">
   <main>
-    <ComplexNavbar />
+    <AdminNavbar />
 
     <div class="container mt-5">
       <div class="my-6">

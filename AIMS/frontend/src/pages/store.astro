@@ -1,25 +1,10 @@
 ---
-import Layout from '../layouts/Layout.astro';
-import data from '../../src/data.json';
-import '../../assets/scss/astro-ecommerce.scss';
-import ComplexNavbar from "../components/complexNavbar";
-import CategoryFilters from "../components/products/categoryFilters";
+import Layout from "../layouts/Layout.astro";
 
-let cartItems = [];
-data.shoppingCart.map(id =>
-    data.products.filter(x => x.id == id).map(x => cartItems.push(x))
-)
+import MediaCustomer from "../components/customer-media/mediaCustomer";
+const cartId = Astro.cookies.get("cartId").value;
 ---
 
 <Layout title="Cửa hàng">
-  <main>
-    <ComplexNavbar />
-    <div class="container mt-5">
-      <CategoryFilters
-          title="Sản phẩm"
-          client:load
-      />
-    </div>
-  </main>
-
+  <main><MediaCustomer cartId={cartId} client:load /></main>
 </Layout>

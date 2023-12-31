@@ -1,4 +1,3 @@
-import { set } from "date-fns";
 import React, { useState } from "react";
 
 const Media = ({
@@ -60,7 +59,7 @@ const Media = ({
       }}
     >
       <img
-        src={`http://127.0.0.1:8080/api/v1/media/images/${photo}`}
+        src={`${photo}`}
         alt={title}
         // className="mr-3"
         style={{

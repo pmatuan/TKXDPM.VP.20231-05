@@ -1,6 +1,9 @@
 package vn.hust.aims.service;
 
+import java.io.InputStream;
 import lombok.AllArgsConstructor;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.ResourceLoader;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -35,7 +38,7 @@ import java.util.UUID;
 public class MediaService {
     private final MediaRepository mediaRepository;
     private final ChangelogRepository changelogRepository;
-    private final String uploadPath = System.getProperty("user.dir") + "/src/main/java/vn/hust/aims/service/media/images";
+    private final ResourceLoader resourceLoader;
 
     public CreateMediaOutput createMedia(CreateMediaInput createMediaInput) {
         MediaFactoryInterface mediaFactoryInterface = MediaFactoryBuilder.get(createMediaInput.getMediaType());
@@ -158,22 +161,29 @@ public class MediaService {
         try {
             String filename = UUID.randomUUID() + "_" + file.getOriginalFilename();
 
-            Path filePath = Paths.get(uploadPath, filename);
+            // Get the resource directory
+            Resource resourceDir = resourceLoader.getResource("classpath:images/");
 
+            // Create the path for the new file
+            Path filePath = Paths.get(resourceDir.getURI()).resolve(filename);
+
+            // Write the file content to the specified path
             Files.write(filePath, file.getBytes());
 
             return filename;
         } catch (IOException e) {
-            System.out.println(e);
-            throw new RuntimeException("Failed to upload image");
+            // Handle exceptions accordingly, e.g., log or throw a custom exception
+            throw new RuntimeException("Failed to upload image", e);
         }
     }
 
     public byte[] getMediaImage(String imageName) {
         try {
-            Path filePath = Paths.get(uploadPath, imageName);
-
-            return Files.readAllBytes(filePath);
+            Resource resource = resourceLoader.getResource("classpath:images/" + imageName);
+            System.out.println(resource.getURI());
+            try (InputStream inputStream = resource.getInputStream()) {
+                return inputStream.readAllBytes();
+            }
         } catch (IOException e) {
             throw new GetImageException();
         }
