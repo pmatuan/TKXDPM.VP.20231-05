@@ -1,7 +1,8 @@
 ---
-import Layout from "../../../layouts/Layout.astro";
-import HomeAdmin from "../../../components/admin-media/HomeAdmin.jsx";
-import "../../../../assets/scss/astro-ecommerce.scss";
+import Layout from "../../layouts/Layout.astro";
+import HomeAdmin from "../../components/admin-media/HomeAdmin.jsx";
+import "../../../assets/scss/astro-ecommerce.scss";
+import AdminNavbar from "../../components/admin/adminNavbar";
 ---
 
 <style>
@@ -19,7 +20,21 @@ import "../../../../assets/scss/astro-ecommerce.scss";
   }
 </style>
 
+<script>
+  const role = localStorage.getItem('role')
+  if (role) {
+      if (!role.includes('seller')) {
+          document.querySelector('#manageMedia')?.classList.add('d-none')
+          document.querySelector('#manageOrder')?.classList.add('d-none')
+      }
+      if (!role.includes('admin')) {
+          document.querySelector('#manageUser')?.classList.add('d-none')
+      }
+  }
+</script>
+
 <Layout title="Home">
+  <AdminNavbar />
   <HomeAdmin client:load />
 </Layout>
 

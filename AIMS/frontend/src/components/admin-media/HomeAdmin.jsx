@@ -1,5 +1,6 @@
 // HomeAdmin.jsx
 import Header from "./Header.jsx";
+import AdminNavbar from "../../components/admin/adminNavbar.tsx"
 import Media from "../media/Media.jsx";
 import Pagination from "../media/pagination/Pagination.jsx";
 import React, { useState, useEffect } from "react";
@@ -147,7 +148,7 @@ export default function HomeAdmin() {
 
   return (
     <>
-      <Header />
+      {/* <Header /> */}
       <div
         style={{
           display: "flex",
@@ -208,28 +209,28 @@ export default function HomeAdmin() {
               >
                 <p
                   onClick={() =>
-                    redirectTo("/aims-ecommerce/admin/media/create-book")
+                    redirectTo("/aims-ecommerce/management/media/create-book")
                   }
                 >
                   Book
                 </p>
                 <p
                   onClick={() =>
-                    redirectTo("/aims-ecommerce/admin/media/create-cd")
+                    redirectTo("/aims-ecommerce/management/media/create-cd")
                   }
                 >
                   CD
                 </p>
                 <p
                   onClick={() =>
-                    redirectTo("/aims-ecommerce/admin/media/create-dvd")
+                    redirectTo("/aims-ecommerce/management/media/create-dvd")
                   }
                 >
                   DVD
                 </p>
                 <p
                   onClick={() =>
-                    redirectTo("/aims-ecommerce/admin/media/create-lp")
+                    redirectTo("/aims-ecommerce/management/media/create-lp")
                   }
                 >
                   LP
