@@ -2,8 +2,10 @@ package vn.hust.aims.subsystem.payment.provider.vnpaysubsystem;
 
 import java.util.Random;
 import lombok.Getter;
+import lombok.Setter;
 
 @Getter
+@Setter
 public class VNPayConfig {
 
   private String vnp_Version;
@@ -15,6 +17,7 @@ public class VNPayConfig {
   private String vnp_TxnRef;
   private String vnp_HashSecret;
   private String vnp_PayUrl;
+  private String vnp_RefundUrl;
 
   public VNPayConfig(String vnp_TmnCode, String vnp_HashSecret) {
     this.vnp_Version = "2.1.0";
@@ -26,9 +29,10 @@ public class VNPayConfig {
     this.vnp_TxnRef = getRandomNumber(8);
     this.vnp_HashSecret = vnp_HashSecret;
     this.vnp_PayUrl = "https://sandbox.vnpayment.vn/paymentv2/vpcpay.html";
+    this.vnp_RefundUrl = "https://sandbox.vnpayment.vn/merchant_webapi/api/transaction";
   }
 
-  private static String getRandomNumber(int len) {
+  public String getRandomNumber(int len) {
     Random rnd = new Random();
     String chars = "0123456789";
     StringBuilder sb = new StringBuilder(len);

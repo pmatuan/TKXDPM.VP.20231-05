@@ -1,17 +1,20 @@
 package vn.hust.aims.subsystem.payment.provider.vnpaysubsystem;
 
-import org.springframework.beans.factory.annotation.Value;
+import java.util.Map;
+import vn.hust.aims.entity.order.Order;
 import vn.hust.aims.subsystem.payment.PaymentSubsystem;
 import vn.hust.aims.subsystem.payment.Provider;
+import vn.hust.aims.utils.TimeUtils;
 
 @Provider("VNPAY")
 public class VNPaySubsystem implements PaymentSubsystem {
+
   // Mức độ cohesion: Functional Cohesion
   // Lớp này chứa một phương thức duy nhất và tất cả các thành phần đều liên quan chặt chẽ đến
   // chức năng thanh toán qua VNPay.
   private VNPayUtil vnPayUtil;
 
-  public VNPaySubsystem(){
+  public VNPaySubsystem() {
     this.vnPayUtil = new VNPayUtil();
   }
 
@@ -29,6 +32,16 @@ public class VNPaySubsystem implements PaymentSubsystem {
     // VNPaySubsystem - PayOrderOutput: Data coupling
     // VNPaySubsystem truyền dữ liệu vừa đủ cho PayOrderOutput để tạo thành url thanh toán trả về phía PaymentController.
     return vnpayUrl;
+  }
+
+  @Override
+  public String refund(Order order) {
+
+    String response = vnPayUtil.buildRefundQueryUrl(order.getTotal(), order.getId(),
+        order.getPaymentTransaction().getId(),
+        TimeUtils.formatInstant(order.getCreatedAt()));
+
+    return response;
   }
 
 }

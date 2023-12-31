@@ -10,17 +10,18 @@ import vn.hust.aims.entity.media.Media;
 import vn.hust.aims.entity.order.DeliveryInfo;
 import vn.hust.aims.entity.order.Order;
 import vn.hust.aims.entity.order.OrderMedia;
+import vn.hust.aims.entity.order.RushOrder;
 import vn.hust.aims.enumeration.ProvinceEnum;
-import vn.hust.aims.service.CalculationService;
 
 import java.util.Arrays;
 import java.util.List;
+import vn.hust.aims.service.implement.CalculationServiceImpl;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-class CalculationServiceTest {
+class CalculationServiceImplTest {
 
   @Mock
   private Media media1;
@@ -43,8 +44,11 @@ class CalculationServiceTest {
   @Mock
   private Order mockOrder;
 
+  @Mock
+  private RushOrder rushOrder;
+
   @InjectMocks
-  private CalculationService calculationService;
+  private CalculationServiceImpl calculationServiceImpl;
 
   @Test
   void testCalculateCartMediaSubtotal() {
@@ -59,7 +63,7 @@ class CalculationServiceTest {
 
     List<CartMedia> cartMediaList = Arrays.asList(cartMedia1, cartMedia2);
 
-    double result = calculationService.calculateCartMediaSubtotal(cartMediaList);
+    double result = calculationServiceImpl.calculateCartMediaSubtotal(cartMediaList);
 
     assertEquals(10.0 * 2 + 15.0 * 3, result);
   }
@@ -77,27 +81,31 @@ class CalculationServiceTest {
 
     List<OrderMedia> orderMediaList = Arrays.asList(orderMedia1, orderMedia2);
 
-    double result = calculationService.calculateOrderMediaSubtotal(orderMediaList);
+    double result = calculationServiceImpl.calculateOrderMediaSubtotal(orderMediaList);
 
     assertEquals(10.0 * 2 + 15.0 * 3, result);
   }
 
   @Test
   void testCalculateDeliveryFee_totalOver100K() {
-    when(orderMedia1.getIsOrderForRushDelivery()).thenReturn(false);
-    when(orderMedia2.getIsOrderForRushDelivery()).thenReturn(false);
+    when(media1.getWeight()).thenReturn(0.5);
+    when(media2.getWeight()).thenReturn(0.7);
+
+    when(orderMedia1.getMedia()).thenReturn(media1);
+    when(orderMedia2.getMedia()).thenReturn(media2);
 
     List<OrderMedia> lstOrderMedia = Arrays.asList(orderMedia1, orderMedia2);
 
-    String danangCity = ProvinceEnum.DANANG.getStringValue();
+    String DaNang = ProvinceEnum.DANANG.getStringValue();
     DeliveryInfo mockDeliveryInfo = mock(DeliveryInfo.class);
+    when(mockDeliveryInfo.getProvince()).thenReturn(DaNang);
 
-    when(mockDeliveryInfo.getCity()).thenReturn(danangCity);
     when(mockOrder.getDeliveryInfo()).thenReturn(mockDeliveryInfo);
     when(mockOrder.getOrderMediaList()).thenReturn(lstOrderMedia);
     when(mockOrder.getSubtotal()).thenReturn(120000.0);
+    when(mockOrder.getRushOrder()).thenReturn(null);
 
-    Double result = calculationService.calculateDeliveryFee(mockOrder);
+    Double result = calculationServiceImpl.calculateDeliveryFee(mockOrder);
 
     assertEquals(0.0, result);
   }
@@ -108,22 +116,20 @@ class CalculationServiceTest {
     when(media2.getWeight()).thenReturn(0.7);
 
     when(orderMedia1.getMedia()).thenReturn(media1);
-    when(orderMedia1.getIsOrderForRushDelivery()).thenReturn(false);
-
     when(orderMedia2.getMedia()).thenReturn(media2);
-    when(orderMedia2.getIsOrderForRushDelivery()).thenReturn(false);
 
     List<OrderMedia> lstOrderMedia = Arrays.asList(orderMedia1, orderMedia2);
 
-    String hanoiCity = ProvinceEnum.HANOI.getStringValue();
+    String HaNoi = ProvinceEnum.HANOI.getStringValue();
     DeliveryInfo mockDeliveryInfo = mock(DeliveryInfo.class);
-    when(mockDeliveryInfo.getCity()).thenReturn(hanoiCity);
+    when(mockDeliveryInfo.getProvince()).thenReturn(HaNoi);
 
     when(mockOrder.getDeliveryInfo()).thenReturn(mockDeliveryInfo);
     when(mockOrder.getOrderMediaList()).thenReturn(lstOrderMedia);
     when(mockOrder.getSubtotal()).thenReturn(90000.0);
+    when(mockOrder.getRushOrder()).thenReturn(null);
 
-    Double result = calculationService.calculateDeliveryFee(mockOrder);
+    Double result = calculationServiceImpl.calculateDeliveryFee(mockOrder);
 
     assertEquals(22000.0, result);
   }
@@ -134,27 +140,24 @@ class CalculationServiceTest {
     when(media2.getWeight()).thenReturn(0.7);
 
     when(orderMedia1.getMedia()).thenReturn(media1);
-    when(orderMedia1.getIsOrderForRushDelivery()).thenReturn(false);
-
     when(orderMedia2.getMedia()).thenReturn(media2);
-    when(orderMedia2.getIsOrderForRushDelivery()).thenReturn(false);
 
     List<OrderMedia> lstOrderMedia = Arrays.asList(orderMedia1, orderMedia2);
 
-    String haiphongCity = ProvinceEnum.HAIPHONG.getStringValue();
+    String HaiPhong = ProvinceEnum.HAIPHONG.getStringValue();
     DeliveryInfo mockDeliveryInfo = mock(DeliveryInfo.class);
-    when(mockDeliveryInfo.getCity()).thenReturn(haiphongCity);
+    when(mockDeliveryInfo.getProvince()).thenReturn(HaiPhong);
 
     when(mockOrder.getDeliveryInfo()).thenReturn(mockDeliveryInfo);
     when(mockOrder.getOrderMediaList()).thenReturn(lstOrderMedia);
     when(mockOrder.getSubtotal()).thenReturn(90000.0);
+    when(mockOrder.getRushOrder()).thenReturn(null);
 
-    Double result = calculationService.calculateDeliveryFee(mockOrder);
+    Double result = calculationServiceImpl.calculateDeliveryFee(mockOrder);
 
     assertEquals(32500.0, result);
   }
 
-  // Thảo luận lại về công thức tính phí vận chuyển khi đơn hàng giá trị trên 100k và được đặt giao hàng nhanh
   @Test
   void testCalculateRushDeliveryFee_someProductsSupportRushDelivery() {
     when(media1.getWeight()).thenReturn(0.7);
@@ -165,20 +168,20 @@ class CalculationServiceTest {
     when(orderMedia1.getIsOrderForRushDelivery()).thenReturn(true);
 
     when(orderMedia2.getMedia()).thenReturn(media2);
-    when(orderMedia2.getQuantity()).thenReturn(1);
     when(orderMedia2.getIsOrderForRushDelivery()).thenReturn(false);
 
     List<OrderMedia> lstOrderMedia = Arrays.asList(orderMedia1, orderMedia2);
 
-    String haiphongCity = ProvinceEnum.HAIPHONG.getStringValue();
+    String HaiPhong = ProvinceEnum.HAIPHONG.getStringValue();
     DeliveryInfo mockDeliveryInfo = mock(DeliveryInfo.class);
-    when(mockDeliveryInfo.getCity()).thenReturn(haiphongCity);
+    when(mockDeliveryInfo.getProvince()).thenReturn(HaiPhong);
 
     when(mockOrder.getDeliveryInfo()).thenReturn(mockDeliveryInfo);
     when(mockOrder.getOrderMediaList()).thenReturn(lstOrderMedia);
     when(mockOrder.getSubtotal()).thenReturn(120000.0);
+    when(mockOrder.getRushOrder()).thenReturn(rushOrder);
 
-    Double result = calculationService.calculateDeliveryFee(mockOrder);
+    Double result = calculationServiceImpl.calculateDeliveryFee(mockOrder);
 
     assertEquals(20000.0, result);
   }
@@ -198,17 +201,17 @@ class CalculationServiceTest {
 
     List<OrderMedia> lstOrderMedia = Arrays.asList(orderMedia1, orderMedia2);
 
-    String haiphongCity = ProvinceEnum.HAIPHONG.getStringValue();
+    String HaiPhong = ProvinceEnum.HAIPHONG.getStringValue();
     DeliveryInfo mockDeliveryInfo = mock(DeliveryInfo.class);
-    when(mockDeliveryInfo.getCity()).thenReturn(haiphongCity);
+    when(mockDeliveryInfo.getProvince()).thenReturn(HaiPhong);
 
     when(mockOrder.getDeliveryInfo()).thenReturn(mockDeliveryInfo);
     when(mockOrder.getOrderMediaList()).thenReturn(lstOrderMedia);
     when(mockOrder.getSubtotal()).thenReturn(90000.0);
+    when(mockOrder.getRushOrder()).thenReturn(rushOrder);
 
-    Double result = calculationService.calculateDeliveryFee(mockOrder);
+    Double result = calculationServiceImpl.calculateDeliveryFee(mockOrder);
 
     assertEquals(62500.0, result);
   }
 }
-

@@ -18,6 +18,7 @@ public class VNPayTransactionRequest {
   private String vnp_OrderInfo;
   private String vnp_PayDate;
   private String vnp_TransactionNo;
+  private String vnp_TxnRef;
   private Double vnp_Amount;
 
   public VNPayTransactionInput toInput(){
@@ -26,7 +27,7 @@ public class VNPayTransactionRequest {
         .code(vnp_ResponseCode)
         .orderInfo(vnp_OrderInfo)
         .paymentTime(convertToInstant(vnp_PayDate))
-        .transactionId(vnp_TransactionNo)
+        .transactionId(vnp_TransactionNo + "-" + vnp_TxnRef)
         .amount(vnp_Amount)
         .build();
   }

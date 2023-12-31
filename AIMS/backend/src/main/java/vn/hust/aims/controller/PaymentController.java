@@ -12,8 +12,8 @@ import vn.hust.aims.controller.dto.request.payment.paypal.PaypalTransactionReque
 import vn.hust.aims.controller.dto.request.payment.vnpay.VNPayTransactionRequest;
 import vn.hust.aims.controller.dto.response.payment.PayOrderResponse;
 import vn.hust.aims.response.AimsCommonResponse;
-import vn.hust.aims.service.MailService;
 import vn.hust.aims.service.PaymentService;
+import vn.hust.aims.service.PaymentTransactionService;
 import vn.hust.aims.service.dto.output.payment.PayOrderOutput;
 import vn.hust.aims.service.dto.output.payment.paypal.PaypalTransactionOutput;
 import vn.hust.aims.service.dto.output.payment.vnpay.VNPayTransactionOutput;
@@ -28,7 +28,7 @@ public class PaymentController {
   // Mọi phương thức và thuộc tính đều được thiết kế để hỗ trợ chức năng thanh toán.
 
   private final PaymentService paymentService;
-
+  private final PaymentTransactionService paymentTransactionService;
   // PaymentController - PayOrderRequest: Data coupling
   // Lớp PaymentController nhận dữ liệu từ client đến hệ thống qua đối tượng PayOrderRequest .
   // Dữ liệu được truyền chỉ chứa những thông tin cần thiết.
@@ -52,7 +52,7 @@ public class PaymentController {
 
   @GetMapping("/vnpay-return")
   public String handleVNPayReturn(VNPayTransactionRequest request){
-    VNPayTransactionOutput output = paymentService.saveVNPayTransaction(request.toInput());
+    VNPayTransactionOutput output = paymentTransactionService.saveVNPayTransaction(request.toInput());
 
     return "redirect:" + output.getUrl() ;
 
@@ -60,8 +60,7 @@ public class PaymentController {
 
   @PostMapping("/paypal-return")
   public String handlePayPalReturn(@RequestBody PaypalTransactionRequest request){
-    PaypalTransactionOutput output =  paymentService.savePaypalTransaction(request.toInput());
-    System.out.println("Hello: " + output.getUrl());
+    PaypalTransactionOutput output =  paymentTransactionService.savePaypalTransaction(request.toInput());
     return output.getUrl();
   }
 }
