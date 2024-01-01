@@ -249,13 +249,6 @@ public class OrderServiceImpl implements OrderService {
         .build();
   }
 
-  private OrderMedia findOrderMediaById(List<OrderMedia> orderMediaList, Long orderMediaId) {
-    return orderMediaList.stream()
-        .filter(orderMedia -> orderMedia.getId().equals(orderMediaId))
-        .findFirst()
-        .orElseThrow(() -> new OrderMediaNotFoundException());
-  }
-
   private void updateOrderForRushDelivery(Order order, UpdateDeliveryInfoInput input) {
     boolean hasRushDeliveryProduct = false;
 
@@ -273,11 +266,6 @@ public class OrderServiceImpl implements OrderService {
     // data coupling
     RushOrder rushOrder = createRushOrder(order, input);
     rushOrderRepository.save(rushOrder);
-  }
-
-  private void deleteOrderMediaFromRepository(OrderMedia orderMedia, Order order) {
-    orderMediaRepository.delete(orderMedia);
-    order.removeOrderMedia(orderMedia);
   }
 
   private void updateOrder(Order order) {
@@ -301,15 +289,6 @@ public class OrderServiceImpl implements OrderService {
     order.setTotal(total);
 
     orderRepository.save(order);
-  }
-
-  private void updateOrderMediaQuantity(OrderMedia orderMedia, Order order, Integer quantity) {
-    if (quantity == 0) {
-      deleteOrderMediaFromRepository(orderMedia, order);
-    } else {
-      orderMedia.setQuantity(quantity);
-      orderMediaRepository.save(orderMedia);
-    }
   }
 
   private void sendCancelOrderRequestEmail(Order order){
