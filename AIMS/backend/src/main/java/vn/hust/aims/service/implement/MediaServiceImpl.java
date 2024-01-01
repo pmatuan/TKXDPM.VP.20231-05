@@ -215,4 +215,9 @@ public class MediaServiceImpl implements MediaService {
       throw new QuantityNotEnoughException();
     }
   }
+
+  public void updateQuantityInStock(Media media, Integer newQuantity) {
+    media.setQuantityInStock(newQuantity);
+    mediaRepository.save(media);
+  }
 }

@@ -401,49 +401,12 @@ export default function CheckoutSummary({orderId}: Props) {
                 </div>
               </div>
 
-              <RushDeliveryInfo
+              {selectedProvince === "Hà Nội" ? <RushDeliveryInfo
                   isRushDelivery={isRushDelivery}
                   setRushDelivery={(value) => setIsRushDelivery(!!value)} // Updated this line
                   setRushDeliveryTime={setRushDeliveryTime}
                   setRushDeliveryInstructions={setRushDeliveryInstructions}
-              />
-
-              {/*<FormControl className="pt-4">*/}
-              {/*  <label>Phương thức thanh toán</label>*/}
-              {/*  <RadioGroup*/}
-              {/*      aria-labelledby="demo-radio-buttons-group-label"*/}
-              {/*      defaultValue="female"*/}
-              {/*      name="radio-buttons-group"*/}
-              {/*  >*/}
-              {/*    <FormControlLabel*/}
-              {/*        value="PAYPAL"*/}
-              {/*        control={<Radio/>}*/}
-              {/*        label={<img*/}
-              {/*            src="https://static-00.iconduck.com/assets.00/paypal-icon-2048x547-tu0aql1a.png"*/}
-              {/*            style={{width: "80px"}}/>}*/}
-              {/*        onClick={() => setPaymentMethod("PAYPAL")}/>*/}
-              {/*    <FormControlLabel*/}
-              {/*        value="VNPAY"*/}
-              {/*        control={<Radio/>}*/}
-              {/*        label={<img*/}
-              {/*            src="https://cdn.haitrieu.com/wp-content/uploads/2022/10/Logo-VNPAY-QR-1.png"*/}
-              {/*            style={{width: "100px"}}/>}*/}
-              {/*        onClick={() => setPaymentMethod("VNPAY")}/>*/}
-              {/*  </RadioGroup>*/}
-              {/*</FormControl>*/}
-
-              {/*{canCheckOut ? (*/}
-              {/*    <button*/}
-              {/*        className="btn btn-dark w-100 mt-4"*/}
-              {/*        onClick={handleCheckout}*/}
-              {/*    >*/}
-              {/*      Thanh toán*/}
-              {/*    </button>*/}
-              {/*) : (*/}
-              {/*    <button className="btn btn-dark w-100 h-2/3 mt-4" disabled>*/}
-              {/*      Thanh toán*/}
-              {/*    </button>*/}
-              {/*)}*/}
+              /> : <div></div>}
               <div className="mt-4">
                 <label>Phương thức thanh toán</label>
               </div>
@@ -502,6 +465,8 @@ export default function CheckoutSummary({orderId}: Props) {
                           price={product.price}
                           quantityInStock={product.quantityInStock}
                           quantity={product.quantity || 1}
+                          isAbleToRushDelivery={product.isAbleToRushDelivery}
+                          isOrderForRushDelivery={isRushDelivery}
                       />
                   );
                 }
