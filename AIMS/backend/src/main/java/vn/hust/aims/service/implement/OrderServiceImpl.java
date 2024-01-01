@@ -114,6 +114,9 @@ public class OrderServiceImpl implements OrderService {
       // data coupling
       updateOrderForRushDelivery(order, input);
     }
+    else {
+      updateOrderForNormalDelivery(order, input);
+    }
 
     // data coupling
     updateOrder(order);
@@ -267,6 +270,18 @@ public class OrderServiceImpl implements OrderService {
     RushOrder rushOrder = createRushOrder(order, input);
     rushOrderRepository.save(rushOrder);
   }
+
+  private void updateOrderForNormalDelivery(Order order, UpdateDeliveryInfoInput input){
+
+    for (OrderMedia orderMedia : order.getOrderMediaList()) {
+      orderMedia.setIsOrderForRushDelivery(false);
+    }
+
+    if (order.getRushOrder() != null) {
+      rushOrderRepository.delete(order.getRushOrder());
+    }
+  }
+
 
   private void updateOrder(Order order) {
 
