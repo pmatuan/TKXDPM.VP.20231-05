@@ -545,7 +545,7 @@ VALUES ('Tạo người dùng', '<!DOCTYPE html>
 <div class="container">
     <h1>Bạn đã được cấp tài khoản sử dụng hệ thống AIMS</h1>
     <p>Bạn có thể đăng nhập sử dụng địa chỉ email này và mật khẩu sau đây:</p>
-    <p>Mật khẩu mới: <span th:text="${newPassword}></span></p>
+    <p>Mật khẩu mới: <span th:text="${newPassword}"></span></p>
     <p>Nếu bạn có thắc mắc về sự kiện này, vui lòng liên hệ với chúng tôi bằng cách trả lời email này.</p>
     <p>Cảm ơn bạn đã sử dụng nền tảng bán hàng của chúng tôi!</p>
     <div class="footer">
@@ -602,7 +602,7 @@ VALUES ('Đổi mật khẩu', '<!DOCTYPE html>
 <div class="container">
     <h1>Mật khẩu của bạn đã được thay đổi</h1>
     <p>Một quản trị viên đã thay đổi mật khẩu tài khoản của bạn.</p>
-    <p>Mật khẩu mới: <span th:text="${newPassword}></span></p>
+    <p>Mật khẩu mới: <span th:text="${newPassword}"></span></p>
     <p>Nếu bạn có thắc mắc về sự thay đổi này, vui lòng liên hệ với chúng tôi bằng cách trả lời email này.</p>
     <p>Cảm ơn bạn đã sử dụng nền tảng bán hàng của chúng tôi!</p>
     <div class="footer">
