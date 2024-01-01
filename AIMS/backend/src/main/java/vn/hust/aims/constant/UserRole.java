@@ -7,6 +7,6 @@ import java.util.Set;
 
 public class UserRole {
     public static final Set<String> roles = Collections.unmodifiableSet(
-            new HashSet<String>(Arrays.asList(new String[]{"admin", "seller"}))
+            new HashSet<String>(Arrays.asList(new String[]{"admin", "product manager"}))
     );
 }

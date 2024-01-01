@@ -30,8 +30,8 @@ export async function login(
     localStorage.setItem("id", id)
     localStorage.setItem("role", role)
 
-    if (role.includes("seller")) {
-      window.location.href = "management/home"; // home for seller
+    if (role.includes("product manager")) {
+      window.location.href = "management/home"; // home for product manager
     } else {
       window.location.href = "management/manage-user"; // home for admin
     }

@@ -19,7 +19,7 @@ export default function AdminNavbar() {
                             Quản lý sản phẩm
                         </a>
                     </li>
-                    <li className="nav-item px-3 py-3 border-radius-sm d-flex align-items-center">
+                    <li className="nav-item px-3 py-3 border-radius-sm d-flex align-items-center" id="manageOrder">
                         <a href="/aims-ecommerce/management/order/" className="p-0 nav-link">
                             Quản lý đơn hàng
                         </a>
