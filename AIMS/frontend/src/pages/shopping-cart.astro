@@ -2,29 +2,22 @@
 import Layout from '../layouts/Layout.astro';
 import '../../assets/scss/astro-ecommerce.scss';
 import ShoppingCart from '../components/cart/shoppingCart';
-import ComplexNavbar from "../components/complexNavbar";
+import ComplexNavbar from '../components/complexNavbar';
 
 const BACKEND_URL = "http://localhost:8080/api/v1" // TODO: do chưa load được từ env nên dùng tạm
 
-if (!Astro.cookies.has("cartId")) {
-  const response = await fetch(BACKEND_URL + `/cart`);
-  const data = await response.json();
-  const cartId = data.result.cartId;
-  Astro.cookies.set("cartId", cartId);
-}
+// if (!Astro.cookies.has("cartId")) {
+//   const response = await fetch(BACKEND_URL + `/cart`);
+//   const data = await response.json();
+//   const cartId = data.result.cartId;
+//
+//   Astro.cookies.set("cartId", cartId);
+// }
 
 const cartId = Astro.cookies.get("cartId").value;
-console.log("cartId: " + cartId)
+console.log("cartId (in cart): " + cartId)
 
-let response = await fetch(BACKEND_URL + `/cart/${cartId}`)
-
-if (!response.ok){
-  response = await fetch(BACKEND_URL + `/cart`);
-  const data = await response.json();
-  const cartId = data.result.cartId;
-  Astro.cookies.set("cartId", cartId);
-  response = await fetch(BACKEND_URL + `/cart/${cartId}`)
-}
+const response = await fetch(BACKEND_URL + `/cart/${cartId}`)
 
 const data = await response.json()
 

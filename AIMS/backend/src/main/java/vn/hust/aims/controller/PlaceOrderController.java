@@ -15,16 +15,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import vn.hust.aims.controller.dto.request.placeorder.CreateOrderRequest;
 import vn.hust.aims.controller.dto.request.placeorder.UpdateDeliveryInfoRequest;
-import vn.hust.aims.controller.dto.request.placeorder.UpdateMediaInOrderRequest;
-import vn.hust.aims.controller.dto.response.placeorder.DeleteMediaInOrderResponse;
-import vn.hust.aims.controller.dto.response.placeorder.UpdateMediaInOrderResponse;
 import vn.hust.aims.response.AimsCommonResponse;
 import vn.hust.aims.service.OrderService;
-import vn.hust.aims.service.dto.input.placeorder.DeleteMediaInOrderInput;
 import vn.hust.aims.service.dto.output.placeorder.CreateOrderOutput;
-import vn.hust.aims.service.dto.output.placeorder.DeleteMediaInOrderOutput;
 import vn.hust.aims.service.dto.output.placeorder.UpdateDeliveryInfoOutput;
-import vn.hust.aims.service.dto.output.placeorder.UpdateMediaInOrderOutput;
 import vn.hust.aims.utils.ResponseUtil;
 import vn.hust.aims.controller.dto.response.placeorder.CreateOrderResponse;
 import vn.hust.aims.controller.dto.response.placeorder.UpdateDeliveryInfoResponse;
@@ -60,39 +54,6 @@ public class PlaceOrderController {
     // data coupling
     return ResponseUtil.toSuccessCommonResponse(
         UpdateDeliveryInfoResponse.from(output)
-    );
-  }
-
-  @PutMapping("/{orderId}/order-media/{orderMediaId}")
-  public ResponseEntity<AimsCommonResponse<Object>> updateMediaInOrder(
-      @PathVariable String orderId, @PathVariable Long orderMediaId,
-      @RequestBody UpdateMediaInOrderRequest request) {
-
-    // data coupling
-    UpdateMediaInOrderOutput output = orderService.updateOrderMedia(
-        request.toInput(orderId, orderMediaId));
-
-    // data coupling
-    return ResponseUtil.toSuccessCommonResponse(
-        UpdateMediaInOrderResponse.from(output)
-    );
-  }
-
-  @DeleteMapping("/{orderId}/order-media/{orderMediaId}")
-  public ResponseEntity<AimsCommonResponse<Object>> deleteOrderMedia(
-      @PathVariable String orderId, @PathVariable Long orderMediaId) {
-
-    // data coupling
-    DeleteMediaInOrderOutput output = orderService.deleteOrderMedia(
-        DeleteMediaInOrderInput.builder()
-            .orderId(orderId)
-            .orderMediaId(orderMediaId)
-            .build()
-    );
-
-    // data coupling
-    return ResponseUtil.toSuccessCommonResponse(
-        DeleteMediaInOrderResponse.from(output)
     );
   }
 

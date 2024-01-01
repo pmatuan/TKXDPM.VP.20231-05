@@ -1,12 +1,16 @@
 package vn.hust.aims.subsystem.payment.provider.paypalsubsystem;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStreamWriter;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.Map;
-import java.util.logging.Level;
+import java.util.Scanner;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PathVariable;
 import vn.hust.aims.entity.order.Order;
 import vn.hust.aims.subsystem.payment.PaymentSubsystem;
 import vn.hust.aims.subsystem.payment.Provider;
@@ -35,7 +39,7 @@ public class PaypalSubsystem implements PaymentSubsystem {
     String requestJson =
         "{\"intent\":\"CAPTURE\",\"purchase_units\":[{\"amount\":{\"currency_code\":\"USD\",\"value\":\""
             + amountDollar + "\"}}]}";
-    HttpEntity<String> entity = paypalUtil.createHttpEntity(requestJson);
+    HttpEntity<String> entity = paypalUtil.createHttpEntityForPay(requestJson);
 
     ResponseEntity<Object> response = paypalUtil.performHttpRequest(
         PaypalConfig.BASE_URL + "/v2/checkout/orders",
@@ -59,11 +63,36 @@ public class PaypalSubsystem implements PaymentSubsystem {
 
   @Override
   public String refund(Order order) {
+    Double amountDollar = paypalUtil.convertVNDToDollar(order.getTotal());
+
+    String[] parts = order.getPaymentTransaction().getId().split("-");
+    String transactionId = parts[0];
+    String captureId = parts[1];
+
+    System.out.println("Capture Id: " + captureId);
+
+    String requestJson = "{"
+        + "\"amount\": {\"value\": \"" + amountDollar + "\", \"currency_code\": \"USD\"}, "
+        + "\"invoice_id\": \"" + transactionId + "\", "
+        + "\"note_to_payer\": \"DefectiveProduct\""
+        + "}";
+
+    HttpEntity<String> entity = paypalUtil.createHttpEntityForRefund(requestJson);
+
+    ResponseEntity<Object> response = paypalUtil.performHttpRequest(
+        PaypalConfig.BASE_URL + "/v2/payments/captures/" + captureId + "/refund",
+        HttpMethod.POST,
+        entity
+    );
+
+    System.out.println(response.getBody());
+
     return null;
+
   }
 
   public Object capturePayment(String orderId) {
-    HttpEntity<String> entity = paypalUtil.createHttpEntity(null);
+    HttpEntity<String> entity = paypalUtil.createHttpEntityForPay(null);
 
     ResponseEntity<Object> response = paypalUtil.performHttpRequest(
         PaypalConfig.BASE_URL + "/v2/checkout/orders/" + orderId + "/capture",
