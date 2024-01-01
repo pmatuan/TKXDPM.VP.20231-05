@@ -77,6 +77,19 @@ public class UserServiceImpl implements UserService {
 
         userRepository.save(user);
 
+        List<Param> params = Arrays.asList(
+                Param.builder().key("newPassword").value(user.getPassword()).build()
+        );
+
+        mailService.send(
+                SendEmailInput.builder()
+                        .status(true)
+                        .templateName("Tạo người dùng")
+                        .destination(user.getEmail())
+                        .params(params)
+                        .build()
+        );
+
         return user;
     }
 
@@ -109,6 +122,8 @@ public class UserServiceImpl implements UserService {
         user.setPhoneNumber(input.getPhoneNumber());
         user.setRole(input.getRole());
 
+        userRepository.save(user);
+
         List<Param> params = Arrays.asList();
 
         mailService.send(
@@ -119,8 +134,6 @@ public class UserServiceImpl implements UserService {
                         .params(params)
                         .build()
         );
-
-        userRepository.save(user);
 
         return user;
     }
@@ -137,7 +150,11 @@ public class UserServiceImpl implements UserService {
         validatePassword(input.getPassword());
         user.setPassword(input.getPassword());
 
-        List<Param> params = Arrays.asList();
+        userRepository.save(user);
+
+        List<Param> params = Arrays.asList(
+                Param.builder().key("newPassword").value(user.getPassword()).build()
+        );
 
         mailService.send(
                 SendEmailInput.builder()
@@ -147,8 +164,6 @@ public class UserServiceImpl implements UserService {
                         .params(params)
                         .build()
         );
-
-        userRepository.save(user);
 
         return user;
     }
@@ -162,6 +177,8 @@ public class UserServiceImpl implements UserService {
 
         validateIsBlocked(isBlocked);
         user.setIsBlocked(isBlocked);
+
+        userRepository.save(user);
 
         String blockedState;
         String action;
@@ -187,8 +204,6 @@ public class UserServiceImpl implements UserService {
                         .params(params)
                         .build()
         );
-
-        userRepository.save(user);
 
         return userId;
     }
