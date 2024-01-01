@@ -6,7 +6,7 @@ import '../../assets/scss/astro-ecommerce.scss';
 ---
 <script>
     const role = localStorage.getItem("role")
-    if (role?.includes("seller")) {
+    if (role?.includes("product manager")) {
         location.href = "management/home"
     } else {
         location.href = "management/manage-user"
