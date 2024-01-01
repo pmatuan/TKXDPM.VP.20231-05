@@ -23,5 +23,6 @@ public interface MediaService {
     byte[] getMediaImage(String imageName);
     Media getMediaById(Long mediaId);
     void validateQuantityInStock(Media media, Integer requestedQuantity);
+    void updateQuantityInStock(Media media, Integer newQuantity);
 
 }

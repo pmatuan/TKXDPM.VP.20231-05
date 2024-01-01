@@ -4,6 +4,8 @@ interface Props {
   price: number;
   quantityInStock: number;
   quantity: number;
+  isAbleToRushDelivery: boolean;
+  isOrderForRushDelivery: boolean;
 }
 
 export default function CheckoutSingleItem({
@@ -12,6 +14,8 @@ export default function CheckoutSingleItem({
   price,
   quantityInStock,
   quantity,
+  isAbleToRushDelivery,
+  isOrderForRushDelivery,
 }: Props) {
   return (
     <>
@@ -33,18 +37,23 @@ export default function CheckoutSingleItem({
               {price.toLocaleString()} đồng
             </h6>
             <div className="d-flex align-items-center mt-2">
-              {quantityInStock >= quantity ? (
-                  <>
-                    <i className="fas fa-check text-lg text-success"></i>
-                    <p className="mb-0 ms-2 text-sm">Còn hàng</p>
-                  </>
+              {isOrderForRushDelivery ? (
+                  isAbleToRushDelivery ? (
+                      <>
+                        <i className="fas fa-check text-lg text-success"></i>
+                        <p className="mb-0 ms-2 text-sm">Hỗ trợ giao hàng nhanh</p>
+                      </>
+                  ) : (
+                      <>
+                        <i className="fas fa-minus-circle text-lg"></i>
+                        <p className="mb-0 ms-2 text-sm">Không hỗ trợ giao hàng nhanh</p>
+                      </>
+                  )
               ) : (
-                  <>
-                    <i className="fas fa-minus-circle text-lg"></i>
-                    <p className="mb-0 ms-2 text-sm">Thiếu {quantity - quantityInStock} sản phẩm</p>
-                  </>
+                  <div></div>
               )}
             </div>
+
           </div>
           <div className="col-2">
             <input

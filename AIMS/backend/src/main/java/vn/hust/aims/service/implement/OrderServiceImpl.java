@@ -5,6 +5,7 @@
 
 package vn.hust.aims.service.implement;
 
+import io.swagger.v3.oas.models.security.SecurityScheme.In;
 import java.time.Instant;
 import java.util.Arrays;
 import lombok.RequiredArgsConstructor;
@@ -15,6 +16,7 @@ import org.springframework.stereotype.Service;
 import vn.hust.aims.entity.cart.Cart;
 import vn.hust.aims.entity.cart.CartMedia;
 import vn.hust.aims.entity.email.Param;
+import vn.hust.aims.entity.media.Media;
 import vn.hust.aims.entity.order.*;
 import vn.hust.aims.enumeration.OrderStateEnum;
 import vn.hust.aims.exception.CannotCancelOrderException;
@@ -73,6 +75,12 @@ public class OrderServiceImpl implements OrderService {
 
     List<OrderMedia> orderMediaList = mapCartMediaToOrderMedia(cart.getCartMediaList());
 
+    cart.getCartMediaList().forEach(cartMedia -> {
+      Media media = cartMedia.getMedia();
+      Integer updatedQuantity = media.getQuantityInStock() - cartMedia.getQuantity();
+      mediaService.updateQuantityInStock(media, updatedQuantity);
+    });
+
     // data coupling
     Order order = createOrder(orderMediaList);
 
@@ -124,6 +132,11 @@ public class OrderServiceImpl implements OrderService {
     sendOrderConfirmationEmail(order, input.getState());
 
     if (input.getState().getStringValue().equals("REJECT")){
+      order.getOrderMediaList().forEach(orderMedia -> {
+        Media media = orderMedia.getMedia();
+        Integer updatedQuantity = media.getQuantityInStock() + orderMedia.getQuantity();
+        mediaService.updateQuantityInStock(media, updatedQuantity);
+      });
       paymentService.refund(RefundInput.builder()
           .order(order)
           .build());
@@ -153,6 +166,12 @@ public class OrderServiceImpl implements OrderService {
     }
 
     order.setState(cancelState.getStringValue());
+
+    order.getOrderMediaList().forEach(orderMedia -> {
+      Media media = orderMedia.getMedia();
+      Integer updatedQuantity = media.getQuantityInStock() + orderMedia.getQuantity();
+      mediaService.updateQuantityInStock(media, updatedQuantity);
+    });
 
     paymentService.refund(RefundInput.builder()
             .order(order)
