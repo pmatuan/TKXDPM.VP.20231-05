@@ -1,4 +1,4 @@
-package vn.hust.aims.subsystem.email.provider;
+package vn.hust.aims.subsystem.notification.provider;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -10,10 +10,10 @@ import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 import vn.hust.aims.constant.Constant;
-import vn.hust.aims.subsystem.email.MailSender;
+import vn.hust.aims.subsystem.notification.NotificationSubsystem;
 
 @Service("GMAIL")
-public class GmailSender implements MailSender {
+public class GmailSender implements NotificationSubsystem {
 
   public JavaMailSender config(String config){
     JavaMailSenderImpl mailSender = new JavaMailSenderImpl();

@@ -80,6 +80,8 @@ public class PaymentTransactionServiceImpl implements PaymentTransactionService 
         ProviderType.from("PAYPAL"));
     Object response = paypalSubsystem.capturePayment(input.getId());
 
+    System.out.println(response);
+
     String transactionId = "";
     Double amount = 0.0;
     String paymentTime = "";
@@ -89,7 +91,14 @@ public class PaymentTransactionServiceImpl implements PaymentTransactionService 
       String jsonResponse = objectMapper.writeValueAsString(response);
       JsonNode root = objectMapper.readTree(jsonResponse);
 
-      transactionId = root.get("id").asText();
+      transactionId = root.get("id").asText() + "-" + root
+          .get("purchase_units")
+          .get(0)
+          .get("payments")
+          .get("captures")
+          .get(0)
+          .get("id")
+          .asText();
 
       amount = root
           .get("purchase_units")

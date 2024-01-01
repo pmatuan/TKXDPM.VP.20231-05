@@ -5,6 +5,7 @@
 
 package vn.hust.aims.service.implement;
 
+import io.swagger.v3.oas.models.security.SecurityScheme.In;
 import java.time.Instant;
 import java.util.Arrays;
 import lombok.RequiredArgsConstructor;
@@ -15,6 +16,7 @@ import org.springframework.stereotype.Service;
 import vn.hust.aims.entity.cart.Cart;
 import vn.hust.aims.entity.cart.CartMedia;
 import vn.hust.aims.entity.email.Param;
+import vn.hust.aims.entity.media.Media;
 import vn.hust.aims.entity.order.*;
 import vn.hust.aims.enumeration.OrderStateEnum;
 import vn.hust.aims.exception.CannotCancelOrderException;
@@ -37,23 +39,19 @@ import vn.hust.aims.service.dto.input.order.RequestCancelOrderInput;
 import vn.hust.aims.service.dto.input.order.UpdateOrderStateInput;
 import vn.hust.aims.service.dto.input.payment.RefundInput;
 import vn.hust.aims.service.dto.input.placeorder.CreateOrderInput;
-import vn.hust.aims.service.dto.input.placeorder.DeleteMediaInOrderInput;
 import vn.hust.aims.service.dto.input.order.GetOrderInput;
 import vn.hust.aims.service.dto.input.placeorder.UpdateDeliveryInfoInput;
-import vn.hust.aims.service.dto.input.placeorder.UpdateMediaInOrderInput;
 import vn.hust.aims.service.dto.output.order.CancelOrderOutput;
 import vn.hust.aims.service.dto.output.order.RequestCancelOrderOutput;
 import vn.hust.aims.service.dto.output.order.GetAllOrderOutput;
 import vn.hust.aims.service.dto.output.order.UpdateOrderStateOutput;
 import vn.hust.aims.service.dto.output.placeorder.CreateOrderOutput;
-import vn.hust.aims.service.dto.output.placeorder.DeleteMediaInOrderOutput;
 import vn.hust.aims.service.dto.output.order.GetOrderOutput;
 import vn.hust.aims.service.dto.output.placeorder.UpdateDeliveryInfoOutput;
 
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
-import vn.hust.aims.service.dto.output.placeorder.UpdateMediaInOrderOutput;
 import vn.hust.aims.service.MediaService;
 
 @Service
@@ -76,6 +74,12 @@ public class OrderServiceImpl implements OrderService {
     Cart cart = cartService.getCartById(input.getCartId());
 
     List<OrderMedia> orderMediaList = mapCartMediaToOrderMedia(cart.getCartMediaList());
+
+    cart.getCartMediaList().forEach(cartMedia -> {
+      Media media = cartMedia.getMedia();
+      Integer updatedQuantity = media.getQuantityInStock() - cartMedia.getQuantity();
+      mediaService.updateQuantityInStock(media, updatedQuantity);
+    });
 
     // data coupling
     Order order = createOrder(orderMediaList);
@@ -110,47 +114,15 @@ public class OrderServiceImpl implements OrderService {
       // data coupling
       updateOrderForRushDelivery(order, input);
     }
+    else {
+      updateOrderForNormalDelivery(order, input);
+    }
 
     // data coupling
     updateOrder(order);
 
     return UpdateDeliveryInfoOutput.from(
         "Update delivery info to order " + input.getOrderId() + " successfully");
-  }
-
-  public UpdateMediaInOrderOutput updateOrderMedia(UpdateMediaInOrderInput input) {
-
-    Order order = getOrderById(input.getOrderId());
-
-    // stamp coupling: only the media list of order is used: fix
-    OrderMedia orderMedia = findOrderMediaById(order.getOrderMediaList(), input.getOrderMediaId());
-
-    // data coupling
-    mediaService.validateQuantityInStock(orderMedia.getMedia(), input.getQuantity());
-    // data coupling
-    updateOrderMediaQuantity(orderMedia, order, input.getQuantity());
-    // data coupling
-    updateOrder(order);
-
-    return UpdateMediaInOrderOutput.from(
-        "Update quantity order media " + input.getOrderMediaId() + " to " + input.getQuantity()
-            + " successfully");
-  }
-
-  public DeleteMediaInOrderOutput deleteOrderMedia(DeleteMediaInOrderInput input) {
-
-    Order order = getOrderById(input.getOrderId());
-
-    // stamp coupling: only the media list of order is used: fix
-    OrderMedia orderMedia = findOrderMediaById(order.getOrderMediaList(), input.getOrderMediaId());
-
-    // data coupling
-    deleteOrderMediaFromRepository(orderMedia, order);
-    // data coupling
-    updateOrder(order);
-
-    return DeleteMediaInOrderOutput.from(
-        "Deleted order media " + input.getOrderMediaId() + " successfully");
   }
 
   public UpdateOrderStateOutput updateOrderState(UpdateOrderStateInput input) {
@@ -161,6 +133,17 @@ public class OrderServiceImpl implements OrderService {
     updateOrderState(order, input.getState());
 
     sendOrderConfirmationEmail(order, input.getState());
+
+    if (input.getState().getStringValue().equals("REJECT")){
+      order.getOrderMediaList().forEach(orderMedia -> {
+        Media media = orderMedia.getMedia();
+        Integer updatedQuantity = media.getQuantityInStock() + orderMedia.getQuantity();
+        mediaService.updateQuantityInStock(media, updatedQuantity);
+      });
+      paymentService.refund(RefundInput.builder()
+          .order(order)
+          .build());
+    }
 
     return UpdateOrderStateOutput.from(
         "Updated order " + input.getOrderId() + " to state " + input.getState().getStringValue() + " successfully"
@@ -186,6 +169,12 @@ public class OrderServiceImpl implements OrderService {
     }
 
     order.setState(cancelState.getStringValue());
+
+    order.getOrderMediaList().forEach(orderMedia -> {
+      Media media = orderMedia.getMedia();
+      Integer updatedQuantity = media.getQuantityInStock() + orderMedia.getQuantity();
+      mediaService.updateQuantityInStock(media, updatedQuantity);
+    });
 
     paymentService.refund(RefundInput.builder()
             .order(order)
@@ -263,13 +252,6 @@ public class OrderServiceImpl implements OrderService {
         .build();
   }
 
-  private OrderMedia findOrderMediaById(List<OrderMedia> orderMediaList, Long orderMediaId) {
-    return orderMediaList.stream()
-        .filter(orderMedia -> orderMedia.getId().equals(orderMediaId))
-        .findFirst()
-        .orElseThrow(() -> new OrderMediaNotFoundException());
-  }
-
   private void updateOrderForRushDelivery(Order order, UpdateDeliveryInfoInput input) {
     boolean hasRushDeliveryProduct = false;
 
@@ -289,10 +271,17 @@ public class OrderServiceImpl implements OrderService {
     rushOrderRepository.save(rushOrder);
   }
 
-  private void deleteOrderMediaFromRepository(OrderMedia orderMedia, Order order) {
-    orderMediaRepository.delete(orderMedia);
-    order.removeOrderMedia(orderMedia);
+  private void updateOrderForNormalDelivery(Order order, UpdateDeliveryInfoInput input){
+
+    for (OrderMedia orderMedia : order.getOrderMediaList()) {
+      orderMedia.setIsOrderForRushDelivery(false);
+    }
+
+    if (order.getRushOrder() != null) {
+      rushOrderRepository.delete(order.getRushOrder());
+    }
   }
+
 
   private void updateOrder(Order order) {
 
@@ -315,15 +304,6 @@ public class OrderServiceImpl implements OrderService {
     order.setTotal(total);
 
     orderRepository.save(order);
-  }
-
-  private void updateOrderMediaQuantity(OrderMedia orderMedia, Order order, Integer quantity) {
-    if (quantity == 0) {
-      deleteOrderMediaFromRepository(orderMedia, order);
-    } else {
-      orderMedia.setQuantity(quantity);
-      orderMediaRepository.save(orderMedia);
-    }
   }
 
   private void sendCancelOrderRequestEmail(Order order){

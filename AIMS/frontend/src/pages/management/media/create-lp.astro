@@ -9,7 +9,7 @@ import AdminNavbar from "../../../components/admin/adminNavbar"
 <script>
   const role = localStorage.getItem('role')
   if (role) {
-      if (!role.includes('seller')) {
+      if (!role.includes('product manager')) {
           document.querySelector('#manageMedia')?.classList.add('d-none')
           document.querySelector('#manageOrder')?.classList.add('d-none')
       }

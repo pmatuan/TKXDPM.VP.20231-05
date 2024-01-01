@@ -1,7 +1,6 @@
 import { Button, ButtonGroup } from "react-bootstrap";
-import ProductBadge from "./productBadge";
 import { useState } from "react";
-import { set } from "date-fns";
+import SWAL from "sweetalert2";
 
 export default function Product({
   id,
@@ -22,6 +21,12 @@ export default function Product({
     setViewDetail(true);
   }
   function handleAddMediaToCart() {
+    SWAL.fire({
+      html: "<h5>Sản phẩm đã được thêm vào giỏ hàng</h5>",
+      icon: "success",
+      showConfirmButton: false,
+      timer: 1000
+    });
     async function addMediaToCart() {
       try {
         const apiUrl = `http://127.0.0.1:8080/api/v1/cart/${cartId}/cart-media`;
@@ -54,13 +59,13 @@ export default function Product({
         <div className="height-200">
           <img
             className="w-100 h-100 p-4 rounded-top"
-            src={`http://127.0.0.1:8080/api/v1/media/images/${imageUrl}`}
+            src={imageUrl.startsWith("http") ? imageUrl : `http://127.0.0.1:8080/api/v1/media/images/${imageUrl}`}
           />
         </div>
         <div className={`${classList} d-flex flex-column align-items-center`}>
           <h4 className="font-weight-bold">{title}</h4>
 
-          <p className="text-body">{price}đ</p>
+          <p className="text-body">{price} đồng</p>
 
           <ButtonGroup
             aria-label="Basic example"

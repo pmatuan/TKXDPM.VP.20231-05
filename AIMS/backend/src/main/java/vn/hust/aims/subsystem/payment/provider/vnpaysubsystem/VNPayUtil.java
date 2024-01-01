@@ -34,8 +34,8 @@ public class VNPayUtil {
   private VNPayConfig vnPayConfig;
 
   public VNPayUtil() {
-    this.vnPayConfig = new VNPayConfig("ORRJM9BG",
-        "IXGFEGJRHNESWTQMSJOUEMDCUTJNOVME");
+    this.vnPayConfig = new VNPayConfig("19PZ5P0P",
+        "YLDXMDEAAUQVGFNPJYJDMYSRDTDJVFKC");
     this.restTemplate = new RestTemplate();
   }
 

@@ -22,12 +22,12 @@ public class Changelog {
     @Column(name = "timestamp")
     private Instant timestamp;
 
-    @Column(name = "authorId")
+    @Column(name = "author_id")
     private Long authorId;
 
-    @Column(name = "changedMediaId")
+    @Column(name = "changed_media_id")
     private Long changedMediaId;
 
-    @Column(name = "isPriceChange")
+    @Column(name = "is_price_change")
     private Integer isPriceChange;
 }

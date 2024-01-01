@@ -21,6 +21,7 @@ export default function ShoppingCart({ products, cartId }: Props) {
   const [cartProducts, setCartProducts] = useState(products);
   const [subtotalCart, setSubtotalCart] = useState(0);
   const [canPlaceOrder, setCanPlaceOrder] = useState(true);
+  const BACKEND_URL = "http://localhost:8080/api/v1";
 
   useEffect(() => {
     let subtotal = 0;
@@ -30,7 +31,7 @@ export default function ShoppingCart({ products, cartId }: Props) {
     setSubtotalCart(subtotal);
   }, [cartProducts]);
 
-  const handleChangeQuantity = (index: number, quantity: number) => {
+  const handleChangeQuantity = async (index: number, quantity: number) => {
     const updatedProducts = [...cartProducts];
     updatedProducts[index] = {
       ...updatedProducts[index],
@@ -43,10 +44,25 @@ export default function ShoppingCart({ products, cartId }: Props) {
       setCanPlaceOrder(true)
     }
     setCartProducts(updatedProducts);
+
+    await Promise.all(updatedProducts.map(async (product) => {
+      const response = await fetch(`${BACKEND_URL}/cart/${cartId}/cart-media/${product.id}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ quantity: product.quantity }),
+      });
+
+      if (!response.ok) {
+        // Handle error, maybe show a message to the user
+        console.error(`Failed to update cart item for product ID ${product.id}`);
+        return Promise.reject(`Failed to update cart item for product ID ${product.id}`);
+      }
+    }));
   };
 
   const handlePlaceOrder = async () => {
-    const BACKEND_URL = "http://localhost:8080/api/v1";
     await Promise.all(cartProducts.map(async (product) => {
       const response = await fetch(`${BACKEND_URL}/cart/${cartId}/cart-media/${product.id}`, {
         method: "PUT",

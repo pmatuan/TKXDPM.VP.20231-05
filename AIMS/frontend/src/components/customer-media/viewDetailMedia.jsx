@@ -39,7 +39,7 @@ const ViewDetailMedia = ({ setViewDetail, mediaView }) => {
         <div
           style={{ borderBottom: "1px solid lightgray", paddingBottom: "10px" }}
         >
-          <h1 style={{ margin: 0 }}>Xem chi tiết</h1>
+          <h2 style={{ margin: 0 }}>Xem chi tiết</h2>
           <div
             onClick={() => setViewDetail(false)}
             style={{
@@ -58,7 +58,7 @@ const ViewDetailMedia = ({ setViewDetail, mediaView }) => {
             <div style={{ display: "flex" }}>
               <div style={{ flex: 1 }}>
                 <img
-                  src={`http://127.0.0.1:8080/api/v1/media/images/${mediaView.imageUrl}`}
+                  src={`${mediaView.imageUrl}`}
                   alt={mediaView.title}
                   className="w-100"
                 />

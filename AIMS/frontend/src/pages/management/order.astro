@@ -1,8 +1,8 @@
 ---
-import Layout from '../layouts/Layout.astro';
-import '../../assets/scss/astro-ecommerce.scss';
-import OrderHistory from '../components/order/orderHistory';
-import ComplexNavbar from "../components/complexNavbar";
+import Layout from '../../layouts/Layout.astro';
+import '../../../assets/scss/astro-ecommerce.scss';
+import OrderHistory from '../../components/order/orderHistory';
+import AdminNavbar from "../../components/admin/adminNavbar";
 
 const convertDate = (originalDate: string) => {
   const dateObject = new Date(originalDate);
@@ -18,7 +18,9 @@ const data = await response.json()
 
 const rawOrderList = data.result.content;
 
-const orderList = rawOrderList.map(order => ({
+const orderList = rawOrderList
+.filter(order => order.deliveryInfo && order.paymentTransaction) // Filter out orders with null deliveryInfo or paymentTransaction
+.map(order => ({
   id: order.id,
   products: order.orderMediaList.map(orderMedia => ({
     id: orderMedia.id,
@@ -31,7 +33,7 @@ const orderList = rawOrderList.map(order => ({
   customerName: order.deliveryInfo.customerName,
   email: order.deliveryInfo.email,
   date: convertDate(order.createdAt),
-  paymentMethod: (order && order.paymentTransaction && order.paymentTransaction.paymentMethod) ? order.paymentTransaction.paymentMethod : '',
+  paymentMethod: order.paymentTransaction.paymentMethod || '', // Use default value if paymentMethod is null
   phoneNumber: order.deliveryInfo.phoneNumber,
   subtotal: order.subtotal,
   deliveryFee: order.deliveryFee,
@@ -39,11 +41,25 @@ const orderList = rawOrderList.map(order => ({
   state: order.state,
 }));
 
+
 ---
+
+<script>
+  const role = localStorage.getItem('role')
+  if (role) {
+    if (!role.includes('product manager')) {
+      document.querySelector('#manageMedia')?.classList.add('d-none')
+      document.querySelector('#manageOrder')?.classList.add('d-none')
+    }
+    if (!role.includes('admin')) {
+      document.querySelector('#manageUser')?.classList.add('d-none')
+    }
+  }
+</script>
 
 <Layout title="Danh sách đơn hàng">
   <main>
-    <ComplexNavbar />
+    <AdminNavbar />
 
     <div class="container mt-5">
       <div class="my-6">
