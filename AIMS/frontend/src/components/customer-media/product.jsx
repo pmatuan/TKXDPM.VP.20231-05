@@ -25,7 +25,7 @@ export default function Product({
       html: "<h5>Sản phẩm đã được thêm vào giỏ hàng</h5>",
       icon: "success",
       showConfirmButton: false,
-      timer: 1500
+      timer: 1000
     });
     async function addMediaToCart() {
       try {

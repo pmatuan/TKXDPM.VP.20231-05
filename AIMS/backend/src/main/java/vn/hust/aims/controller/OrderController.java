@@ -34,7 +34,6 @@ import vn.hust.aims.utils.ResponseUtil;
 public class OrderController {
 
   private final OrderService orderService;
-  // TODO: Xem chi tiết đơn hàng, xét duyệt đơn hàng, huỷ đơn hàng, xem lịch sử mua hàng
 
   @GetMapping("")
   public ResponseEntity<AimsCommonResponse<Object>> getAllOrder(GetAllOrderRequest request) {

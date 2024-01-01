@@ -37,23 +37,19 @@ import vn.hust.aims.service.dto.input.order.RequestCancelOrderInput;
 import vn.hust.aims.service.dto.input.order.UpdateOrderStateInput;
 import vn.hust.aims.service.dto.input.payment.RefundInput;
 import vn.hust.aims.service.dto.input.placeorder.CreateOrderInput;
-import vn.hust.aims.service.dto.input.placeorder.DeleteMediaInOrderInput;
 import vn.hust.aims.service.dto.input.order.GetOrderInput;
 import vn.hust.aims.service.dto.input.placeorder.UpdateDeliveryInfoInput;
-import vn.hust.aims.service.dto.input.placeorder.UpdateMediaInOrderInput;
 import vn.hust.aims.service.dto.output.order.CancelOrderOutput;
 import vn.hust.aims.service.dto.output.order.RequestCancelOrderOutput;
 import vn.hust.aims.service.dto.output.order.GetAllOrderOutput;
 import vn.hust.aims.service.dto.output.order.UpdateOrderStateOutput;
 import vn.hust.aims.service.dto.output.placeorder.CreateOrderOutput;
-import vn.hust.aims.service.dto.output.placeorder.DeleteMediaInOrderOutput;
 import vn.hust.aims.service.dto.output.order.GetOrderOutput;
 import vn.hust.aims.service.dto.output.placeorder.UpdateDeliveryInfoOutput;
 
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
-import vn.hust.aims.service.dto.output.placeorder.UpdateMediaInOrderOutput;
 import vn.hust.aims.service.MediaService;
 
 @Service
@@ -118,41 +114,6 @@ public class OrderServiceImpl implements OrderService {
         "Update delivery info to order " + input.getOrderId() + " successfully");
   }
 
-  public UpdateMediaInOrderOutput updateOrderMedia(UpdateMediaInOrderInput input) {
-
-    Order order = getOrderById(input.getOrderId());
-
-    // stamp coupling: only the media list of order is used: fix
-    OrderMedia orderMedia = findOrderMediaById(order.getOrderMediaList(), input.getOrderMediaId());
-
-    // data coupling
-    mediaService.validateQuantityInStock(orderMedia.getMedia(), input.getQuantity());
-    // data coupling
-    updateOrderMediaQuantity(orderMedia, order, input.getQuantity());
-    // data coupling
-    updateOrder(order);
-
-    return UpdateMediaInOrderOutput.from(
-        "Update quantity order media " + input.getOrderMediaId() + " to " + input.getQuantity()
-            + " successfully");
-  }
-
-  public DeleteMediaInOrderOutput deleteOrderMedia(DeleteMediaInOrderInput input) {
-
-    Order order = getOrderById(input.getOrderId());
-
-    // stamp coupling: only the media list of order is used: fix
-    OrderMedia orderMedia = findOrderMediaById(order.getOrderMediaList(), input.getOrderMediaId());
-
-    // data coupling
-    deleteOrderMediaFromRepository(orderMedia, order);
-    // data coupling
-    updateOrder(order);
-
-    return DeleteMediaInOrderOutput.from(
-        "Deleted order media " + input.getOrderMediaId() + " successfully");
-  }
-
   public UpdateOrderStateOutput updateOrderState(UpdateOrderStateInput input) {
     Order order = getOrderById(input.getOrderId());
 
@@ -161,6 +122,12 @@ public class OrderServiceImpl implements OrderService {
     updateOrderState(order, input.getState());
 
     sendOrderConfirmationEmail(order, input.getState());
+
+    if (input.getState().getStringValue().equals("REJECT")){
+      paymentService.refund(RefundInput.builder()
+          .order(order)
+          .build());
+    }
 
     return UpdateOrderStateOutput.from(
         "Updated order " + input.getOrderId() + " to state " + input.getState().getStringValue() + " successfully"

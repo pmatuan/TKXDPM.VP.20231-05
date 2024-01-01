@@ -9,7 +9,7 @@ import vn.hust.aims.repository.email.SenderRepository;
 import vn.hust.aims.repository.email.TemplateRepository;
 import vn.hust.aims.service.MailService;
 import vn.hust.aims.service.dto.input.email.SendEmailInput;
-import vn.hust.aims.subsystem.email.MailSender;
+import vn.hust.aims.subsystem.notification.NotificationSubsystem;
 import vn.hust.aims.utils.TextEngineUtil;
 
 
@@ -21,7 +21,7 @@ public class MailServiceImpl implements MailService {
   private final SenderRepository senderRepository;
   private final TemplateRepository templateRepository;
   private final TextEngineUtil textEngineUtil;
-  private MailSender mailSender;
+  private NotificationSubsystem notificationSubsystem;
 
   public void send(SendEmailInput input) {
 
@@ -29,7 +29,7 @@ public class MailServiceImpl implements MailService {
       return;
     }
 
-    mailSender = applicationContext.getBean("GMAIL", MailSender.class);
+    notificationSubsystem = applicationContext.getBean("GMAIL", NotificationSubsystem.class);
     Sender sender = senderRepository.findByProvider("GMAIL");
     Template template = templateRepository.findByTitle(input.getTemplateName());
 
@@ -37,7 +37,7 @@ public class MailServiceImpl implements MailService {
     String renderedContent = textEngineUtil.renderTemplate(template.getContent(), input.getParams());
     String destination = input.getDestination();
 
-    mailSender.send(sender.getConfig(), destination, renderedTitle, renderedContent);
+    notificationSubsystem.send(sender.getConfig(), destination, renderedTitle, renderedContent);
 
   }
 
