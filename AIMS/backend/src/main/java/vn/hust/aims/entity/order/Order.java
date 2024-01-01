@@ -62,14 +62,4 @@ public class Order extends TimedEntity {
 
   @Column(name = "total")
   private Double total;
-
-  public void addOrderMedia(OrderMedia orderMedia){
-    orderMediaList.add(orderMedia);
-    orderMedia.setOrder(this);
-  }
-
-  public void removeOrderMedia(OrderMedia orderMedia){
-    orderMediaList.remove(orderMedia);
-    orderMedia.setOrder(null);
-  }
 }
