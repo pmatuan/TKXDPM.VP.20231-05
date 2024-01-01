@@ -195,7 +195,6 @@ export default function CheckoutSummary({orderId}: Props) {
           total: order.total,
         },
       };
-
       setSummaryOrder(orderSummary);
     } catch (error) {
       console.error("Error updating shipping fee:", error);
@@ -272,6 +271,9 @@ export default function CheckoutSummary({orderId}: Props) {
     }
   }
 
+  // const handleCLickRushDelivery = async () => {
+  //
+  // }
 
   const onApprove = async () => {
     try {
@@ -306,6 +308,10 @@ export default function CheckoutSummary({orderId}: Props) {
   useEffect(() => {
     handleChangeSelectedProvince();
   }, [selectedProvince]);
+
+  useEffect(() => {
+    handleChangeShippingFee()
+  }, [isRushDelivery, rushDeliveryTime, rushDeliveryInstructions]);
 
   useEffect(() => {
     const isFilled =
