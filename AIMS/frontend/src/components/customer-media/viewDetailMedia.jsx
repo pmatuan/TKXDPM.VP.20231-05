@@ -39,7 +39,7 @@ const ViewDetailMedia = ({ setViewDetail, mediaView }) => {
         <div
           style={{ borderBottom: "1px solid lightgray", paddingBottom: "10px" }}
         >
-          <h2 style={{ margin: 0 }}>Xem chi tiết</h2>
+          <h3 style={{ margin: 0 }}>Xem chi tiết</h3>
           <div
             onClick={() => setViewDetail(false)}
             style={{
