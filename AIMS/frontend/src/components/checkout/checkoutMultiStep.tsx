@@ -115,7 +115,7 @@ export default function CheckoutSummary({orderId}: Props) {
   const [rushDeliveryTime, setRushDeliveryTime] = useState<Date>(
       new Date("Thu Nov 30 2023 17:09:46 GMT+0700 (Indochina Time)")
   );
-  const [rushDeliveryInstructions, setRushDeliveryInstructions] = useState("");
+  const [rushDeliveryInstructions, setRushDeliveryInstructions] = useState("tmp");
   const [canCheckOut, setCanCheckOut] = useState(false); // Updated this line
   let paypalId = ""
   const initialize = async () => {

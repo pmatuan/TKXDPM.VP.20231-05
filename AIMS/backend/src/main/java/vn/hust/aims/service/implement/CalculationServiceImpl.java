@@ -57,10 +57,7 @@ public class CalculationServiceImpl implements CalculationService {
 
     if (order.getSubtotal() > FREE_SHIP) {
       originalDeliveryFee = 0.0;
-    } else if (isInHanoi(province)) {
-      // data coupling
-      originalDeliveryFee = calculateFeeInHanoiOrHCM(maxWeight);
-    } else if (isInHCM(province)) {
+    } else if (isInHanoi(province) || isInHCM(province)) {
       // data coupling
       originalDeliveryFee = calculateFeeInHanoiOrHCM(maxWeight);
     } else {
