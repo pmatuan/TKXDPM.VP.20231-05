@@ -76,6 +76,8 @@ public class MediaServiceImpl implements MediaService {
 
     Media media = MediaFactoryBuilder.get(MediaType.from(type))
         .build(JsonMapper.writeValueAsString(filterMap));
+//
+//    System.out.println(media);
 
     PageRequest pageRequest = PageRequest.of(page, size);
 
@@ -86,10 +88,6 @@ public class MediaServiceImpl implements MediaService {
     } else {
       mediaPage = mediaRepository.findAllByTitleContaining(media.getTitle(), pageRequest);
     }
-
-//        System.out.println(media.getTitle() == null);
-//        System.out.println(media.getTitle().isEmpty());
-    // mediaPage = mediaRepository.findAll(Example.of(media), pageRequest);
 
     return GetAllMediaOutput.builder().mediaPage(mediaPage).build();
   }

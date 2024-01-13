@@ -260,6 +260,11 @@ export default function CheckoutSummary({orderId}: Props) {
     window.location.href = url
   }
 
+  const handleHUSTPayCheckout = async () => {
+    const url = await handleCheckout("HUSTPAY")
+    window.location.href = url
+  }
+
   const handlePaypalCheckout = async () => {
     try {
       const id = await handleCheckout("PAYPAL");
@@ -457,6 +462,25 @@ export default function CheckoutSummary({orderId}: Props) {
                         disabled
                     />
                   </PayPalScriptProvider>
+              )}
+
+              {canCheckOut ? (
+                  <button
+                      className="btn btn-white w-100 mt-4"
+                      onClick={handleHUSTPayCheckout}
+                  >
+                    <img
+                        src="https://users.soict.hust.edu.vn/linhdt/dataset/image/hust.png"
+                        style={{width: "100px"}}/>
+                  </button>
+              ) : (
+                  <button
+                      className="btn btn-white w-100 mt-4 disabled border-none"
+                  >
+                    <img
+                        src="https://users.soict.hust.edu.vn/linhdt/dataset/image/hust.png"
+                        style={{width: "100px"}}/>
+                  </button>
               )}
 
             </div>
