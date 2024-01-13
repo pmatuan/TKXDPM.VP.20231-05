@@ -341,3 +341,8 @@ This is a Capstone's source code for Software Design and Construction project
 
 </details>
 </details>
+
+
+## Update report
+
+After the capstone project presentation, our team added a solution to handle cases where a payment method exists without a user interface for inputting information. Specifically, we retained the design of the existing subsystem, and when a new payment method emerges, we added an external service dedicated to handling aspects such as the interface for user input. This service then sends a request to the payment method to execute the transaction. We have illustrated this through the example of the HUSTPay service integrated into the source code. 
