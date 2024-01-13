@@ -1,12 +1,14 @@
 package vn.hust.aims.controller;
 
 import lombok.AllArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import vn.hust.aims.controller.dto.request.media.DeleteMediaBulkRequest;
 import vn.hust.aims.controller.dto.response.media.*;
+import vn.hust.aims.entity.media.Media;
 import vn.hust.aims.exception.AimsException;
 import vn.hust.aims.exception.ErrorCodeList;
 import vn.hust.aims.response.AimsCommonResponse;
@@ -47,10 +49,10 @@ public class MediaController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<AimsCommonResponse<Object>> getMedia(@PathVariable Long id) {
+    public ResponseEntity<Media> getMedia(@PathVariable Long id) {
         GetMediaOutput getMediaOutput = mediaService.getMedia(GetMediaInput.builder().id(id).build());
-
-        return ResponseUtil.toSuccessCommonResponse(GetMediaResponse.from(getMediaOutput));
+        Media media = GetMediaResponse.from(getMediaOutput).getMedia();
+        return new ResponseEntity<>(media, HttpStatus.OK);
     }
 
     @PostMapping("/image")
