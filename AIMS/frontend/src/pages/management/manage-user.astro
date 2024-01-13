@@ -1,0 +1,205 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import AdminNavbar from "../../components/admin/adminNavbar";
+import "../../../assets/scss/astro-ecommerce.scss";
+import UserTable from "../../components/admin/userTable";
+import {
+    CreateUserModal,
+    ViewUserModal,
+} from "../../components/admin/userModal";
+
+const data = await fetch(
+    "http://localhost:8080/api/v1/user/all?page=0&size=100"
+);
+const response = await data.json();
+const result = response.result;
+
+---
+
+<script>
+    const role = localStorage.getItem('role')
+    if (role) {
+        if (!role.includes('product manager')) {
+            document.querySelector('#manageMedia')?.classList.add('d-none')
+            document.querySelector('#manageOrder')?.classList.add('d-none')
+        }
+        if (!role.includes('admin')) {
+            document.querySelector('#manageUser')?.classList.add('d-none')
+        }
+    }
+</script>
+
+<script>
+    import {
+        deleteUser,
+        createUser,
+        editUser,
+        changeBlockedState,
+        changePassword,
+    } from "../../components/admin/crudUtils";
+
+    document
+        .getElementById("submitCreateUser")
+        ?.addEventListener("click", async function (event) {
+            // let form = (event.target as Element).parentNode;
+            let form = document.querySelector("#createUserForm");
+            const user = {
+                name: (form?.querySelector("#name") as HTMLInputElement).value,
+                email: (form?.querySelector("#email") as HTMLInputElement)
+                    .value,
+                phoneNumber: (
+                    form?.querySelector("#phoneNumber") as HTMLInputElement
+                ).value,
+                password: (form?.querySelector("#password") as HTMLInputElement)
+                    .value,
+                role: (form?.querySelector("#role") as HTMLInputElement).value,
+            };
+
+            await createUser(user);
+        });
+
+    Array.from(document.getElementsByClassName("infoButton")).forEach(
+        (button) => {
+            let currentUserId = Number(button.id.slice(5));
+            button.setAttribute("data-bs-toggle", "modal");
+            button.setAttribute(
+                "data-bs-target",
+                `#viewUserModal${currentUserId}`
+            );
+
+            let editButton = document.getElementById(`edit${currentUserId}`);
+
+            let submitButton = document.getElementById(
+                `submit${currentUserId}`
+            );
+
+            let closeButton = editButton?.previousElementSibling;
+
+            let form =
+                editButton?.parentElement?.parentElement?.getElementsByTagName(
+                    "form"
+                )[0];
+
+            let changePasswordButton = document?.querySelector(
+                `#changePasswordBtn${currentUserId}`
+            );
+
+            let blockedButton = document.querySelector(
+                `#blockedButton${currentUserId}`
+            );
+
+            let submitPasswordButton = document?.querySelector(
+                `#submitPasswordButton${currentUserId}`
+            );
+
+            editButton?.addEventListener("click", () => {
+                toggleEditable(form);
+                editButton?.classList.add("d-none");
+                submitButton?.classList.remove("d-none");
+                console.log(changePasswordButton);
+                // changePasswordButton?.classList.add("d-none");
+                (changePasswordButton as HTMLButtonElement).disabled = true;
+                (blockedButton as HTMLButtonElement).disabled = true;
+            });
+
+            submitButton?.addEventListener("click", () => {
+                // toggleUneditable(form);
+                const user = {
+                    id: button.id.slice(5),
+                    name: (form?.querySelector("#name") as HTMLInputElement)
+                        .value,
+                    email: (form?.querySelector("#email") as HTMLInputElement)
+                        .value,
+                    phoneNumber: (
+                        form?.querySelector("#phoneNumber") as HTMLInputElement
+                    ).value,
+                    role: (form?.querySelector("#role") as HTMLInputElement)
+                        .value,
+                };
+                editUser(user);
+            });
+
+            let newPasswordForm = document.querySelector(
+                `#newPasswordForm${currentUserId}`
+            );
+
+            changePasswordButton?.addEventListener("click", () => {
+                editButton?.classList.add("d-none");
+                newPasswordForm?.classList.remove("d-none");
+                changePasswordButton?.classList.add("d-none");
+                blockedButton?.classList.add("d-none");
+                submitButton?.classList.add("d-none");
+                submitPasswordButton?.classList.remove("d-none");
+            });
+
+            submitPasswordButton?.addEventListener("click", () => {
+                const newPassword = (
+                    newPasswordForm?.querySelector(
+                        "#newPassword"
+                    ) as HTMLInputElement
+                ).value;
+                changePassword(currentUserId, newPassword);
+            });
+
+            blockedButton?.addEventListener("click", () => {
+                let currentIsBlocked = blockedButton?.textContent;
+                console.log(currentIsBlocked)
+                if (currentIsBlocked === "Chặn") {
+                    changeBlockedState(currentUserId, 1);
+                } else {
+                    changeBlockedState(currentUserId, 0);
+                }
+            });
+
+            closeButton?.addEventListener("click", () => {
+                window.location.reload();
+            });
+        }
+    );
+
+    Array.from(document.getElementsByClassName("deleteButton")).forEach(
+        (button) => {
+            button.addEventListener("click", () => {
+                if (confirm("Xác nhận xóa người dùng")) {
+                    deleteUser(Number(button.id.slice(7)));
+                }
+            });
+        }
+    );
+
+    function toggleEditable(form: any) {
+        form.querySelector("#name").removeAttribute("disabled");
+        form.querySelector("#email").removeAttribute("disabled");
+        form.querySelector("#phoneNumber").removeAttribute("disabled");
+        form.querySelector("#role").removeAttribute("disabled");
+        // console.log(form.parentElement.querySelector('.edit').classList)
+        // form.parentElement.querySelector(".edit").classList.add("d-none");
+        // form.parentElement.querySelector(".submit").classList.remove("d-none");
+    }
+</script>
+
+<Layout title="Manage user">
+    <main>
+        <AdminNavbar />
+        <div class="container my-3">
+            <CreateUserModal />
+            {result.userList.map((user: any) => <ViewUserModal user={user} />)}
+            <div class="row">
+                <div class="col-md-9"></div>
+                <div class="col-md-3">
+                    <button
+                        class="btn btn-dark btn-md"
+                        data-bs-toggle="modal"
+                        data-bs-target="#createUserModal"
+                        id="createUserButton">Tạo người dùng mới</button
+                    >
+                </div>
+            </div>
+            <div class="row">
+                <div class="col">
+                    {(<UserTable users={result.userList} />)}
+                </div>
+            </div>
+        </div>
+    </main>
+</Layout>

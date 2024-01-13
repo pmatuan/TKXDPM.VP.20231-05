@@ -1,0 +1,73 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import '../../../assets/scss/astro-ecommerce.scss';
+import OrderHistory from '../../components/order/orderHistory';
+import AdminNavbar from "../../components/admin/adminNavbar";
+
+const convertDate = (originalDate: string) => {
+  const dateObject = new Date(originalDate);
+  const options = { year: 'numeric', month: 'long', day: 'numeric' };
+  const formattedDateString = dateObject.toLocaleString('vi-VN', options);
+  return formattedDateString
+}
+
+const BACKEND_URL = "http://localhost:8080/api/v1"
+
+const response = await fetch(BACKEND_URL + `/order`)
+const data = await response.json()
+
+const rawOrderList = data.result.content;
+
+const orderList = rawOrderList
+.filter(order => order.deliveryInfo && order.paymentTransaction) // Filter out orders with null deliveryInfo or paymentTransaction
+.map(order => ({
+  id: order.id,
+  products: order.orderMediaList.map(orderMedia => ({
+    id: orderMedia.id,
+    imageUrl: orderMedia.media.imageUrl,
+    quantity: orderMedia.quantity,
+    title: orderMedia.media.title,
+    price: orderMedia.media.price,
+  })),
+  address: order.deliveryInfo.address,
+  customerName: order.deliveryInfo.customerName,
+  email: order.deliveryInfo.email,
+  date: convertDate(order.createdAt),
+  paymentMethod: order.paymentTransaction.paymentMethod || '', // Use default value if paymentMethod is null
+  phoneNumber: order.deliveryInfo.phoneNumber,
+  subtotal: order.subtotal,
+  deliveryFee: order.deliveryFee,
+  total: order.total,
+  state: order.state,
+}));
+
+
+---
+
+<script>
+  const role = localStorage.getItem('role')
+  if (role) {
+    if (!role.includes('product manager')) {
+      document.querySelector('#manageMedia')?.classList.add('d-none')
+      document.querySelector('#manageOrder')?.classList.add('d-none')
+    }
+    if (!role.includes('admin')) {
+      document.querySelector('#manageUser')?.classList.add('d-none')
+    }
+  }
+</script>
+
+<Layout title="Danh sách đơn hàng">
+  <main>
+    <AdminNavbar />
+
+    <div class="container mt-5">
+      <div class="my-6">
+        <OrderHistory orderList = {orderList} client:load/>
+      </div>
+
+    </div>
+
+  </main>
+
+</Layout>

@@ -1,0 +1,47 @@
+---
+import Layout from "../layouts/Layout.astro";
+import "../../assets/scss/astro-ecommerce.scss";
+import ComplexNavbar from "../components/complexNavbar";
+import PromoSectionLarge from "../components/promo/promoSectionLarge";
+import LoginForm from "../components/loginForm";
+
+const BACKEND_URL = "http://localhost:8080/api/v1";
+if (!Astro.cookies.has("cartId")) {
+  const response = await fetch(BACKEND_URL + `/cart`);
+  const data = await response.json();
+  const cartId = data.result.cartId;
+
+  Astro.cookies.set("cartId", cartId);
+}
+---
+
+<script>
+  import { login } from "../components/login"
+  let managerButton = document.getElementById("goToManagerBtn");
+  managerButton?.setAttribute("data-bs-toggle", "modal");
+  managerButton?.setAttribute("data-bs-target", "#loginModal");
+
+  let loginButton = document.getElementById("loginBtn");
+  console.log(managerButton);
+  loginButton?.addEventListener("click", async () => {
+    const credentials = {
+      email: (document.getElementById("email") as HTMLInputElement).value,
+      password: (document.getElementById("password") as HTMLInputElement).value,
+    };
+
+    login(credentials)
+  })
+</script>
+
+<Layout title="Trang chủ">
+  <main>
+    <!-- <ComplexNavbar /> -->
+    <LoginForm />
+    <PromoSectionLarge
+      title={"AIMS: An Internet Media Store"}
+      full_description={"Nền tảng thương mại điện tử chuyên về mua bán sản phẩm phương tiện truyền thông"}
+      pageHeaderBgImg={"../images/image.jpeg"}
+      pageHeaderMinVh="100vh"
+    />
+  </main>
+</Layout>

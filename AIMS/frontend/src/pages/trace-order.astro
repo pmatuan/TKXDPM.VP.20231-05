@@ -1,0 +1,20 @@
+---
+import Layout from '../layouts/Layout.astro';
+import '../../assets/scss/astro-ecommerce.scss';
+import OrderSummaries from '../components/order/orderSummaries';
+import ComplexNavbar from "../components/complexNavbar";
+
+const orderIdUrl = Astro.url.searchParams.get('orderId')! || '';
+---
+
+<Layout title="Theo dõi đơn hàng">
+  <main>
+    <ComplexNavbar />
+
+    <div class="container mt-5">
+      <OrderSummaries orderIdUrl={orderIdUrl} client:load/>
+    </div>
+
+  </main>
+
+</Layout>

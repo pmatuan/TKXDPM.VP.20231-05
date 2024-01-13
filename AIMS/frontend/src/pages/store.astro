@@ -1,0 +1,21 @@
+---
+import Layout from "../layouts/Layout.astro";
+
+import MediaCustomer from "../components/customer-media/mediaCustomer";
+
+const BACKEND_URL = "http://localhost:8080/api/v1";
+if (!Astro.cookies.has("cartId")) {
+  const response = await fetch(BACKEND_URL + `/cart`);
+  const data = await response.json();
+  const cartId = data.result.cartId;
+
+  Astro.cookies.set("cartId", cartId);
+}
+
+const cartId = Astro.cookies.get("cartId").value;
+console.log("cartId (in store): " + cartId);
+---
+
+<Layout title="Cửa hàng">
+  <main><MediaCustomer cartId={cartId} client:load /></main>
+</Layout>
