@@ -1,0 +1,24 @@
+---
+import Layout from '../layouts/Layout.astro';
+import '../../assets/scss/astro-ecommerce.scss';
+import ComplexNavbar from "../components/complexNavbar";
+import CheckoutMultiStep from "../components/checkout/checkoutMultiStep";
+const orderId = Astro.cookies.get("orderId").value;
+console.log("orderId: " + orderId)
+---
+
+<Layout title="Thanh toán">
+  <main>
+    <ComplexNavbar />
+    <div class="container mt-5">
+      <div class="pb-4">
+        <h3>Thanh toán</h3>
+      </div>
+      <CheckoutMultiStep
+          orderId={orderId}
+          client:load
+      />
+    </div>
+  </main>
+
+</Layout>

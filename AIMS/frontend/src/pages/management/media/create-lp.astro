@@ -1,0 +1,33 @@
+---
+import Layout from "../../../layouts/Layout.astro";
+import Header from "../../../components/admin-media/Header";
+import AddLP from "../../../components/media/form/add-form/AddLP.jsx";
+import "../../../../assets/scss/astro-ecommerce.scss";
+import AdminNavbar from "../../../components/admin/adminNavbar"
+---
+
+<script>
+  const role = localStorage.getItem('role')
+  if (role) {
+      if (!role.includes('product manager')) {
+          document.querySelector('#manageMedia')?.classList.add('d-none')
+          document.querySelector('#manageOrder')?.classList.add('d-none')
+      }
+      if (!role.includes('admin')) {
+          document.querySelector('#manageUser')?.classList.add('d-none')
+      }
+  }
+</script>
+
+<Layout title="Add LP">
+  <main>
+    <AdminNavbar />
+    <!-- <Header /> -->
+    <h2
+      style="font-family:Times New Roman Bold; color: #3498db; background-color: #ecf0f1; padding: 10px; text-align: center; border-radius: 8px; box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);"
+    >
+      Tạo LP mới
+    </h2>
+    <AddLP client:load />
+  </main>
+</Layout>

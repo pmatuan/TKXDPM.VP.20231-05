@@ -1,0 +1,58 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import HomeAdmin from "../../components/admin-media/HomeAdmin.jsx";
+import "../../../assets/scss/astro-ecommerce.scss";
+import AdminNavbar from "../../components/admin/adminNavbar";
+---
+
+<style>
+  .scrolled:hover {
+    animation: scroll-rtl 15s linear forwards;
+  }
+
+  @keyframes scroll-rtl {
+    0% {
+      transform: translate(0);
+    }
+    100% {
+      transform: translate(-100%);
+    }
+  }
+</style>
+
+<script>
+  const role = localStorage.getItem('role')
+  if (role) {
+      if (!role.includes('product manager')) {
+          document.querySelector('#manageMedia')?.classList.add('d-none')
+          document.querySelector('#manageOrder')?.classList.add('d-none')
+      }
+      if (!role.includes('admin')) {
+          document.querySelector('#manageUser')?.classList.add('d-none')
+      }
+  }
+</script>
+
+<Layout title="Home">
+  <AdminNavbar />
+  <HomeAdmin client:load />
+</Layout>
+
+<script>
+  document.onreadystatechange = () => {
+    if (document.readyState == "complete") {
+      console.log("chip", document.querySelectorAll(".chip-value"));
+      document
+        .querySelectorAll(".chip-value") // get all elements you want
+        .forEach((item) => {
+          // iterate over them and get every as "item"
+          // console.log(item.textContent, (item as HTMLElement).scrollWidth)
+          if ((item as HTMLElement).scrollWidth > 200) {
+            // console.log("scrolled is going to be added", item.classList)
+            // check if it's widthter than parent
+            item.classList.add("scrolled"); // if is, add him class to scroll
+          }
+        });
+    }
+  };
+</script>
