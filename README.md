@@ -299,9 +299,11 @@ This is a Capstone's source code for Software Design and Construction project
   - Pull Request(s):
     - [PR - Unit test](https://github.com/pmatuan/TKXDPM.VP.20231-05/pull/49)
     - [PR - Place order](https://github.com/pmatuan/TKXDPM.VP.20231-05/pull/45)
+    - [PR - Order management](https://github.com/pmatuan/TKXDPM.VP.20231-05/pull/61)
   - Specific implementation details:
     - Wrote comprehensive test cases for unit tests.
     - Implemented the connection between the customer interface and the backend for order placement and entering delivery information.
+    - Developed order management UI for administrators.
 
 </details>
 
